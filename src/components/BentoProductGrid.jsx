@@ -117,7 +117,7 @@ export default function BentoProductGrid({
                 </div>
               </div>
 
-              {/* 5. Clean "View Details" Button (No Emoji) */}
+              {/* 5. Vibrant Gradient "View Details" Button with Continuous Glass Reflection */}
               <div className="pt-2">
                 <button
                   type="button"
@@ -125,10 +125,13 @@ export default function BentoProductGrid({
                     e.stopPropagation();
                     onProductClick(product);
                   }}
-                  className="w-full py-2.5 px-4 rounded-2xl text-xs font-extrabold uppercase tracking-wider text-slate-200 glass-btn hover:text-white hover:border-emerald-500/50 flex items-center justify-center space-x-2 shadow-sm active:scale-95 transition-all"
+                  className="relative overflow-hidden w-full py-3 px-4 rounded-2xl text-xs font-black uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 >
-                  <span>View Details</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
+                  {/* Diagonal Shimmer Reflection Beam */}
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/85 to-transparent animate-shimmer-sweep pointer-events-none" />
+
+                  <span className="relative z-10">View Details</span>
+                  <ArrowRight className="relative z-10 w-4 h-4 text-slate-950 stroke-[3]" />
                 </button>
               </div>
             </div>
