@@ -22,9 +22,12 @@ import {
   Check, 
   ExternalLink,
   Laptop,
-  GraduationCap
+  GraduationCap,
+  FileText,
+  Mail
 } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
+import PolicyModal from '../components/PolicyModal';
 
 export default function CourseLandingPage({ 
   course, 
@@ -35,6 +38,7 @@ export default function CourseLandingPage({
   const [openModuleIdx, setOpenModuleIdx] = useState(0);
   const [openFaqIdx, setOpenFaqIdx] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
+  const [policyModal, setPolicyModal] = useState({ isOpen: false, tab: 'terms' });
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 48, seconds: 35 });
 
   // Urgency Countdown Timer
@@ -53,69 +57,69 @@ export default function CourseLandingPage({
   // Safe fallback if course is not yet loaded or customized
   const activeCourse = course || {
     id: 'prod-course-ai',
-    title: 'AI Video Editing & Content Creation Masterclass',
+    title: 'Website Development with AI Masterclass',
     price: 499,
-    original_price: 3499,
-    discount_percentage: 86,
-    badge: '🎓 Verified Masterclass',
-    rating: 4.95,
-    reviews_count: 1420,
-    downloads_count: 11200,
-    cover_image: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&auto=format&fit=crop&q=80',
-    short_desc: 'Master step-by-step professional video editing with modern AI workflows, Premiere Pro & CapCut. Learn high-retention storytelling, sound design, and how to monetize your skills.',
+    original_price: 3999,
+    discount_percentage: 88,
+    badge: '🎓 Complete Video Course',
+    rating: 4.96,
+    reviews_count: 1680,
+    downloads_count: 12400,
+    cover_image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80',
+    short_desc: 'Master modern full-stack website development with cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, connect dynamic backends, and get high-paying freelance web clients.',
     course_details: {
-      instructor: 'Vikram Sharma (Ex-Agency Creative Director & Digital Mentor)',
-      duration: '6.5+ Hours of HD Video Lessons',
-      modules_count: '5 In-Depth Modules (28 Lessons)',
-      level: 'Beginner to Advanced (No prior experience needed)',
-      certificate: 'Official bazara.in Verified Completion Certificate'
+      instructor: 'Viplav Kumar (Senior Full-Stack Engineer & AI Specialist)',
+      duration: '8.5+ Hours of HD Video Lessons',
+      modules_count: '5 In-Depth Modules (32 Lessons)',
+      level: 'Beginner to Advanced (Zero coding background required)',
+      certificate: 'Official bazara.in Verified Web Development Certificate'
     }
   };
 
   const curriculum = activeCourse.course_details?.curriculum || [
     {
-      title: 'Module 1: Foundations of High-Retention Video & Visual Hooks',
-      duration: '45 mins',
-      lessons: [
-        'Psychology of 3-Second Retention: How Algorithms Rank Content',
-        'Frame Composition, Aspect Ratios & Lighting Fundamentals',
-        'CapCut & Premiere Pro Quick Setup for Speed Editing'
-      ]
-    },
-    {
-      title: 'Module 2: AI Workflows & Automated Content Production',
-      duration: '1 hr 20 mins',
-      lessons: [
-        'AI Scriptwriting & Storyboarding with Custom Prompt Frameworks',
-        'AI Voiceover Generation (ElevenLabs & Studio-Grade Free Tools)',
-        'Automated Kinetic Subtitles, Emoji Styling & Motion Graphics'
-      ]
-    },
-    {
-      title: 'Module 3: Cinematic Pacing, B-Roll & Advanced Sound Design',
+      title: 'Module 1: Web Development Foundations & AI Coding Setup',
       duration: '1 hr 10 mins',
       lessons: [
-        'Cinematic Transitions, Speed Ramping & Whip Pans',
-        'Sound Design Mastery: Layering Whooshes, Risers, Sub-bass & Impacts',
-        'Color Grading LUTs & Exporting in 4K Crystal-Clear Bitrate'
+        'How the Modern Web Works: HTML5, CSS3 & Responsive Design',
+        'Cursor AI & Claude Code: Setting Up Your 10x Developer Environment',
+        'Prompt Engineering for Code: Generating Bug-Free Clean Syntax'
       ]
     },
     {
-      title: 'Module 4: Client Acquisition & Career Monetization Blueprint',
-      duration: '1 hr 35 mins',
+      title: 'Module 2: Rapid UI & Frontend Engineering with React & Tailwind CSS',
+      duration: '1 hr 45 mins',
       lessons: [
-        'Building a High-Converting Portfolio Without Past Clients',
-        'Cold DM & Email Pitch Templates That Win High-Ticket Retainers',
-        'Pricing Your Services: Freelancing, Retainers & Agency Scaling'
+        'Component Architecture: Header, Hero, Bento Grids & Modals',
+        'Instant UI Generation with v0 by Vercel & Tailwind CSS',
+        'Mobile Responsiveness & Glassmorphism Animation Effects'
       ]
     },
     {
-      title: 'Module 5: Bonus Masterclasses & Action Toolkits',
-      duration: '1 hr 00 mins',
+      title: 'Module 3: Dynamic Backend, Database & Payment Gateway Integration',
+      duration: '2 hrs 00 mins',
       lessons: [
-        'Case Study: Dissecting a 5-Million-View Viral Video',
-        'Downloadable SFX Library, Premiere Presets & LUTs Pack',
-        'Live Q&A Recording & Certification Assessment'
+        'Setting Up Supabase: Relational Tables, Policies & Realtime Data',
+        'User Authentication: Email, Passwords & Phone OTP Flow',
+        'Payment Gateway Integration: Razorpay, Cashfree & UPI Checkout'
+      ]
+    },
+    {
+      title: 'Module 4: Real-World Capstone Web Projects',
+      duration: '2 hrs 15 mins',
+      lessons: [
+        'Project 1: High-Converting SaaS Landing Page with Lead Capture',
+        'Project 2: Dynamic Creator Portfolio with CMS Backing',
+        'Project 3: Full-Stack E-Commerce Digital Storefront'
+      ]
+    },
+    {
+      title: 'Module 5: Domain Setup, Production Deployment & Freelance Blueprint',
+      duration: '1 hr 20 mins',
+      lessons: [
+        '1-Click Production Deployment to Vercel with Custom Domain & Free SSL',
+        'SEO Optimization, OpenGraph Meta Tags & Speed Tuning (100/100 Lighthouse)',
+        'The ₹50,000/Month Freelance Web Dev Client Acquisition System'
       ]
     }
   ];
@@ -123,54 +127,58 @@ export default function CourseLandingPage({
   const courseFaqs = [
     {
       q: 'Payment complete hone ke baad course access kaise aur kahan milega?',
-      a: 'Payment confirm hote hi turant agle page par 1-Click Master Google Drive link unlock ho jayegi. Sath hi aapke registered WhatsApp number aur Email par bhi direct watch and download link instantly send ki jayegi.'
+      a: 'Payment confirm hote hi turant agle page par 1-Click Master Google Drive access link unlock ho jayegi. Sath hi aapke registered WhatsApp number aur Email par bhi direct watch and download credentials instantly deliver hongi.'
     },
     {
-      q: 'Kya is course ke liye pehle se koi video editing ya technical knowledge chahiye?',
-      a: 'Bilkul nahi! Ye masterclass zero se start hoti hai. Chahe aap absolute beginner ho ya already basic video banate ho, step-by-step screen recordings ke sath sab kuch practically sikhaya gaya hai.'
+      q: 'Kya is course ke liye pehle se coding ya computer science degree chahiye?',
+      a: 'Bilkul nahi! Ye masterclass zero background se start hoti hai. Viplav Kumar aapko step-by-step sikhate hain ki AI tools (Cursor, ChatGPT, Claude) ki madad se bina kisi coding headache ke professional websites kaise banai jati hain.'
     },
     {
-      q: 'Kya main mobile phone (Android / iPhone) par videos dekh aur sikh sakta hoon?',
-      a: 'Haan, 100%! Pura course mobile-friendly hai. Aap apne smartphone, tablet, ya laptop/PC kisi bhi device par stream kar sakte ho ya offline download karke lifetime dekh sakte ho.'
+      q: 'Kya main mobile phone aur laptop dono par videos dekh aur sikh sakta hoon?',
+      a: 'Haan, 100%! Pura course mobile-friendly hai. Aap apne smartphone, tablet, ya laptop/PC kisi bhi device par HD stream kar sakte ho ya offline download karke lifetime dekh sakte ho.'
+    },
+    {
+      q: 'Kya course me live website internet par deploy karna sikhaya jayega?',
+      a: 'Haan! Module 5 me aapko live custom domain link karna, free SSL setup karna, aur Vercel par 1-click global hosting karna practical step-by-step sikhaya gaya hai.'
     },
     {
       q: 'Course ki validity kitni hai aur kya future updates free milenge?',
-      a: 'Aapko Lifetime Access milta hai. Jab bhi hum naye modules, AI tools ya editing tricks add karenge, aapko automatically updated folders bina kisi extra charge ke milenge.'
+      a: 'Aapko Lifetime Access milta hai. Jab bhi naye AI models, web frameworks ya tools update honge, naye modules bina kisi extra charge ke aapke Google Drive folder me add kar diye jayenge.'
     },
     {
       q: 'Kya mujhe Certificate of Completion milega?',
       a: 'Haan, saare modules complete karne ke baad aapko bazara.in Verified Digital Certificate provide kiya jayega jise aap apne LinkedIn profile, resume ya freelance portfolio me add kar sakte hain.'
     },
     {
-      q: 'Agar course dekhte waqt koi doubt ya sawal ho toh kaise solve hoga?',
-      a: 'Aapko bazara.in ke Exclusive Telegram Mastermind Community ka access milta hai jahan mentor aur top students active rehte hain. Sath hi direct WhatsApp support bhi available hai.'
+      q: 'Agar practice karte waqt koi doubt ya error aaye toh kaise solve hoga?',
+      a: 'Aapko bazara.in ke Exclusive Telegram Mastermind Community ka access milta hai jahan mentor Viplav Kumar aur top developers active rehte hain. Sath hi direct WhatsApp helpline bhi available hai.'
     }
   ];
 
   const reviews = [
     {
-      name: 'Rohan Deshmukh',
-      role: 'Freelance Video Editor',
-      city: 'Pune',
-      avatar: 'R',
-      rating: 5,
-      comment: 'Maine YouTube par 6 mahine waste kiye the. Is single course ne CapCut aur AI workflow ko itna simple bana diya ki pehle hi hafte me 2 US clients ke video projects close kar liye!'
-    },
-    {
-      name: 'Pooja Verma',
-      role: 'Digital Content Creator',
+      name: 'Ankit Sharma',
+      role: 'Freelance Web Designer',
       city: 'Delhi',
-      avatar: 'P',
-      rating: 5,
-      comment: 'Sound design aur 3-second hook module is gold! Meri engagement 3x badh gayi hai. Zero theory, pure practical implementation. Highly recommended to everyone.'
-    },
-    {
-      name: 'Aditya Mehta',
-      role: 'Agency Founder',
-      city: 'Mumbai',
       avatar: 'A',
       rating: 5,
-      comment: 'The instructor explains concepts in clear Hinglish with exact step-by-step screen shares. The downloadable sound effects and LUTs alone are worth 5x the price.'
+      comment: 'Viplav sir ka AI workflow unbelievable hai! Maine Cursor aur Supabase use karke 3 din me apna pehla dynamic web app bana liya aur US client ko ₹45,000 me deliver kiya!'
+    },
+    {
+      name: 'Sneha Patel',
+      role: 'BCA Student',
+      city: 'Bangalore',
+      avatar: 'S',
+      rating: 5,
+      comment: 'College me 3 saal me jo nahi seekh paayi, wo is masterclass me 1 hafte me clear ho gaya. Tailwind CSS aur AI prompting concepts are explained in crystal-clear Hinglish.'
+    },
+    {
+      name: 'Rohan Mehta',
+      role: 'Digital Agency Founder',
+      city: 'Mumbai',
+      avatar: 'R',
+      rating: 5,
+      comment: 'The payment gateway integration and deployment modules alone are worth 10x the course fee. The included project source codes saved me hundreds of hours of work.'
     }
   ];
 
@@ -179,7 +187,7 @@ export default function CourseLandingPage({
       {/* 1. Urgency Countdown Top Bar */}
       <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 px-4 py-2 text-center text-xs font-bold text-white shadow-md flex items-center justify-center space-x-2">
         <span className="inline-block w-2 h-2 rounded-full bg-amber-300 animate-ping" />
-        <span>⚡ SPECIAL BATCH ADMISSIONS OPEN: FLAT {activeCourse.discount_percentage}% OFF</span>
+        <span>⚡ SPECIAL ADMISSIONS OPEN: FLAT {activeCourse.discount_percentage}% OFF</span>
         <span className="hidden sm:inline text-emerald-100">• Offer ends in</span>
         <span className="px-2 py-0.5 rounded bg-black/30 font-mono text-amber-200">
           {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
@@ -213,25 +221,18 @@ export default function CourseLandingPage({
             <a href="#reviews" className="hover:text-emerald-400 transition-colors">Reviews</a>
             <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</a>
             <button
-              onClick={onNavigateToStore}
-              className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/[0.05] hover:bg-white/10 border border-white/10 transition-all flex items-center space-x-1"
+              onClick={() => setPolicyModal({ isOpen: true, tab: 'terms' })}
+              className="text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
             >
-              <span>Explore Store / All Bundles</span>
-              <ExternalLink className="w-3 h-3 text-emerald-400" />
+              Policies
             </button>
           </nav>
 
           {/* CTA Action */}
           <div className="flex items-center space-x-2">
             <button
-              onClick={onNavigateToStore}
-              className="md:hidden px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-300 bg-white/[0.06] border border-white/10"
-            >
-              Store
-            </button>
-            <button
               onClick={() => onEnroll(activeCourse)}
-              className="px-4 md:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center space-x-1.5"
+              className="px-4 md:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer"
             >
               <span>Enroll Now ₹{activeCourse.price}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -250,7 +251,7 @@ export default function CourseLandingPage({
           {/* Trust Badge */}
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-bold shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>100% Practical Course • Complete Video Masterclass</span>
+            <span>100% Practical Masterclass • Mentored by Viplav Kumar</span>
           </div>
 
           {/* Headline */}
@@ -267,13 +268,13 @@ export default function CourseLandingPage({
           <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-xs text-slate-300 pt-1">
             <div className="flex items-center space-x-1.5">
               <div className="flex text-amber-400 text-sm">★★★★★</div>
-              <span className="font-bold text-white">{activeCourse.rating || 4.95}/5</span>
-              <span className="text-slate-400">({activeCourse.reviews_count || 1420}+ Ratings)</span>
+              <span className="font-bold text-white">{activeCourse.rating || 4.96}/5</span>
+              <span className="text-slate-400">({activeCourse.reviews_count || 1680}+ Verified Reviews)</span>
             </div>
             <span className="hidden sm:inline text-slate-600">•</span>
             <div className="flex items-center space-x-1.5">
               <Users className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-bold text-white">{activeCourse.downloads_count || 11200}+ Enrolled Learners</span>
+              <span className="font-bold text-white">{activeCourse.downloads_count || 12400}+ Students Enrolled</span>
             </div>
             <span className="hidden sm:inline text-slate-600">•</span>
             <div className="flex items-center space-x-1.5">
@@ -311,10 +312,10 @@ export default function CourseLandingPage({
               {/* Badges on Video */}
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] text-white">
                 <span className="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md font-semibold border border-white/10">
-                  HD 1080p • On-Demand Lessons
+                  HD 1080p • 32 On-Demand Lessons
                 </span>
                 <span className="px-2.5 py-1 rounded-full bg-emerald-500/80 text-slate-950 font-bold">
-                  Lifetime Access
+                  Lifetime G-Drive Access
                 </span>
               </div>
             </div>
@@ -325,7 +326,7 @@ export default function CourseLandingPage({
             <div className="p-4 rounded-3xl bg-[#131724] border border-white/10 shadow-xl space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Limited Time Special Price</span>
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Limited Time Special Admission</span>
                   <div className="flex items-baseline space-x-2">
                     <span className="text-3xl font-black text-emerald-400">₹{activeCourse.price}</span>
                     <span className="text-sm font-semibold text-slate-400 line-through">₹{activeCourse.original_price}</span>
@@ -335,8 +336,8 @@ export default function CourseLandingPage({
                   </div>
                 </div>
                 <div className="text-right text-[11px] text-slate-400">
-                  <span className="text-amber-400 font-bold block">Only 14 Seats Left</span>
-                  <span>at this price</span>
+                  <span className="text-amber-400 font-bold block">Only 12 Seats Left</span>
+                  <span>in this batch</span>
                 </div>
               </div>
 
@@ -345,18 +346,18 @@ export default function CourseLandingPage({
                 className="w-full py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer"
               >
                 <Zap className="w-4 h-4 fill-slate-950" />
-                <span>Enroll in Masterclass Now (Instant Access)</span>
+                <span>Enroll in Web Dev Masterclass (Instant Access)</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <div className="flex items-center justify-center space-x-4 text-[11px] text-slate-400 pt-1">
                 <span className="flex items-center space-x-1">
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Instant G-Drive Link</span>
+                  <span>Instant G-Drive Delivery</span>
                 </span>
                 <span className="flex items-center space-x-1">
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Lifetime Validity</span>
+                  <span>Lifetime Access</span>
                 </span>
                 <span className="flex items-center space-x-1">
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
@@ -373,23 +374,23 @@ export default function CourseLandingPage({
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
             <Clock className="w-5 h-5 text-emerald-400 mx-auto mb-1.5" />
-            <span className="text-base font-black text-white block">6.5+ Hours</span>
-            <span className="text-[11px] text-slate-400">Structured Video Content</span>
+            <span className="text-base font-black text-white block">8.5+ Hours</span>
+            <span className="text-[11px] text-slate-400">Structured HD Content</span>
           </div>
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
             <BookOpen className="w-5 h-5 text-indigo-400 mx-auto mb-1.5" />
-            <span className="text-base font-black text-white block">28 Lessons</span>
+            <span className="text-base font-black text-white block">32 Lessons</span>
             <span className="text-[11px] text-slate-400">5 Hands-on Modules</span>
           </div>
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
             <Laptop className="w-5 h-5 text-amber-400 mx-auto mb-1.5" />
-            <span className="text-base font-black text-white block">Phone & Laptop</span>
-            <span className="text-[11px] text-slate-400">Works on all devices</span>
+            <span className="text-base font-black text-white block">Full Source Code</span>
+            <span className="text-[11px] text-slate-400">3 Ready-to-Deploy Projects</span>
           </div>
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
             <GraduationCap className="w-5 h-5 text-teal-400 mx-auto mb-1.5" />
             <span className="text-base font-black text-white block">Verified Certificate</span>
-            <span className="text-[11px] text-slate-400">Included with Course</span>
+            <span className="text-[11px] text-slate-400">Official bazara.in Credential</span>
           </div>
         </div>
       </section>
@@ -404,7 +405,7 @@ export default function CourseLandingPage({
             Complete Course Curriculum Breakdown
           </h2>
           <p className="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">
-            Everything is structured step-by-step. Go from absolute beginner to skilled video professional with zero guesswork.
+            Everything is structured step-by-step. Go from zero coding background to launching production websites and earning as an AI-powered developer.
           </p>
         </div>
 
@@ -477,21 +478,21 @@ export default function CourseLandingPage({
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="p-5 rounded-3xl bg-[#131724] border border-white/10 space-y-2">
               <div className="w-9 h-9 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <Users className="w-5 h-5" />
+                <Laptop className="w-5 h-5" />
               </div>
-              <h3 className="text-sm font-bold text-white">Aspiring Creators</h3>
+              <h3 className="text-sm font-bold text-white">Beginners & Non-Techies</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Want to build an audience on Instagram or YouTube but struggle with video quality, retention, and slow editing workflows.
+                Zero coding background? Learn how modern AI coding assistants (Cursor & Claude) do the heavy lifting so you can build stunning websites easily.
               </p>
             </div>
 
             <div className="p-5 rounded-3xl bg-[#131724] border border-white/10 space-y-2">
               <div className="w-9 h-9 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-                <Laptop className="w-5 h-5" />
+                <Users className="w-5 h-5" />
               </div>
-              <h3 className="text-sm font-bold text-white">Freelancers & Editors</h3>
+              <h3 className="text-sm font-bold text-white">Aspiring Freelancers</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Learn modern AI automation and sound design to charge 3x-5x higher retainer fees for international client projects.
+                Offer high-demand web development services to businesses and charge ₹25,000–₹60,000 per website with rapid 48-hour delivery times.
               </p>
             </div>
 
@@ -499,16 +500,16 @@ export default function CourseLandingPage({
               <div className="w-9 h-9 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
                 <Zap className="w-5 h-5" />
               </div>
-              <h3 className="text-sm font-bold text-white">Students & Side-Hustlers</h3>
+              <h3 className="text-sm font-bold text-white">Students & Professionals</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Build a marketable digital skill from scratch using your laptop or smartphone and start earning online in your free time.
+                Build a portfolio of real, live web apps to crack software engineering roles or build your own startup MVPs without hiring developers.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7. ABOUT BAZARA.IN SECTION (Requested by User) */}
+      {/* 7. ABOUT BAZARA.IN SECTION */}
       <section id="about-bazara" className="py-14 px-4 md:px-8 max-w-4xl mx-auto space-y-8">
         <div className="p-6 md:p-10 rounded-3xl bg-gradient-to-br from-[#121624] via-[#0d101a] to-[#121624] border border-emerald-500/20 shadow-2xl relative overflow-hidden space-y-6">
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
@@ -519,19 +520,19 @@ export default function CourseLandingPage({
               <span>About bazara.in Academy</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-black text-white">
-              Empowering India's Next Generation of Digital Creators & Professionals
+              Empowering India's Next Generation of AI-Powered Web Developers
             </h2>
             <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
-              <strong className="text-white">bazara.in</strong> is India’s premier digital learning platform built to bridge the gap between traditional theoretical education and high-demand online skills. We design hyper-focused, 100% practical masterclasses created by real-world practitioners.
+              <strong className="text-white">bazara.in</strong> is India’s premier digital learning platform focused on practical, high-income digital skills. We bridge the gap between traditional college theory and modern AI-driven industry standards. Our masterclasses are designed by seasoned engineers to deliver tangible results in days, not years.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1.5">
               <CheckCircle className="w-5 h-5 text-emerald-400" />
-              <h4 className="text-xs font-bold text-white">Zero Theory, 100% Action</h4>
+              <h4 className="text-xs font-bold text-white">Zero Fluff, 100% Practical</h4>
               <p className="text-[11px] text-slate-400">
-                Every minute of video content is packed with actionable screen recordings, workflows, and real templates.
+                Build real websites from Day 1. Every module includes copy-paste source code and production-ready templates.
               </p>
             </div>
 
@@ -539,7 +540,7 @@ export default function CourseLandingPage({
               <ShieldCheck className="w-5 h-5 text-emerald-400" />
               <h4 className="text-xs font-bold text-white">25,000+ Enrolled Learners</h4>
               <p className="text-[11px] text-slate-400">
-                Trusted by thousands of students across India who have upskilled and transformed their careers.
+                A thriving nationwide community of developers, creators, and freelancers upskilling every single week.
               </p>
             </div>
 
@@ -547,31 +548,30 @@ export default function CourseLandingPage({
               <FolderDown className="w-5 h-5 text-emerald-400" />
               <h4 className="text-xs font-bold text-white">Instant Lifetime G-Drive</h4>
               <p className="text-[11px] text-slate-400">
-                No complex logins or expiring links. Access your masterclass forever with 1-tap Google Drive delivery.
+                Immediate access upon checkout. Stream or download lessons forever with continuous free curriculum updates.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. MEET YOUR MENTOR */}
+      {/* 8. MEET YOUR MENTOR: VIPLAV KUMAR */}
       <section id="instructor" className="py-12 px-4 md:px-8 max-w-4xl mx-auto">
         <div className="p-6 md:p-8 rounded-3xl bg-[#131724] border border-white/10 flex flex-col md:flex-row items-center gap-6">
-          <div className="w-28 h-28 md:w-36 md:h-36 rounded-2xl overflow-hidden shrink-0 border-2 border-emerald-500/30 shadow-xl">
-            <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80"
-              alt="Mentor Vikram Sharma"
-              className="w-full h-full object-cover"
-            />
+          <div className="w-28 h-28 md:w-36 md:h-36 rounded-2xl overflow-hidden shrink-0 border-2 border-emerald-500/30 shadow-xl bg-slate-800 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-tr from-emerald-600 via-teal-700 to-indigo-800 flex flex-col items-center justify-center text-white p-2 text-center">
+              <span className="text-3xl font-black">VK</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-200 mt-1">Viplav Kumar</span>
+            </div>
           </div>
           <div className="space-y-2 text-center md:text-left">
             <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
-              Lead Course Mentor
+              Lead Course Mentor & Full-Stack Architect
             </span>
-            <h3 className="text-xl font-bold text-white">Vikram Sharma</h3>
-            <p className="text-xs text-indigo-400 font-medium">Ex-Creative Agency Lead • Trained 15,000+ Students Online</p>
+            <h3 className="text-xl font-bold text-white">Viplav Kumar</h3>
+            <p className="text-xs text-indigo-400 font-medium">Senior Full-Stack Engineer • Mentored 10,000+ Students in Modern Tech</p>
             <p className="text-xs text-slate-300 leading-relaxed max-w-xl">
-              With 7+ years of experience directing commercial video campaigns and generating over 50M+ views across social platforms, Vikram breaks down complex editing and AI tools into simple, step-by-step masterclasses anyone can follow.
+              Viplav Kumar has engineered high-scale web platforms and pioneered AI-assisted coding workflows for clients globally. In this comprehensive masterclass, Viplav breaks down modern web architecture, frontend UI, backend databases, and AI coding tools into easy, actionable steps that anyone can master in days.
             </p>
           </div>
         </div>
@@ -587,12 +587,12 @@ export default function CourseLandingPage({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-3xl mx-auto">
             {[
-              '28 Full HD Video Lessons with Lifetime Watch Access',
-              'Downloadable Project Files, SFX Library & Cinematic LUTs Pack',
-              'Ready-to-use CapCut & Premiere Pro Kinetic Text Presets',
-              'Official bazara.in Verified Completion Certificate',
-              'Private Telegram VIP Mastermind Community Access',
-              'Free Future Curriculum Updates Whenever AI Tools Update'
+              '32 Full HD Video Lessons with Lifetime Watch Access',
+              'Complete Source Code of 3 Production Web Apps (SaaS, Portfolio & Store)',
+              'Curated AI Prompt Bank for Cursor IDE, ChatGPT & Claude',
+              'Official bazara.in Verified Certificate of Completion',
+              'Private Telegram VIP Mastermind Community with Viplav Kumar',
+              'Lifetime Free Curriculum Updates for New AI Tools & Frameworks'
             ].map((item, idx) => (
               <div key={idx} className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.06] flex items-center space-x-3">
                 <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
@@ -633,7 +633,7 @@ export default function CourseLandingPage({
         </div>
       </section>
 
-      {/* 11. FAQ ACCORDION (Requested by User) */}
+      {/* 11. FAQ ACCORDION */}
       <section id="faq" className="py-14 px-4 md:px-8 max-w-3xl mx-auto space-y-6">
         <div className="text-center space-y-2">
           <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Got Questions?</span>
@@ -671,10 +671,10 @@ export default function CourseLandingPage({
             Instant Lifetime Access
           </span>
           <h2 className="text-2xl md:text-4xl font-black text-white">
-            Start Learning & Transforming Today
+            Start Building Modern Websites with AI Today
           </h2>
           <p className="text-xs md:text-sm text-slate-300 max-w-md mx-auto">
-            Get instant access to all 28 HD lessons, project files, sound effects library, and mentor community for just ₹{activeCourse.price}.
+            Get instant access to all 32 HD video lessons, 3 capstone projects source code, AI prompt bank, and private community with Viplav Kumar for just ₹{activeCourse.price}.
           </p>
 
           <div className="flex items-center justify-center space-x-3">
@@ -696,35 +696,58 @@ export default function CourseLandingPage({
         </div>
       </section>
 
-      {/* 13. FOOTER */}
+      {/* 13. COMPLIANT FOOTER (Payment Gateway Compliant, Store link removed) */}
       <footer className="px-4 py-8 border-t border-white/[0.08] text-center space-y-4 max-w-5xl mx-auto">
         <div className="flex items-center justify-center space-x-1">
           <span className="text-lg font-black text-white">bazara</span>
           <span className="text-sm font-bold text-emerald-400">.in</span>
         </div>
         <p className="text-xs text-slate-400 max-w-md mx-auto">
-          India's Premier Digital Learning Platform for High-Impact Skills & Creator Masterclasses.
+          India's Premier Digital Learning Platform for Modern Web Development & AI Engineering. Mentored by Viplav Kumar.
         </p>
-        <div className="text-xs text-slate-400 flex flex-wrap items-center justify-center gap-4">
-          <button onClick={onNavigateToStore} className="hover:text-emerald-400 underline cursor-pointer">
-            Explore All Courses & Products (Store)
+
+        {/* Essential Legal Links Required by Payment Gateways */}
+        <div className="text-xs text-slate-400 flex flex-wrap items-center justify-center gap-3 md:gap-5 pt-1">
+          <button
+            onClick={() => setPolicyModal({ isOpen: true, tab: 'terms' })}
+            className="hover:text-emerald-400 underline cursor-pointer"
+          >
+            Terms & Conditions
           </button>
           <span>•</span>
-          <span className="hover:text-slate-200 cursor-pointer">Refund Policy</span>
-          <span>•</span>
-          <span className="hover:text-slate-200 cursor-pointer">Terms & Conditions</span>
-          <span>•</span>
-          <a
-            href="https://wa.me/919876543210"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-emerald-400 hover:underline flex items-center space-x-1"
+          <button
+            onClick={() => setPolicyModal({ isOpen: true, tab: 'privacy' })}
+            className="hover:text-emerald-400 underline cursor-pointer"
           >
-            <MessageCircle className="w-3.5 h-3.5" />
-            <span>WhatsApp Support</span>
-          </a>
+            Privacy Policy
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => setPolicyModal({ isOpen: true, tab: 'refund' })}
+            className="hover:text-emerald-400 underline cursor-pointer"
+          >
+            Refund Policy
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => setPolicyModal({ isOpen: true, tab: 'shipping' })}
+            className="hover:text-emerald-400 underline cursor-pointer"
+          >
+            Digital Delivery & Shipping
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => setPolicyModal({ isOpen: true, tab: 'contact' })}
+            className="hover:text-emerald-400 underline cursor-pointer"
+          >
+            Contact Us
+          </button>
         </div>
-        <p className="text-[10px] text-slate-400">© 2026 bazara.in • All Rights Reserved</p>
+
+        <div className="pt-2 text-[11px] text-slate-500 space-y-1">
+          <p>© 2026 bazara.in • All Rights Reserved</p>
+          <p>Support: support@bazara.in • WhatsApp: +91 98765 43210</p>
+        </div>
       </footer>
 
       {/* 14. MOBILE STICKY BOTTOM ENROLL DOCK */}
@@ -754,6 +777,13 @@ export default function CourseLandingPage({
         onClose={() => setActiveVideo(null)}
         videoUrl={activeVideo?.url}
         title={activeVideo?.title}
+      />
+
+      {/* Payment Gateway Compliant Legal Policies Modal */}
+      <PolicyModal
+        isOpen={policyModal.isOpen}
+        onClose={() => setPolicyModal({ ...policyModal, isOpen: false })}
+        initialTab={policyModal.tab}
       />
     </div>
   );

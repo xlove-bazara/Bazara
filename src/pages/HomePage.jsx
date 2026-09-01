@@ -7,6 +7,7 @@ import BentoProductGrid from '../components/BentoProductGrid';
 import BottomDock from '../components/BottomDock';
 import QuickViewModal from '../components/QuickViewModal';
 import LoginModal from '../components/LoginModal';
+import PolicyModal from '../components/PolicyModal';
 import { 
   Zap, 
   FolderDown, 
@@ -42,6 +43,7 @@ export default function HomePage({
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [recentBuyer, setRecentBuyer] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
+  const [policyModal, setPolicyModal] = useState({ isOpen: false, tab: 'terms' });
 
   // Filter products based on Category & Search
   const filteredProducts = products.filter((p) => {
@@ -378,14 +380,28 @@ export default function HomePage({
             <span className="text-xs font-bold text-emerald-400">.in</span>
           </div>
           <p className="text-xs text-slate-400 max-w-xs mx-auto">
-            India's #1 Premium Store for Viral Reels Bundles, Video Courses & Digital Assets.
+            India's Leading Digital Learning & Tech Skill Academy.
           </p>
-          <div className="text-[11px] text-slate-400 flex items-center justify-center space-x-4">
-            <span className="hover:text-slate-200 cursor-pointer">Refund Policy</span>
+          <div className="text-[11px] text-slate-400 flex flex-wrap items-center justify-center gap-3">
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'terms' })} className="hover:text-emerald-400 underline cursor-pointer">
+              Terms & Conditions
+            </button>
             <span>•</span>
-            <span className="hover:text-slate-200 cursor-pointer">Terms of Service</span>
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'privacy' })} className="hover:text-emerald-400 underline cursor-pointer">
+              Privacy Policy
+            </button>
             <span>•</span>
-            <span className="hover:text-slate-200 cursor-pointer">WhatsApp Support</span>
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'refund' })} className="hover:text-emerald-400 underline cursor-pointer">
+              Refund Policy
+            </button>
+            <span>•</span>
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'shipping' })} className="hover:text-emerald-400 underline cursor-pointer">
+              Digital Delivery
+            </button>
+            <span>•</span>
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'contact' })} className="hover:text-emerald-400 underline cursor-pointer">
+              Contact Us
+            </button>
           </div>
           <p className="text-[10px] text-slate-400">© 2026 bazara.in • All Rights Reserved</p>
         </footer>
@@ -410,6 +426,13 @@ export default function HomePage({
           setUser(userData);
           setIsLoginOpen(false);
         }}
+      />
+
+      {/* Legal Policies Modal */}
+      <PolicyModal
+        isOpen={policyModal.isOpen}
+        onClose={() => setPolicyModal({ ...policyModal, isOpen: false })}
+        initialTab={policyModal.tab}
       />
 
       {/* Social Proof Purchase Toast (Solid Opaque, No Overlap, No Product Name) */}

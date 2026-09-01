@@ -85,44 +85,44 @@ export const initialProducts = [
   },
   {
     id: "prod-course-ai",
-    slug: "ai-video-editing-monetization-masterclass",
-    title: "AI Video Editing & YouTube Shorts Monetization Masterclass",
+    slug: "website-development-with-ai-masterclass",
+    title: "Website Development with AI Masterclass",
     category: "course",
     product_type: "course",
     price: 499,
-    original_price: 3499,
-    discount_percentage: 86,
-    tag: "⭐ TOP RATED COURSE",
+    original_price: 3999,
+    discount_percentage: 88,
+    tag: "⭐ TOP RATED MASTERCLASS",
     is_trending: true,
     is_flash_sale: false,
     badge: "🎓 Complete Video Course",
-    cover_image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80",
+    cover_image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80",
     gallery_images: [
-      "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80"
     ],
     sample_reels: [
       {
         id: "course-sample-1",
-        title: "Course Preview: Fast Cuts",
+        title: "Course Overview: Coding with AI",
         views: "Free Preview",
         type: "Lecture Teaser",
-        thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&auto=format&fit=crop&q=80",
+        thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&auto=format&fit=crop&q=80",
         video_url: "https://assets.mixkit.co/videos/preview/mixkit-vertical-animation-of-futuristic-lines-and-particles-42514-large.mp4"
       },
       {
         id: "course-sample-2",
-        title: "AI Voiceover Workflow",
+        title: "Building a Landing Page in 15 Mins",
         views: "Module 2 Clip",
         type: "Lecture Teaser",
-        thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=500&auto=format&fit=crop&q=80",
+        thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&auto=format&fit=crop&q=80",
         video_url: "https://assets.mixkit.co/videos/preview/mixkit-vertical-video-of-lights-passing-by-on-a-highway-at-night-42513-large.mp4"
       },
       {
         id: "course-sample-3",
-        title: "Student Review: Rohit (120k Subs)",
+        title: "Student Review: Ankit (Freelancer)",
         views: "★ 5.0 Rating",
         type: "Student Review",
         thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
@@ -130,54 +130,58 @@ export const initialProducts = [
       },
       {
         id: "course-sample-4",
-        title: "Secret Monetization Strategy",
-        views: "Module 4 Clip",
+        title: "Deploying to Custom Domain & Vercel",
+        views: "Module 5 Clip",
         type: "Lecture Teaser",
-        thumbnail: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=500&auto=format&fit=crop&q=80",
+        thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=500&auto=format&fit=crop&q=80",
         video_url: "https://assets.mixkit.co/videos/preview/mixkit-vertical-video-of-lights-passing-by-on-a-highway-at-night-42513-large.mp4"
       }
     ],
-    rating: 4.95,
-    reviews_count: 1420,
-    downloads_count: 11200,
-    drive_download_url: "https://drive.google.com/drive/folders/bazara-ai-course-video-modules",
-    short_desc: "Master step-by-step video editing using AI tools, CapCut & Premiere. Learn how to get 100k views on every short and monetize with affiliate and brand deals.",
-    // Specific custom fields for Course
+    rating: 4.96,
+    reviews_count: 1680,
+    downloads_count: 12400,
+    drive_download_url: "https://drive.google.com/drive/folders/bazara-web-dev-ai-course-modules",
+    short_desc: "Master modern website development using cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, connect dynamic backends, and get high-paying freelance web clients.",
     course_details: {
-      instructor: "Vikram Sharma (Ex-Agency Lead & 1.2M Creator)",
-      duration: "6.5 Hours Total On-Demand HD Video",
-      modules_count: "5 Modules (28 Lessons)",
-      level: "Beginner to Advanced (No laptop required, phone works)",
-      certificate: "Official bazara Verified Completion Certificate",
+      instructor: "Viplav Kumar (Senior Full-Stack Engineer & AI Mentor)",
+      duration: "8.5 Hours Total On-Demand HD Video",
+      modules_count: "5 Modules (32 Lessons)",
+      level: "Beginner to Advanced (Zero coding background required)",
+      certificate: "Official bazara.in Verified Web Development Certificate",
       curriculum: [
         {
-          title: "Module 1: The 3-Second Retention Hook Formula",
-          lessons: ["Understanding Algorithm Psychology", "Sound Effects & Dynamic Zoom Hooks", "CapCut Keyframing Setup"],
-          duration: "45 mins"
+          title: "Module 1: Web Development Foundations & AI Coding Setup",
+          lessons: ["HTML5 & Modern CSS Structure", "Setting Up Cursor AI & Claude Code Workflows", "Prompt Engineering for Pixel-Perfect Code"],
+          duration: "1 hr 10 mins"
         },
         {
-          title: "Module 2: AI Automation & Faceless Video Creation",
-          lessons: ["ElevenLabs Voice Cloning & Free Alternatives", "Midjourney & Runway Gen-3 Prompts", "Auto-Captions & Subtitle Styling"],
-          duration: "1 hr 15 mins"
+          title: "Module 2: Rapid UI & Frontend Engineering with React & Tailwind",
+          lessons: ["Component-Driven Web Design", "Instant Responsive Layouts with v0 & Tailwind", "Building Interactive Navbars, Forms & Modals"],
+          duration: "1 hr 45 mins"
         },
         {
-          title: "Module 3: Cinematic Sound Design & Sound Effects Pack",
-          lessons: ["Layering Whooshes & Risers", "Beat-syncing Background Tracks", "Exporting in Highest Bitrate 4K"],
-          duration: "50 mins"
+          title: "Module 3: Dynamic Backend, Database & Payment Gateway Integration",
+          lessons: ["Supabase Database Setup & Table Relations", "User Authentication (Email & OTP)", "Integrating Razorpay / UPI for Online Payments"],
+          duration: "2 hrs 00 mins"
         },
         {
-          title: "Module 4: YouTube Shorts & Reels Monetization Secrets",
-          lessons: ["Brand Outreach DM Templates", "Affiliate Marketing Funnels for Shorts", "Setting up Your Digital Storefront"],
-          duration: "1 hr 30 mins"
+          title: "Module 4: Real-World Capstone Web Projects",
+          lessons: ["Building a High-Converting SaaS Landing Page", "Building a Modern Freelance Portfolio", "Full-Stack Dynamic E-Commerce Web App"],
+          duration: "2 hrs 15 mins"
+        },
+        {
+          title: "Module 5: Domain Setup, Production Deployment & Client Blueprint",
+          lessons: ["Deploying on Vercel with Custom Domain & SSL", "SEO & Performance Optimization (100/100 Lighthouse)", "How to Land ₹30,000–₹1,00,000 Freelance Web Clients"],
+          duration: "1 hr 20 mins"
         }
       ]
     },
     features: [
-      "28 HD Video Lessons with Lifetime Watch Access",
-      "Downloadable Resource Files & Sound Effects Library Included",
-      "Private Telegram VIP Mastermind Access",
-      "Monthly Live Q&A Sessions & Review of Your Reels",
-      "Certificate of Completion with Verification QR"
+      "32 Full HD Video Lessons with Lifetime Watch Access",
+      "Ready-to-Use Website Source Code & AI Prompt Templates Included",
+      "Private Telegram VIP Mastermind Community Access",
+      "Weekly Live Q&A Sessions & Code Review by Viplav Kumar",
+      "Official bazara.in Verified Certificate of Completion"
     ]
   },
   {
