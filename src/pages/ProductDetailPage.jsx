@@ -99,8 +99,8 @@ export default function ProductDetailPage({
       <main className="max-w-md mx-auto px-4 pt-3 space-y-5">
         {/* 1. Main Media Showcase + Thumbnail Slider Below It */}
         <section className="space-y-2.5">
-          {/* Main Big Image Preview (16:9 Widescreen) */}
-          <div className="relative w-full aspect-video rounded-3xl overflow-hidden glass-panel border border-white/15 bg-slate-950 shadow-2xl">
+          {/* Main Big Image Preview (4:3 Ratio) */}
+          <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden glass-panel border border-white/15 bg-slate-950 shadow-2xl">
             <img
               src={gallery[activeImageIndex]}
               alt={product.title}
@@ -120,13 +120,13 @@ export default function ProductDetailPage({
             )}
           </div>
 
-          {/* Horizontal Thumbnail Slider (16:9 Widescreen Mini Previews) */}
+          {/* Horizontal Thumbnail Slider (4:3 Mini Previews) */}
           <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
             {gallery.map((imgUrl, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveImageIndex(idx)}
-                className={`relative w-20 aspect-video rounded-xl overflow-hidden shrink-0 border-2 transition-all ${
+                className={`relative w-20 aspect-[4/3] rounded-xl overflow-hidden shrink-0 border-2 transition-all ${
                   activeImageIndex === idx
                     ? 'border-emerald-400 ring-2 ring-emerald-400/40 scale-105'
                     : 'border-white/10 opacity-70 hover:opacity-100'
