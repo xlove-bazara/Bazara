@@ -7,10 +7,20 @@ import AccessDashboardPage from './pages/AccessDashboardPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginModal from './components/LoginModal';
+import PolicyModal from './components/PolicyModal';
 import { getProducts, getSettings, createOrder, getCurrentUser, supabase } from './supabase';
 
-
 export default function App() {
+  const getPolicyTabFromPath = () => {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('privacy')) return 'privacy';
+    if (path.includes('terms')) return 'terms';
+    if (path.includes('refund')) return 'refund';
+    if (path.includes('shipping') || path.includes('delivery')) return 'shipping';
+    if (path.includes('contact')) return 'contact';
+    return null;
+  };
+
   // Determine initial page from URL pathname
   const getInitialPage = () => {
     const path = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
@@ -31,6 +41,9 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(Boolean(getPolicyTabFromPath()));
+  const [policyInitialTab, setPolicyInitialTab] = useState(getPolicyTabFromPath() || 'terms');
+
 
   const refreshData = async () => {
     const prods = await getProducts();
@@ -236,6 +249,14 @@ export default function App() {
           setIsLoginModalOpen(false);
         }}
       />
+
+      {/* Direct Policy Modal for Google / Payment Compliance */}
+      <PolicyModal
+        isOpen={isPolicyModalOpen}
+        onClose={() => setIsPolicyModalOpen(false)}
+        initialTab={policyInitialTab}
+      />
     </div>
   );
 }
+
