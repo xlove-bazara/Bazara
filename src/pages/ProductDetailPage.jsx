@@ -67,7 +67,7 @@ export default function ProductDetailPage({
     <div className="min-h-screen pb-32 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
       {/* Top Floating Glass Navigation */}
       <header className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl bg-[#08090E]/80 border-b border-white/[0.06]">
-        <div className="max-w-md mx-auto flex items-center justify-between">
+        <div className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto flex items-center justify-between">
           <button
             onClick={onBack}
             className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all"
@@ -96,7 +96,7 @@ export default function ProductDetailPage({
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-3 space-y-5">
+      <main className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto px-4 md:px-8 pt-4 space-y-6">
         {/* 1. Main Media Showcase + Thumbnail Slider Below It */}
         <section className="space-y-2.5">
           {/* Main Big Image Preview (4:3 Ratio) */}
@@ -413,7 +413,7 @@ export default function ProductDetailPage({
 
       {/* 7. ⭐ BOTTOM FLOATING STICKY BAR WITH ANIMATED SHINING BUY BUTTON */}
       <div className="fixed bottom-0 left-0 right-0 z-40 p-3 backdrop-blur-2xl bg-[#090b12]/90 border-t border-white/10 shadow-2xl">
-        <div className="max-w-md mx-auto flex items-center justify-between space-x-3">
+        <div className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto flex items-center justify-between space-x-4">
           {/* Left Price Info */}
           <div className="pl-1">
             <div className="flex items-baseline space-x-1.5">

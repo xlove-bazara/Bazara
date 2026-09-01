@@ -162,9 +162,10 @@ export default function HomePage({
         onNavigate={onNavigate}
         onOpenLogin={() => setIsLoginOpen(true)}
         user={user}
+        activeTab="home"
       />
 
-      <main className="max-w-md mx-auto space-y-4 pt-1">
+      <main className="max-w-md md:max-w-5xl lg:max-w-6xl mx-auto space-y-6 pt-2 pb-16 px-4 md:px-8">
         {/* 3. Instagram-Style Story Categories Slider */}
         <StoryCategories
           selectedCategory={selectedCategory}
@@ -177,28 +178,26 @@ export default function HomePage({
             <HeroSection onExploreClick={() => setSelectedCategory('reels')} />
 
             {/* Live Stats Strip */}
-            <div className="grid grid-cols-4 gap-1.5 px-4 text-center">
-              <div className="p-2.5 rounded-2xl bg-[#131724] border border-white/[0.06] shadow-md">
-                <span className="text-sm font-black text-emerald-400 block">100K+</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase">Downloads</span>
+            <div className="grid grid-cols-4 gap-2 md:gap-4 text-center">
+              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
+                <span className="text-sm md:text-xl font-black text-emerald-400 block">100K+</span>
+                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">Downloads</span>
               </div>
-              <div className="p-2.5 rounded-2xl bg-[#131724] border border-white/[0.06] shadow-md">
-                <span className="text-sm font-black text-amber-400 block">4.9 ★</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase">Rating</span>
+              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
+                <span className="text-sm md:text-xl font-black text-amber-400 block">4.9 ★</span>
+                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">Rating</span>
               </div>
-              <div className="p-2.5 rounded-2xl bg-[#131724] border border-white/[0.06] shadow-md">
-                <span className="text-sm font-black text-indigo-400 block">25K+</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase">Creators</span>
+              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
+                <span className="text-sm md:text-xl font-black text-indigo-400 block">25K+</span>
+                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">Creators</span>
               </div>
-              <div className="p-2.5 rounded-2xl bg-[#131724] border border-white/[0.06] shadow-md">
-                <span className="text-sm font-black text-teal-400 block">100%</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase">PLR Rights</span>
+              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
+                <span className="text-sm md:text-xl font-black text-teal-400 block">100%</span>
+                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">PLR Rights</span>
               </div>
             </div>
           </>
         )}
-
-
 
         {/* 6. Dynamic Bento Product Grid */}
         <BentoProductGrid
@@ -215,7 +214,7 @@ export default function HomePage({
         />
 
         {/* ⭐ CREATOR WALL OF LOVE (Horizontal Smooth Fade-In / Fade-Out Auto Loop) */}
-        <section className="px-4 py-3 space-y-2.5">
+        <section className="py-3 space-y-2.5">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center space-x-1.5">
               <span>Creator Reviews & Proof</span>

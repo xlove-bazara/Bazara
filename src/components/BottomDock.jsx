@@ -10,7 +10,7 @@ export default function BottomDock({ activeTab, onTabChange }) {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 glass-dock bg-[#090b14]/75 backdrop-blur-2xl border-t border-white/10 pb-2 pt-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 block md:hidden glass-dock bg-[#090b14]/75 backdrop-blur-2xl border-t border-white/10 pb-2 pt-2">
       <div className="max-w-md mx-auto flex items-center justify-around px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
