@@ -10,6 +10,9 @@ export async function sendOrderDeliveryEmail({
   const brevoApiKey = import.meta.env.VITE_BREVO_API_KEY;
   const senderEmail = import.meta.env.VITE_EMAIL_SENDER || 'support@bazara.in';
 
+
+
+
   if (!brevoApiKey || !customerEmail) {
     console.warn('Brevo API key or customer email missing, skipping email delivery');
     return { success: false, error: 'Missing key or email' };
