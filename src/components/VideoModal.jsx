@@ -1,12 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { X, Volume2, VolumeX, Play, Pause, ExternalLink } from 'lucide-react';
+import { X, Volume2, VolumeX, Play, Pause, Zap } from 'lucide-react';
 
-export default function VideoModal({ reel, onClose, onBuyClick }) {
+export default function VideoModal({ isOpen, reel, videoUrl, title, onClose, onBuyClick }) {
+  if (isOpen === false || (!isOpen && !reel)) return null;
+
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef(null);
 
-  if (!reel) return null;
+  const activeVideoUrl = videoUrl || reel?.video_url || 'https://assets.mixkit.co/videos/preview/mixkit-vertical-animation-of-futuristic-lines-and-particles-42514-large.mp4';
+  const activeTitle = title || reel?.title || 'Website Development with AI: Practical Workflow Preview';
+  const activeThumbnail = reel?.thumbnail || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80';
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -26,27 +30,28 @@ export default function VideoModal({ reel, onClose, onBuyClick }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-sm rounded-3xl overflow-hidden glass-panel border border-white/20 shadow-2xl bg-black flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-lg rounded-3xl overflow-hidden glass-panel border border-white/20 shadow-2xl bg-[#090b14] flex flex-col">
         {/* Top Controls */}
         <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-auto">
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-black/60 backdrop-blur-md text-white border border-white/10">
-            {reel.type || 'Sample Reel'}
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-black/70 backdrop-blur-md text-emerald-400 border border-emerald-500/30 flex items-center space-x-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <span>Masterclass Preview • Viplav Kumar</span>
           </span>
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur-md border border-white/10 transition-colors"
+            className="p-2 rounded-full bg-black/70 hover:bg-black/90 text-white backdrop-blur-md border border-white/10 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Video Player 9:16 Aspect Container */}
-        <div className="relative w-full aspect-reel bg-slate-950 flex items-center justify-center cursor-pointer" onClick={togglePlay}>
-          {reel.video_url ? (
+        {/* Video Player Container (16:9 / widescreen responsive) */}
+        <div className="relative w-full aspect-video bg-slate-950 flex items-center justify-center cursor-pointer" onClick={togglePlay}>
+          {activeVideoUrl ? (
             <video
               ref={videoRef}
-              src={reel.video_url}
+              src={activeVideoUrl}
               className="w-full h-full object-cover"
               autoPlay
               loop
@@ -54,7 +59,7 @@ export default function VideoModal({ reel, onClose, onBuyClick }) {
               muted={isMuted}
             />
           ) : (
-            <img src={reel.thumbnail} alt={reel.title} className="w-full h-full object-cover" />
+            <img src={activeThumbnail} alt={activeTitle} className="w-full h-full object-cover" />
           )}
 
           {/* Pause overlay icon */}
@@ -67,12 +72,12 @@ export default function VideoModal({ reel, onClose, onBuyClick }) {
           )}
 
           {/* Bottom Video Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/60 to-transparent space-y-2 pointer-events-none">
-            <h4 className="text-sm font-bold text-white drop-shadow-md">{reel.title}</h4>
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/70 to-transparent space-y-1 pointer-events-none">
+            <h4 className="text-sm font-bold text-white drop-shadow-md">{activeTitle}</h4>
             <div className="flex items-center space-x-2 text-xs text-emerald-400 font-semibold">
-              <span>{reel.views}</span>
+              <span>HD 1080p Lesson Preview</span>
               <span>•</span>
-              <span>4K 60FPS Quality</span>
+              <span>Full Source Code Included</span>
             </div>
           </div>
 
@@ -83,7 +88,7 @@ export default function VideoModal({ reel, onClose, onBuyClick }) {
               e.stopPropagation();
               toggleMute();
             }}
-            className="absolute bottom-4 right-4 p-2 rounded-full bg-black/70 text-white backdrop-blur-md border border-white/15"
+            className="absolute bottom-4 right-4 p-2 rounded-full bg-black/70 text-white backdrop-blur-md border border-white/15 cursor-pointer"
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
@@ -96,9 +101,10 @@ export default function VideoModal({ reel, onClose, onBuyClick }) {
               onClose();
               if (onBuyClick) onBuyClick();
             }}
-            className="w-full py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all"
+            className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
           >
-            Unlock All 10,000+ Reels Now ⚡
+            <Zap className="w-4 h-4 fill-slate-950" />
+            <span>Enroll in Masterclass Now • Instant Access ⚡</span>
           </button>
         </div>
       </div>

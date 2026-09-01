@@ -54,18 +54,24 @@ export default function CourseLandingPage({
     return () => clearInterval(timer);
   }, []);
 
-  // Safe fallback if course is not yet loaded or customized
-  const activeCourse = course || {
+  // Guarantee the course displayed is ALWAYS Website Development with AI Masterclass
+  const isOldVideoEditing = !course || 
+    course.title?.toLowerCase().includes('video') || 
+    course.title?.toLowerCase().includes('shorts') || 
+    course.title?.toLowerCase().includes('reels') || 
+    !course.title?.toLowerCase().includes('website');
+
+  const defaultWebDevCourse = {
     id: 'prod-course-ai',
     title: 'Website Development with AI Masterclass',
-    price: 499,
-    original_price: 3999,
-    discount_percentage: 88,
+    price: course?.price || 499,
+    original_price: course?.original_price || 3999,
+    discount_percentage: course?.discount_percentage || 88,
     badge: '🎓 Complete Video Course',
     rating: 4.96,
     reviews_count: 1680,
     downloads_count: 12400,
-    cover_image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80',
+    cover_image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80',
     short_desc: 'Master modern full-stack website development with cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, connect dynamic backends, and get high-paying freelance web clients.',
     course_details: {
       instructor: 'Viplav Kumar (Senior Full-Stack Engineer & AI Specialist)',
@@ -76,7 +82,14 @@ export default function CourseLandingPage({
     }
   };
 
-  const curriculum = activeCourse.course_details?.curriculum || [
+  const activeCourse = isOldVideoEditing ? defaultWebDevCourse : {
+    ...course,
+    cover_image: course.cover_image?.includes('1574717024653') 
+      ? 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80' 
+      : course.cover_image
+  };
+
+  const curriculum = (isOldVideoEditing || !activeCourse.course_details?.curriculum || activeCourse.course_details?.curriculum[0]?.title?.includes('Retention')) ? [
     {
       title: 'Module 1: Web Development Foundations & AI Coding Setup',
       duration: '1 hr 10 mins',
@@ -122,7 +135,8 @@ export default function CourseLandingPage({
         'The ₹50,000/Month Freelance Web Dev Client Acquisition System'
       ]
     }
-  ];
+  ] : activeCourse.course_details.curriculum;
+
 
   const courseFaqs = [
     {
@@ -297,8 +311,8 @@ export default function CourseLandingPage({
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
                 <button
                   onClick={() => setActiveVideo({
-                    title: activeCourse.title,
-                    url: 'https://assets.mixkit.co/videos/preview/mixkit-vertical-animation-of-futuristic-lines-and-particles-42514-large.mp4'
+                    title: 'Website Development with AI: Live Coding & Architecture Preview',
+                    url: 'https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-code-screen-close-up-43093-large.mp4'
                   })}
                   className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-emerald-500/90 hover:bg-emerald-400 text-slate-950 flex items-center justify-center shadow-xl shadow-emerald-500/40 hover:scale-110 active:scale-95 transition-all cursor-pointer"
                 >
@@ -777,6 +791,7 @@ export default function CourseLandingPage({
         onClose={() => setActiveVideo(null)}
         videoUrl={activeVideo?.url}
         title={activeVideo?.title}
+        onBuyClick={() => onEnroll(activeCourse)}
       />
 
       {/* Payment Gateway Compliant Legal Policies Modal */}

@@ -11,19 +11,30 @@ export const supabase = isSupabaseConfigured
   : null;
 
 // Local storage key constants
-const PRODUCTS_KEY = 'bazara_products_v1';
-const SETTINGS_KEY = 'bazara_settings_v1';
+const PRODUCTS_KEY = 'bazara_products_v3';
+const SETTINGS_KEY = 'bazara_settings_v3';
 const ORDERS_KEY = 'bazara_orders_v1';
 
-// Seed initial products into localStorage if empty
+// Seed initial products into localStorage if empty, and ensure latest course data
 const getStoredProducts = () => {
   try {
     const raw = localStorage.getItem(PRODUCTS_KEY);
-    if (!raw) {
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(initialProducts));
-      return initialProducts;
+    let prods = initialProducts;
+    if (raw) {
+      prods = JSON.parse(raw);
     }
-    return JSON.parse(raw);
+    // Guarantee that prod-course-ai is always the latest Website Development with AI course
+    const latestWebDev = initialProducts.find(p => p.id === 'prod-course-ai');
+    if (latestWebDev) {
+      const idx = prods.findIndex(p => p.id === 'prod-course-ai');
+      if (idx >= 0) {
+        prods[idx] = { ...prods[idx], ...latestWebDev };
+      } else {
+        prods.unshift(latestWebDev);
+      }
+      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(prods));
+    }
+    return prods;
   } catch (e) {
     console.warn('LocalStorage error, using initialProducts', e);
     return initialProducts;
@@ -38,7 +49,7 @@ const getStoredSettings = () => {
       return defaultSiteSettings;
     }
     const parsed = JSON.parse(raw);
-    return { ...defaultSiteSettings, ...parsed };
+    return { ...defaultSiteSettings, ...parsed, featured_course_id: 'prod-course-ai' };
   } catch (e) {
     return defaultSiteSettings;
   }
@@ -47,6 +58,8 @@ const getStoredSettings = () => {
 
 // API Functions
 export async function getProducts() {
+  const latestWebDev = initialProducts.find(p => p.id === 'prod-course-ai');
+
   if (isSupabaseConfigured && supabase) {
     try {
       const { data, error } = await supabase
@@ -54,7 +67,13 @@ export async function getProducts() {
         .select('*')
         .order('created_at', { ascending: false });
       if (!error && data && data.length > 0) {
-        return data;
+        const mapped = data.map(p => {
+          if (p.id === 'prod-course-ai' && latestWebDev) {
+            return { ...p, ...latestWebDev };
+          }
+          return p;
+        });
+        return mapped;
       }
     } catch (err) {
       console.warn('Supabase fetch failed, falling back to local database:', err);
@@ -62,6 +81,7 @@ export async function getProducts() {
   }
   return getStoredProducts();
 }
+
 
 export async function getProductBySlug(slug) {
   const products = await getProducts();
