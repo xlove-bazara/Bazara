@@ -213,16 +213,25 @@ export default function AdminPage({
 
   const [formData, setFormData] = useState(emptyProduct);
 
+  const [loadingAuth, setLoadingAuth] = useState(false);
+
   // Admin Auth Handlers
-  const handleAdminLogin = (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    const correct = getAdminPassword();
-    if (passwordInput.trim() === correct.trim()) {
-      setAdminSession(true);
-      setIsAdminAuthenticated(true);
-      setAuthError('');
-    } else {
-      setAuthError('Incorrect Password. Please check and try again.');
+    setLoadingAuth(true);
+    try {
+      const correct = await getAdminPassword();
+      if (passwordInput.trim() === correct.trim()) {
+        setAdminSession(true);
+        setIsAdminAuthenticated(true);
+        setAuthError('');
+      } else {
+        setAuthError('Incorrect Password. Please check and try again.');
+      }
+    } catch (err) {
+      setAuthError('Authentication check failed.');
+    } finally {
+      setLoadingAuth(false);
     }
   };
 
@@ -232,23 +241,28 @@ export default function AdminPage({
     setPasswordInput('');
   };
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
-    const correct = getAdminPassword();
-    if (currentPassInput.trim() !== correct.trim()) {
-      setPassChangeStatus('❌ Current password is incorrect!');
-      return;
+    try {
+      const correct = await getAdminPassword();
+      if (currentPassInput.trim() !== correct.trim()) {
+        setPassChangeStatus('❌ Current password is incorrect!');
+        return;
+      }
+      if (!newPassInput || newPassInput.trim().length < 4) {
+        setPassChangeStatus('❌ New password must be at least 4 characters long!');
+        return;
+      }
+      await saveAdminPassword(newPassInput.trim());
+      setPassChangeStatus('✓ Password permanently saved in Supabase Database!');
+      setCurrentPassInput('');
+      setNewPassInput('');
+      setTimeout(() => setPassChangeStatus(''), 3500);
+    } catch (err) {
+      setPassChangeStatus('❌ Error saving to Supabase: ' + err.message);
     }
-    if (!newPassInput || newPassInput.trim().length < 4) {
-      setPassChangeStatus('❌ New password must be at least 4 characters long!');
-      return;
-    }
-    saveAdminPassword(newPassInput.trim());
-    setPassChangeStatus('✓ Password changed successfully!');
-    setCurrentPassInput('');
-    setNewPassInput('');
-    setTimeout(() => setPassChangeStatus(''), 3000);
   };
+
 
   const handleOpenEdit = (product) => {
     setFormData(JSON.parse(JSON.stringify(product)));

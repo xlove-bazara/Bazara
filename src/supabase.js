@@ -393,20 +393,39 @@ export async function signOutUser() {
 }
 
 
-// ================= ADMIN PASSWORD & SECURITY HELPERS =================
-const ADMIN_PASS_KEY = 'bazara_admin_password_v1';
-const ADMIN_SESSION_KEY = 'bazara_admin_session_v1';
-
-export function getAdminPassword() {
+export async function getAdminPassword() {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('admin_password')
+        .eq('id', 1)
+        .single();
+      if (!error && data?.admin_password) {
+        return data.admin_password;
+      }
+    } catch (e) {
+      console.warn('Supabase fetch admin password error:', e);
+    }
+  }
   try {
     const stored = localStorage.getItem(ADMIN_PASS_KEY);
-    return stored || 'admin123'; // Default secure password
+    return stored || 'admin123'; // Default fallback
   } catch (e) {
     return 'admin123';
   }
 }
 
-export function saveAdminPassword(newPassword) {
+export async function saveAdminPassword(newPassword) {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase
+        .from('site_settings')
+        .upsert([{ id: 1, admin_password: newPassword, updated_at: new Date().toISOString() }]);
+    } catch (e) {
+      console.warn('Supabase save admin password error:', e);
+    }
+  }
   try {
     localStorage.setItem(ADMIN_PASS_KEY, newPassword);
     return true;
@@ -414,6 +433,7 @@ export function saveAdminPassword(newPassword) {
     return false;
   }
 }
+
 
 export function checkAdminSession() {
   try {
