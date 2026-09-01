@@ -4,10 +4,10 @@ import { Star, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 export default function HeroSection({ onExploreClick }) {
   return (
     <section className="px-4 py-2">
-      <div className="relative overflow-hidden rounded-3xl p-6 glass-panel border border-white/[0.09] bg-gradient-to-b from-[#111524]/90 via-[#0e111d]/90 to-[#0a0c16]/90 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl p-6 glass-card-luxury shadow-2xl">
         {/* Ambient background glow */}
-        <div className="absolute -top-16 -right-16 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -right-16 w-52 h-52 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-16 -left-16 w-52 h-52 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative space-y-4">
           {/* Top Trust Badge matching reference photo */}

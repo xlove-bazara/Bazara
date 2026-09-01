@@ -19,18 +19,18 @@ export default function BentoProductGrid({
         </span>
       </div>
 
-      {/* 2-Column Grid matching reference screenshot */}
+      {/* 2-Column Grid matching CREATOR.OS reference screenshot */}
       <div className="grid grid-cols-2 gap-3">
         {products.map((product) => {
           return (
             <div
               key={product.id}
               onClick={() => onProductClick(product)}
-              className="group relative rounded-2xl glass-panel glass-panel-hover p-2 flex flex-col justify-between cursor-pointer border border-white/[0.08] transition-all duration-200"
+              className="group relative rounded-3xl glass-card-luxury p-2.5 flex flex-col justify-between cursor-pointer"
             >
               <div className="space-y-2">
-                {/* Media Container with G-Drive Badge (16:9 Widescreen) */}
-                <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-900 shadow-md">
+                {/* Media Container with G-Drive Badge (Matching CREATOR.OS screenshot) */}
+                <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-black/40 border border-white/[0.08] shadow-inner">
                   <img
                     src={product.cover_image}
                     alt={product.title}
@@ -39,13 +39,13 @@ export default function BentoProductGrid({
                   />
 
                   {/* G-Drive Badge matching reference */}
-                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-[10px] font-bold text-slate-200 flex items-center space-x-1 shadow-sm">
+                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/20 text-[10px] font-bold text-slate-200 flex items-center space-x-1 shadow-md">
                     <FolderDown className="w-3 h-3 text-emerald-400" />
                     <span>G-Drive</span>
                   </div>
 
                   {product.discount_percentage && (
-                    <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-emerald-500 text-[10px] font-black text-slate-950 shadow-md">
+                    <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-lg bg-emerald-500 text-[10px] font-black text-slate-950 shadow-md">
                       -{product.discount_percentage}%
                     </div>
                   )}
@@ -69,7 +69,7 @@ export default function BentoProductGrid({
                 </div>
               </div>
 
-              {/* Quick View Button matching screenshot */}
+              {/* Quick View Button matching screenshot (Translucent Frosted Glass) */}
               <div className="pt-2">
                 <button
                   type="button"
@@ -77,7 +77,7 @@ export default function BentoProductGrid({
                     e.stopPropagation();
                     onQuickViewClick(product);
                   }}
-                  className="w-full py-1.5 px-2 rounded-xl text-xs font-bold text-slate-200 bg-[#161a28] hover:bg-[#1e2336] border border-white/[0.08] flex items-center justify-center space-x-1 shadow-sm active:scale-95 transition-all"
+                  className="w-full py-1.5 px-2 rounded-xl text-xs font-bold text-slate-200 glass-btn flex items-center justify-center space-x-1 shadow-sm active:scale-95"
                 >
                   <span>Quick View</span>
                   <Zap className="w-3 h-3 text-amber-400 fill-amber-400" />
