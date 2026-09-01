@@ -233,6 +233,36 @@ export async function getOrder(orderId) {
   }
 }
 
+export async function getOrders() {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error && data) {
+        const raw = localStorage.getItem(ORDERS_KEY);
+        const localOrders = raw ? JSON.parse(raw) : [];
+        const map = new Map();
+        [...data, ...localOrders].forEach(o => {
+          if (o && o.id) map.set(o.id, o);
+        });
+        return Array.from(map.values()).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+      }
+    } catch (e) {
+      console.warn('Supabase fetch orders error:', e);
+    }
+  }
+
+  try {
+    const raw = localStorage.getItem(ORDERS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+
 // ================= OFFICIAL SUPABASE AUTHENTICATION =================
 export async function signInWithGoogle() {
   if (!isSupabaseConfigured || !supabase) {

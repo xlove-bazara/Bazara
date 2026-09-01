@@ -26,7 +26,14 @@ import {
   BarChart3,
   CheckCircle,
   HelpCircle,
-  KeyRound
+  KeyRound,
+  Users,
+  DollarSign,
+  ShoppingBag,
+  TrendingUp,
+  Phone,
+  Search,
+  MessageCircle
 } from 'lucide-react';
 import { 
   saveProduct, 
@@ -36,8 +43,10 @@ import {
   getAdminPassword,
   saveAdminPassword,
   checkAdminSession,
-  setAdminSession
+  setAdminSession,
+  getOrders
 } from '../supabase';
+
 
 export default function AdminPage({ 
   products, 
@@ -57,10 +66,67 @@ export default function AdminPage({
   const [passChangeStatus, setPassChangeStatus] = useState('');
 
   // Tab & Editor State
-  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'settings'
+  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'products' | 'settings'
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [orderSearchQuery, setOrderSearchQuery] = useState('');
+
+  const loadRealOrders = async () => {
+    setLoadingOrders(true);
+    try {
+      const data = await getOrders();
+      setOrders(data);
+    } catch (e) {
+      console.warn('Failed to load orders:', e);
+    }
+    setLoadingOrders(false);
+  };
+
+  React.useEffect(() => {
+    loadRealOrders();
+  }, []);
+
+  // Real Calculated Metrics
+  const totalRevenue = orders.reduce((acc, o) => acc + (Number(o.amount) || 0), 0);
+  const totalOrders = orders.length;
+  const uniqueUsersCount = new Set(orders.map(o => o.customerEmail || o.customerPhone).filter(Boolean)).size;
+  const aov = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
+
+  // Real Product Sales Breakdown ("Kya Bika Hai")
+  const productSalesMap = {};
+  orders.forEach(order => {
+    const key = order.productId || order.productTitle || 'Digital Product';
+    if (!productSalesMap[key]) {
+      productSalesMap[key] = {
+        productId: order.productId,
+        title: order.productTitle || 'Digital Product',
+        unitsSold: 0,
+        totalRevenue: 0,
+        driveUrl: order.driveUrl,
+        lastSoldAt: order.created_at
+      };
+    }
+    productSalesMap[key].unitsSold += 1;
+    productSalesMap[key].totalRevenue += (Number(order.amount) || 0);
+  });
+  const productSales = Object.values(productSalesMap).sort((a, b) => b.totalRevenue - a.totalRevenue);
+
+  // Real Orders Filtered
+  const filteredOrders = orders.filter(ord => {
+    if (!orderSearchQuery.trim()) return true;
+    const q = orderSearchQuery.toLowerCase();
+    return (
+      ord.id?.toLowerCase().includes(q) ||
+      ord.customerEmail?.toLowerCase().includes(q) ||
+      ord.customerPhone?.toLowerCase().includes(q) ||
+      ord.productTitle?.toLowerCase().includes(q)
+    );
+  });
+
   const [editingProduct, setEditingProduct] = useState(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [filterCategory, setFilterCategory] = useState('all');
+
   const [marqueeTexts, setMarqueeTexts] = useState(
     settings?.marquee_announcements || [
       "⚡ FLASH SALE: UP TO 90% OFF ON ALL BUNDLES",
@@ -480,12 +546,23 @@ export default function AdminPage({
           </div>
         </div>
 
-        {/* Tab Switcher: Products Catalog vs Marquee & Settings */}
+        {/* Tab Switcher: Real Analytics vs Products vs Settings */}
         <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 flex-wrap gap-3">
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 overflow-x-auto pb-1 max-w-full">
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
+                activeTab === 'analytics'
+                  ? 'bg-emerald-500 text-slate-950 font-black shadow-lg shadow-emerald-500/25'
+                  : 'bg-[#131724] text-slate-400 hover:text-white border border-white/[0.06]'
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Real Profit & Orders ({orders.length})</span>
+            </button>
             <button
               onClick={() => setActiveTab('products')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
                 activeTab === 'products'
                   ? 'bg-emerald-500 text-slate-950 font-black shadow-lg shadow-emerald-500/25'
                   : 'bg-[#131724] text-slate-400 hover:text-white border border-white/[0.06]'
@@ -496,14 +573,14 @@ export default function AdminPage({
             </button>
             <button
               onClick={() => setActiveTab('settings')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
                 activeTab === 'settings'
                   ? 'bg-emerald-500 text-slate-950 font-black shadow-lg shadow-emerald-500/25'
                   : 'bg-[#131724] text-slate-400 hover:text-white border border-white/[0.06]'
               }`}
             >
               <Settings className="w-3.5 h-3.5" />
-              <span>Marquee & Security Settings</span>
+              <span>Marquee & Security</span>
             </button>
           </div>
 
@@ -518,9 +595,282 @@ export default function AdminPage({
               </button>
             </div>
           )}
+
+          {activeTab === 'analytics' && (
+            <button
+              onClick={loadRealOrders}
+              disabled={loadingOrders}
+              className="px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-bold flex items-center space-x-1.5 cursor-pointer transition-all"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingOrders ? 'animate-spin text-emerald-400' : ''}`} />
+              <span>Sync Orders</span>
+            </button>
+          )}
         </div>
 
+        {/* ================= TAB 0: REAL ANALYTICS & PROFIT INTELLIGENCE ================= */}
+        {activeTab === 'analytics' && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* Real KPI Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {/* 1. Total Real Profit */}
+              <div className="p-5 rounded-3xl bg-gradient-to-br from-emerald-950/40 via-[#131a2c] to-[#0d121f] border border-emerald-500/30 shadow-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Real Profit</span>
+                  <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <DollarSign className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  ₹{totalRevenue.toLocaleString('en-IN')}
+                </div>
+                <div className="flex items-center space-x-1.5 text-[11px] text-emerald-400 font-semibold">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  <span>Real customer earnings</span>
+                </div>
+              </div>
+
+              {/* 2. Total Units Sold */}
+              <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] shadow-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Units Sold</span>
+                  <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <ShoppingBag className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  {totalOrders}
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  Completed orders count
+                </div>
+              </div>
+
+              {/* 3. Unique Customers */}
+              <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] shadow-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Real Users</span>
+                  <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                    <Users className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  {uniqueUsersCount}
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  Verified buyers / students
+                </div>
+              </div>
+
+              {/* 4. Average Order Value */}
+              <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] shadow-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Avg Order Value</span>
+                  <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <BarChart3 className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  ₹{aov.toLocaleString('en-IN')}
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  Per customer basket size
+                </div>
+              </div>
+            </div>
+
+            {/* "Kya Bika Hai" — Product Sales Breakdown */}
+            <div className="p-6 rounded-3xl bg-[#101422] border border-white/[0.08] shadow-xl space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm sm:text-base font-extrabold text-white flex items-center space-x-2">
+                    <span>🔥 Kya Bika Hai (Product Sales Breakdown)</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">Real sales count aur kis course/bundle se kitna profit generate hua</p>
+                </div>
+                <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  {productSales.length} Best-Sellers
+                </span>
+              </div>
+
+              {productSales.length === 0 ? (
+                <div className="text-center py-10 rounded-2xl bg-white/[0.02] border border-white/[0.05] space-y-2">
+                  <ShoppingBag className="w-8 h-8 text-slate-600 mx-auto" />
+                  <p className="text-xs text-slate-300 font-bold">Abhi tak koi product sell nahi hua hai.</p>
+                  <p className="text-[11px] text-slate-500">Jaise hi koi customer buy karega, har course ka sales count aur revenue yahan show hoga.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {productSales.map((item, idx) => {
+                    const revenueShare = totalRevenue > 0 ? Math.round((item.totalRevenue / totalRevenue) * 100) : 0;
+                    return (
+                      <div key={idx} className="p-4 rounded-2xl bg-[#141829] border border-white/[0.08] hover:border-emerald-500/40 transition-all space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center space-x-2">
+                            <span className="w-6 h-6 rounded-lg bg-white/10 text-white font-black text-xs flex items-center justify-center shrink-0">
+                              #{idx + 1}
+                            </span>
+                            <span className="text-xs font-bold text-white line-clamp-1">{item.title}</span>
+                          </div>
+                          <span className="text-xs font-extrabold text-emerald-400 shrink-0">
+                            ₹{item.totalRevenue.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-[11px] bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.04]">
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">Units Sold</span>
+                            <span className="font-bold text-white">{item.unitsSold} orders</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">Store Share</span>
+                            <span className="font-bold text-emerald-400">{revenueShare}% of Revenue</span>
+                          </div>
+                        </div>
+
+                        <div className="w-full bg-white/[0.06] rounded-full h-1.5 overflow-hidden">
+                          <div className="bg-emerald-400 h-full rounded-full transition-all" style={{ width: `${revenueShare}%` }} />
+                        </div>
+
+                        {item.driveUrl && (
+                          <a
+                            href={item.driveUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[11px] text-slate-300 hover:text-white flex items-center justify-between pt-1 border-t border-white/[0.06]"
+                          >
+                            <span className="truncate">📁 Drive Vault</span>
+                            <ExternalLink className="w-3 h-3 text-emerald-400 shrink-0" />
+                          </a>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Real Orders & Customers Feed */}
+            <div className="p-6 rounded-3xl bg-[#101422] border border-white/[0.08] shadow-xl space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-sm sm:text-base font-extrabold text-white flex items-center space-x-2">
+                    <span>📋 Real Customer Orders ({filteredOrders.length})</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">100% Real verified purchases with customer email, phone & vault delivery</p>
+                </div>
+
+                {/* Search Filter */}
+                <div className="relative min-w-[240px]">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={orderSearchQuery}
+                    onChange={(e) => setOrderSearchQuery(e.target.value)}
+                    placeholder="Search email, phone, order ID..."
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/[0.05] border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
+              {filteredOrders.length === 0 ? (
+                <div className="text-center py-12 rounded-2xl bg-white/[0.02] border border-white/[0.05] space-y-2">
+                  <ShieldCheck className="w-8 h-8 text-slate-600 mx-auto" />
+                  <p className="text-xs text-slate-300 font-bold">Koi orders nahi mile.</p>
+                  <p className="text-[11px] text-slate-500">
+                    {orderSearchQuery ? 'Search term se match karta koi order nahi hai.' : 'Real checkout hone par customer ka order yahan instant dikhega!'}
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs text-slate-300">
+                    <thead className="text-[11px] uppercase tracking-wider text-slate-400 bg-white/[0.03] border-b border-white/[0.06]">
+                      <tr>
+                        <th className="py-3 px-4 font-semibold">Order ID</th>
+                        <th className="py-3 px-4 font-semibold">Customer Details</th>
+                        <th className="py-3 px-4 font-semibold">Product Purchased</th>
+                        <th className="py-3 px-4 font-semibold">Amount Paid</th>
+                        <th className="py-3 px-4 font-semibold">Date & Time</th>
+                        <th className="py-3 px-4 font-semibold">Drive Vault</th>
+                        <th className="py-3 px-4 font-semibold">Contact</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/[0.04]">
+                      {filteredOrders.map((ord) => {
+                        const dateStr = ord.created_at ? new Date(ord.created_at).toLocaleString('en-IN', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }) : 'Recent';
+
+                        return (
+                          <tr key={ord.id} className="hover:bg-white/[0.02] transition-colors">
+                            <td className="py-3.5 px-4 font-mono font-bold text-emerald-400">
+                              {ord.id}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <div className="font-semibold text-white">{ord.customerEmail || 'No Email'}</div>
+                              <div className="text-[11px] text-slate-400 font-mono flex items-center space-x-1 mt-0.5">
+                                <Phone className="w-3 h-3 text-slate-500" />
+                                <span>{ord.customerPhone || 'N/A'}</span>
+                              </div>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="font-bold text-white block max-w-[200px] truncate">{ord.productTitle}</span>
+                              {ord.upsellIncluded && (
+                                <span className="text-[10px] text-emerald-400 font-semibold block">+ 500 Presets Bundle</span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-4 font-extrabold text-white">
+                              ₹{ord.amount || 0}
+                            </td>
+                            <td className="py-3.5 px-4 text-slate-400 text-[11px] whitespace-nowrap">
+                              {dateStr}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              {ord.driveUrl ? (
+                                <a
+                                  href={ord.driveUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/30 text-[11px] font-bold inline-flex items-center space-x-1 transition-all"
+                                >
+                                  <span>Open Drive</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              ) : (
+                                <span className="text-slate-500 text-[11px]">No link</span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              {ord.customerPhone && (
+                                <a
+                                  href={`https://wa.me/91${ord.customerPhone.replace(/\D/g, '')}?text=Hi! Thank you for purchasing ${encodeURIComponent(ord.productTitle)} on bazara.in. Here is your access link: ${encodeURIComponent(ord.driveUrl || 'https://bazara.in')}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-flex items-center space-x-1 text-[11px] font-bold transition-all"
+                                  title="Contact Customer on WhatsApp"
+                                >
+                                  <MessageCircle className="w-3.5 h-3.5" />
+                                  <span>WhatsApp</span>
+                                </a>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ================= TAB 1: PRODUCTS & COURSES MANAGEMENT ================= */}
+
         {activeTab === 'products' && (
           <div className="space-y-4">
             {/* Category Filter Pills */}
