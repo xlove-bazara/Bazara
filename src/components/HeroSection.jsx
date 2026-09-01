@@ -21,41 +21,49 @@ export default function HeroSection({ featuredCourse, onEnroll, onViewCourse }) 
         <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
           
           {/* ================= 1. VIDEO / COVER IMAGE ON TOP (Mobile: Order 1, Desktop: Right Column) ================= */}
-          <div className="order-1 lg:order-2 lg:col-span-5">
+          <div className="order-1 lg:order-2 lg:col-span-5 lg:h-full flex flex-col justify-center">
             <div 
               onClick={onViewCourse}
-              className="group relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-slate-950 cursor-pointer aspect-video transition-all hover:border-emerald-500/50"
+              className="group relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-slate-950 cursor-pointer aspect-video lg:aspect-[4/3] lg:min-h-[360px] transition-all hover:border-emerald-500/50 hover:shadow-emerald-500/20"
             >
               <img
                 src={course.cover_image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80'}
                 alt={course.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/20 flex flex-col justify-between p-3.5 sm:p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/20 flex flex-col justify-between p-4 sm:p-5">
                 {/* Top Badges over image */}
                 <div className="flex justify-between items-center">
-                  <span className="px-2.5 py-1 rounded-md text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider flex items-center space-x-1.5 shadow-md">
+                  <span className="px-2.5 py-1 rounded-lg text-[10px] font-black bg-rose-600 text-white uppercase tracking-wider flex items-center space-x-1.5 shadow-md">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                     <span>WATCH TRAILER</span>
                   </span>
-                  <span className="text-[10px] text-emerald-300 font-mono font-bold bg-black/60 px-2.5 py-1 rounded-md backdrop-blur-md border border-white/10">
+                  <span className="text-[11px] text-emerald-300 font-mono font-bold bg-black/60 px-2.5 py-1 rounded-lg backdrop-blur-md border border-white/10 shadow-md">
                     {course.course_details?.duration || '8.5 Hours HD Video'}
                   </span>
                 </div>
 
-                {/* Center / Bottom Play CTA */}
-                <div className="flex items-center space-x-3 bg-black/40 backdrop-blur-md p-2 rounded-xl border border-white/10">
-                  <div className="w-9 h-9 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform shrink-0">
+                {/* Big Centered Play Pulse Button on Desktop */}
+                <div className="hidden lg:flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/90 text-slate-950 flex items-center justify-center shadow-2xl shadow-emerald-500/50 group-hover:scale-110 transition-transform">
+                    <Play className="w-7 h-7 fill-slate-950 ml-1" />
+                  </div>
+                </div>
+
+                {/* Bottom Bar */}
+                <div className="flex items-center space-x-3 bg-black/50 backdrop-blur-md p-2.5 rounded-2xl border border-white/10">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500 text-slate-950 flex lg:hidden items-center justify-center shadow-lg group-hover:scale-110 transition-transform shrink-0">
                     <Play className="w-4 h-4 fill-slate-950 ml-0.5" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-xs font-bold text-white block truncate">Click to Watch Preview Video</span>
-                    <span className="text-[10px] text-emerald-400 font-semibold block">Full Curriculum & Drive Vault Included</span>
+                    <span className="text-xs sm:text-sm font-bold text-white block truncate">Click to Watch Preview Video</span>
+                    <span className="text-[10px] sm:text-xs text-emerald-400 font-semibold block">Full Curriculum & Instant Drive Vault Included</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
 
           {/* ================= 2. TITLE, PRICING & DETAILS (Mobile: Order 2, Desktop: Left Column) ================= */}
           <div className="order-2 lg:order-1 lg:col-span-7 space-y-4">
@@ -73,28 +81,29 @@ export default function HeroSection({ featuredCourse, onEnroll, onViewCourse }) 
 
             {/* Main Course Title */}
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white leading-tight">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight">
                 {course.title}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+              <p className="text-xs sm:text-sm md:text-base text-slate-300 mt-2.5 leading-relaxed max-w-2xl">
                 Zero coding headache se live production website banana seekhein in just 7 days using AI Tools (Cursor, ChatGPT & Vercel). Instant 1-Second Google Drive Access.
               </p>
             </div>
 
             {/* Pricing Strip */}
-            <div className="flex items-center space-x-3 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06] w-fit">
-              <span className="text-2xl sm:text-3xl font-black text-emerald-400 tracking-tight">
+            <div className="flex items-center space-x-3.5 p-3 sm:p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] w-fit">
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-400 tracking-tight">
                 ₹{course.price || 499}
               </span>
               {course.original_price && (
-                <span className="text-sm text-slate-500 line-through font-semibold">
+                <span className="text-sm md:text-base text-slate-500 line-through font-semibold">
                   ₹{course.original_price}
                 </span>
               )}
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 border border-rose-500/30">
                 FLAT {course.discount_percentage || 88}% OFF
               </span>
             </div>
+
 
             {/* Key Curriculum Bullet Points */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300 font-medium">

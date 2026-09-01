@@ -14,8 +14,9 @@ const categories = [
 export default function StoryCategories({ selectedCategory, onSelectCategory }) {
   return (
     <div className="w-full overflow-x-auto no-scrollbar py-3 px-4">
-      <div className="flex items-center space-x-4 min-w-max">
+      <div className="flex items-center space-x-4 md:space-x-6 min-w-max md:min-w-0 md:justify-center">
         {categories.map((cat) => {
+
           const Icon = cat.icon;
           const isSelected = selectedCategory === cat.id;
 

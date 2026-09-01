@@ -179,7 +179,8 @@ export default function HomePage({
         activeTab="home"
       />
 
-      <main className="max-w-md md:max-w-5xl lg:max-w-6xl mx-auto space-y-6 pt-2 pb-16 px-4 md:px-8">
+      <main className="max-w-md md:max-w-6xl lg:max-w-7xl mx-auto space-y-8 pt-3 pb-16 px-4 md:px-8">
+
         {/* 3. Instagram-Style Story Categories Slider */}
         <StoryCategories
           selectedCategory={selectedCategory}

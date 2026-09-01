@@ -12,7 +12,6 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
   };
 
   const navLinks = [
-    { id: 'landing', label: 'Masterclass', icon: GraduationCap },
     { id: 'home', label: 'Store', icon: Home },
     { id: 'deals', label: 'Deals', icon: Flame },
     { id: 'library', label: 'Downloads', icon: FolderDown },
@@ -21,7 +20,8 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
 
   return (
     <header className="sticky top-0 z-30 px-4 md:px-8 pt-3 pb-2.5 backdrop-blur-2xl bg-[#07090E]/80 border-b border-white/[0.06]">
-      <div className="max-w-md md:max-w-6xl mx-auto">
+      <div className="max-w-md md:max-w-7xl mx-auto">
+
         {/* Desktop Header Layout (>= 768px) */}
         <div className="hidden md:flex items-center justify-between gap-6">
           {/* Brand Logo */}
@@ -44,7 +44,8 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
 
 
           {/* Desktop Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md relative">
+          <form onSubmit={handleSearchSubmit} className="flex-1 max-w-lg relative">
+
             <Search className="absolute left-4 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
             <input
               type="text"
