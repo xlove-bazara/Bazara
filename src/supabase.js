@@ -23,12 +23,13 @@ const getStoredProducts = () => {
     if (raw) {
       prods = JSON.parse(raw);
     }
-    // Guarantee that prod-course-ai is always the latest Website Development with AI course
+    // Guarantee that prod-course-ai defaults to Website Development with AI course while preserving user edits
     const latestWebDev = initialProducts.find(p => p.id === 'prod-course-ai');
     if (latestWebDev) {
       const idx = prods.findIndex(p => p.id === 'prod-course-ai');
       if (idx >= 0) {
-        prods[idx] = { ...prods[idx], ...latestWebDev };
+        const isStaleVideo = prods[idx].title && (prods[idx].title.includes('Video Editing') || prods[idx].title.includes('Shorts Monetization'));
+        prods[idx] = isStaleVideo ? { ...latestWebDev } : { ...latestWebDev, ...prods[idx] };
       } else {
         prods.unshift(latestWebDev);
       }
@@ -69,7 +70,8 @@ export async function getProducts() {
       if (!error && data && data.length > 0) {
         const mapped = data.map(p => {
           if (p.id === 'prod-course-ai' && latestWebDev) {
-            return { ...p, ...latestWebDev };
+            const isStaleVideo = p.title && (p.title.includes('Video Editing') || p.title.includes('Shorts Monetization'));
+            return isStaleVideo ? { ...latestWebDev } : { ...latestWebDev, ...p };
           }
           return p;
         });
@@ -81,6 +83,7 @@ export async function getProducts() {
   }
   return getStoredProducts();
 }
+
 
 
 export async function getProductBySlug(slug) {

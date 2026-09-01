@@ -606,8 +606,13 @@ export default function AdminPage({
 
                 {/* Specific Fields for Courses */}
                 {(formData.category === 'course' || formData.product_type === 'course') && (
-                  <div className="p-3 rounded-2xl bg-indigo-950/20 border border-indigo-500/20 space-y-2.5">
-                    <span className="text-xs font-bold text-indigo-300 block">🎓 Course & Masterclass Details</span>
+                  <div className="p-3.5 rounded-2xl bg-indigo-950/20 border border-indigo-500/25 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black text-indigo-300 uppercase tracking-wider block">
+                        🎓 Course & Masterclass Details
+                      </span>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-2">
                       <div>
                         <label className="font-semibold text-slate-300 block mb-1">Instructor / Mentor</label>
@@ -618,7 +623,7 @@ export default function AdminPage({
                             ...formData,
                             course_details: { ...formData.course_details, instructor: e.target.value }
                           })}
-                          placeholder="e.g. Vikram Sharma"
+                          placeholder="e.g. Viplav Kumar"
                           className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white"
                         />
                       </div>
@@ -631,13 +636,246 @@ export default function AdminPage({
                             ...formData,
                             course_details: { ...formData.course_details, duration: e.target.value }
                           })}
-                          placeholder="e.g. 6.5+ Hours HD"
+                          placeholder="e.g. 8.5+ Hours HD"
                           className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white"
                         />
                       </div>
                     </div>
 
-                    <label className="flex items-center space-x-2 pt-1 cursor-pointer">
+                    {/* Course Video / YouTube Trailer Link */}
+                    <div>
+                      <label className="font-semibold text-slate-300 block mb-1">
+                        Course Video / YouTube Trailer Link 🎥
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.video_url || formData.course_details?.video_url || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          video_url: e.target.value,
+                          course_details: { ...formData.course_details, video_url: e.target.value }
+                        })}
+                        placeholder="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-emerald-500/40 text-emerald-400 font-mono text-xs focus:outline-none focus:border-emerald-400"
+                      />
+                      <p className="text-[10px] text-slate-400 mt-1">
+                        💡 YouTube Video link, Shorts link ya MP4 URL daalo — website trailer par click karne se direct play hoga!
+                      </p>
+                    </div>
+
+                    {/* ================= INTERACTIVE CURRICULUM BREAKDOWN EDITOR ================= */}
+                    <div className="pt-2 border-t border-indigo-500/20 space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
+                          📚 Complete Course Curriculum Breakdown
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const defaultModules = [
+                              {
+                                title: 'Module 1: Web Development Foundations & AI Coding Setup',
+                                duration: '1 hr 10 mins',
+                                lessons: [
+                                  'How the Modern Web Works: HTML5, CSS3 & Responsive Design',
+                                  'Cursor AI & Claude Code: Setting Up Your 10x Developer Environment',
+                                  'Prompt Engineering for Code: Generating Bug-Free Clean Syntax'
+                                ]
+                              },
+                              {
+                                title: 'Module 2: Rapid UI & Frontend Engineering with React & Tailwind CSS',
+                                duration: '1 hr 45 mins',
+                                lessons: [
+                                  'Component Architecture: Header, Hero, Bento Grids & Modals',
+                                  'Instant UI Generation with v0 by Vercel & Tailwind CSS',
+                                  'Mobile Responsiveness & Glassmorphism Animation Effects'
+                                ]
+                              },
+                              {
+                                title: 'Module 3: Dynamic Backend, Database & Payment Gateway Integration',
+                                duration: '2 hrs 00 mins',
+                                lessons: [
+                                  'Setting Up Supabase: Relational Tables, Policies & Realtime Data',
+                                  'User Authentication: Email, Passwords & Phone OTP Flow',
+                                  'Payment Gateway Integration: Razorpay, Cashfree & UPI Checkout'
+                                ]
+                              },
+                              {
+                                title: 'Module 4: Real-World Capstone Web Projects',
+                                duration: '2 hrs 15 mins',
+                                lessons: [
+                                  'Project 1: High-Converting SaaS Landing Page with Lead Capture',
+                                  'Project 2: Dynamic Creator Portfolio with CMS Backing',
+                                  'Project 3: Full-Stack E-Commerce Digital Storefront'
+                                ]
+                              },
+                              {
+                                title: 'Module 5: Domain Setup, Production Deployment & Freelance Blueprint',
+                                duration: '1 hr 20 mins',
+                                lessons: [
+                                  '1-Click Production Deployment to Vercel with Custom Domain & Free SSL',
+                                  'SEO Optimization, OpenGraph Meta Tags & Speed Tuning (100/100 Lighthouse)',
+                                  'The ₹50,000/Month Freelance Web Dev Client Acquisition System'
+                                ]
+                              }
+                            ];
+                            setFormData({
+                              ...formData,
+                              course_details: { ...formData.course_details, curriculum: defaultModules }
+                            });
+                          }}
+                          className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 hover:bg-emerald-500/30 transition-all cursor-pointer"
+                        >
+                          + Load 5 Web Dev Modules
+                        </button>
+                      </div>
+
+                      {/* Module List */}
+                      <div className="space-y-3">
+                        {(formData.course_details?.curriculum || []).map((mod, mIdx) => (
+                          <div key={mIdx} className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-slate-300">Module #{mIdx + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const curr = [...(formData.course_details?.curriculum || [])];
+                                  curr.splice(mIdx, 1);
+                                  setFormData({
+                                    ...formData,
+                                    course_details: { ...formData.course_details, curriculum: curr }
+                                  });
+                                }}
+                                className="text-rose-400 hover:text-rose-300 p-1 text-[10px] flex items-center space-x-0.5 cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                <span>Delete Module</span>
+                              </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                              <div className="sm:col-span-2">
+                                <label className="text-[10px] text-slate-400 block mb-0.5">Module Title</label>
+                                <input
+                                  type="text"
+                                  value={mod.title || ''}
+                                  onChange={(e) => {
+                                    const curr = [...(formData.course_details?.curriculum || [])];
+                                    curr[mIdx] = { ...curr[mIdx], title: e.target.value };
+                                    setFormData({
+                                      ...formData,
+                                      course_details: { ...formData.course_details, curriculum: curr }
+                                    });
+                                  }}
+                                  placeholder="e.g. Module 1: Foundations & Setup"
+                                  className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-[10px] text-slate-400 block mb-0.5">Duration</label>
+                                <input
+                                  type="text"
+                                  value={mod.duration || ''}
+                                  onChange={(e) => {
+                                    const curr = [...(formData.course_details?.curriculum || [])];
+                                    curr[mIdx] = { ...curr[mIdx], duration: e.target.value };
+                                    setFormData({
+                                      ...formData,
+                                      course_details: { ...formData.course_details, curriculum: curr }
+                                    });
+                                  }}
+                                  placeholder="e.g. 1 hr 15 mins"
+                                  className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Lessons List inside this module */}
+                            <div className="pt-1.5 space-y-1.5">
+                              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                                Lessons in this Module
+                              </label>
+                              {(mod.lessons || []).map((lesson, lIdx) => (
+                                <div key={lIdx} className="flex items-center space-x-1.5">
+                                  <span className="text-[10px] font-mono text-emerald-400">{lIdx + 1}.</span>
+                                  <input
+                                    type="text"
+                                    value={lesson}
+                                    onChange={(e) => {
+                                      const curr = [...(formData.course_details?.curriculum || [])];
+                                      const updatedLessons = [...(curr[mIdx].lessons || [])];
+                                      updatedLessons[lIdx] = e.target.value;
+                                      curr[mIdx] = { ...curr[mIdx], lessons: updatedLessons };
+                                      setFormData({
+                                        ...formData,
+                                        course_details: { ...formData.course_details, curriculum: curr }
+                                      });
+                                    }}
+                                    className="flex-1 px-2 py-1 rounded bg-white/[0.04] border border-white/10 text-white text-xs"
+                                    placeholder="Lesson name..."
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const curr = [...(formData.course_details?.curriculum || [])];
+                                      const updatedLessons = [...(curr[mIdx].lessons || [])];
+                                      updatedLessons.splice(lIdx, 1);
+                                      curr[mIdx] = { ...curr[mIdx], lessons: updatedLessons };
+                                      setFormData({
+                                        ...formData,
+                                        course_details: { ...formData.course_details, curriculum: curr }
+                                      });
+                                    }}
+                                    className="p-1 text-slate-500 hover:text-rose-400 cursor-pointer"
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const curr = [...(formData.course_details?.curriculum || [])];
+                                  const updatedLessons = [...(curr[mIdx].lessons || []), 'New Lesson Title'];
+                                  curr[mIdx] = { ...curr[mIdx], lessons: updatedLessons };
+                                  setFormData({
+                                    ...formData,
+                                    course_details: { ...formData.course_details, curriculum: curr }
+                                  });
+                                }}
+                                className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 pt-1 cursor-pointer"
+                              >
+                                <Plus className="w-3 h-3" />
+                                <span>+ Add Lesson to Module #{mIdx + 1}</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const curr = [...(formData.course_details?.curriculum || [])];
+                            curr.push({
+                              title: `Module ${curr.length + 1}: New Module Title`,
+                              duration: '1 hr 00 mins',
+                              lessons: ['Lesson 1 Overview', 'Lesson 2 Hands-on Practice']
+                            });
+                            setFormData({
+                              ...formData,
+                              course_details: { ...formData.course_details, curriculum: curr }
+                            });
+                          }}
+                          className="w-full py-2.5 rounded-xl border border-dashed border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-bold text-xs flex items-center justify-center space-x-1 transition-all cursor-pointer"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>+ Add New Module to Curriculum</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <label className="flex items-center space-x-2 pt-2 cursor-pointer border-t border-indigo-500/20">
                       <input
                         type="checkbox"
                         checked={formData.id === featuredCourseId}
@@ -655,13 +893,16 @@ export default function AdminPage({
                   </div>
                 )}
 
-                {/* 4 Sample Reels for 2x2 Grid (if reels/software) */}
+                {/* 4 Sample Reels for 2x2 Grid (if reels/software/ebook) */}
                 {formData.category !== 'course' && (
                   <div className="pt-2 border-t border-white/10 space-y-2">
-                    <span className="font-bold text-white block">2x2 Video Showcase Grid (4 Sample Reels)</span>
-                    <div className="grid grid-cols-2 gap-2">
+                    <span className="font-bold text-white block">2x2 Video Showcase Grid (YouTube / Video Preview Links)</span>
+                    <p className="text-[10px] text-slate-400">
+                      💡 Yahan aap YouTube Shorts link, normal YouTube video link, ya direct video link daal sakte hain:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {formData.sample_reels?.map((reel, rIdx) => (
-                        <div key={rIdx} className="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+                        <div key={rIdx} className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1.5">
                           <span className="text-[10px] text-emerald-400 font-bold block">Reel #{rIdx + 1} Title</span>
                           <input
                             type="text"
@@ -671,18 +912,20 @@ export default function AdminPage({
                               updated[rIdx].title = e.target.value;
                               setFormData({ ...formData, sample_reels: updated });
                             }}
-                            className="w-full px-2 py-1 rounded bg-white/[0.05] text-[11px] text-white"
+                            className="w-full px-2 py-1 rounded bg-white/[0.05] text-xs text-white"
+                            placeholder="Reel title..."
                           />
-                          <span className="text-[9px] text-slate-400 block">Sample Video MP4</span>
+                          <span className="text-[10px] text-slate-300 block">YouTube Link / Video URL</span>
                           <input
-                            type="text"
-                            value={reel.video_url}
+                            type="url"
+                            value={reel.video_url || ''}
                             onChange={(e) => {
                               const updated = [...formData.sample_reels];
                               updated[rIdx].video_url = e.target.value;
                               setFormData({ ...formData, sample_reels: updated });
                             }}
-                            className="w-full px-2 py-1 rounded bg-white/[0.05] text-[10px] text-slate-300"
+                            placeholder="https://youtube.com/shorts/... or https://youtu.be/..."
+                            className="w-full px-2 py-1 rounded bg-white/[0.05] text-[11px] text-emerald-400 font-mono"
                           />
                         </div>
                       ))}
@@ -691,14 +934,15 @@ export default function AdminPage({
                 )}
 
                 {/* Save Button */}
-                <div className="pt-2">
+                <div className="pt-3">
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
+                    className="w-full py-3.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer btn-shine-effect"
                   >
                     {saveStatus || 'Save Product to Store 🚀'}
                   </button>
                 </div>
+
               </form>
             </div>
           </div>

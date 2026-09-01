@@ -53,6 +53,43 @@
   animation: shimmer-sweep 2.8s infinite ease-in-out;
 }
 
+/* High-Impact Button Shine / Gleam Effect */
+@keyframes btn-shine {
+  0% {
+    left: -130%;
+  }
+  30% {
+    left: 130%;
+  }
+  100% {
+    left: 130%;
+  }
+}
+
+.btn-shine-effect {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.btn-shine-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  transform: skewX(-22deg);
+  animation: btn-shine 2.6s infinite ease-in-out;
+  pointer-events: none;
+}
+
+
 /* ================= EXACT APPLE VISIONOS / LIQUID GLASSMORPHISM ================= */
 .glass-panel {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);

@@ -89,7 +89,7 @@ export default function CourseLandingPage({
       : course.cover_image
   };
 
-  const curriculum = (isOldVideoEditing || !activeCourse.course_details?.curriculum || activeCourse.course_details?.curriculum[0]?.title?.includes('Retention')) ? [
+  const defaultWebDevCurriculum = [
     {
       title: 'Module 1: Web Development Foundations & AI Coding Setup',
       duration: '1 hr 10 mins',
@@ -135,7 +135,21 @@ export default function CourseLandingPage({
         'The ₹50,000/Month Freelance Web Dev Client Acquisition System'
       ]
     }
-  ] : activeCourse.course_details.curriculum;
+  ];
+
+  // If user configured custom curriculum in Admin, use that!
+  const hasCustomCurriculum = activeCourse.course_details?.curriculum && 
+    Array.isArray(activeCourse.course_details.curriculum) && 
+    activeCourse.course_details.curriculum.length > 0 && 
+    !activeCourse.course_details.curriculum[0]?.title?.includes('Retention');
+
+  const curriculum = hasCustomCurriculum ? activeCourse.course_details.curriculum : defaultWebDevCurriculum;
+
+  // Active Trailer Video URL (Supports YouTube link, YouTube Shorts, or MP4)
+  const trailerUrl = activeCourse.video_url || 
+    activeCourse.course_details?.video_url || 
+    'https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-code-screen-close-up-43093-large.mp4';
+
 
 
   const courseFaqs = [
@@ -249,7 +263,7 @@ export default function CourseLandingPage({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => onEnroll(activeCourse)}
-              className="px-4 md:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer"
+              className="px-4 md:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer btn-shine-effect"
             >
               <span>Enroll Now ₹{activeCourse.price}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -314,10 +328,10 @@ export default function CourseLandingPage({
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
                 <button
                   onClick={() => setActiveVideo({
-                    title: 'Website Development with AI: Live Coding & Architecture Preview',
-                    url: 'https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-code-screen-close-up-43093-large.mp4'
+                    title: activeCourse.title + ' - Course Video Preview',
+                    url: trailerUrl
                   })}
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-emerald-500/90 hover:bg-emerald-400 text-slate-950 flex items-center justify-center shadow-xl shadow-emerald-500/40 hover:scale-110 active:scale-95 transition-all cursor-pointer"
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-emerald-500/90 hover:bg-emerald-400 text-slate-950 flex items-center justify-center shadow-xl shadow-emerald-500/40 hover:scale-110 active:scale-95 transition-all cursor-pointer btn-shine-effect"
                 >
                   <Play className="w-7 h-7 md:w-8 md:h-8 fill-slate-950 ml-1" />
                 </button>
@@ -360,12 +374,13 @@ export default function CourseLandingPage({
 
               <button
                 onClick={() => onEnroll(activeCourse)}
-                className="w-full py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                className="w-full py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
               >
                 <Zap className="w-4 h-4 fill-slate-950" />
                 <span>Enroll in Web Dev Masterclass (Instant Access)</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
+
 
               <div className="flex items-center justify-center space-x-4 text-[11px] text-slate-400 pt-1">
                 <span className="flex items-center space-x-1">
@@ -701,11 +716,12 @@ export default function CourseLandingPage({
 
           <button
             onClick={() => onEnroll(activeCourse)}
-            className="w-full max-w-md mx-auto py-4 rounded-2xl font-black text-sm uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+            className="w-full max-w-md mx-auto py-4 rounded-2xl font-black text-sm uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
           >
             <span>Enroll Now • ₹{activeCourse.price} Only</span>
             <ArrowRight className="w-4 h-4" />
           </button>
+
 
           <p className="text-[11px] text-slate-400">
             🔒 256-Bit SSL Encrypted Payment • Instant G-Drive Delivery to WhatsApp & Email
@@ -785,11 +801,12 @@ export default function CourseLandingPage({
 
         <button
           onClick={() => onEnroll(activeCourse)}
-          className="flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 flex items-center justify-center space-x-1.5 active:scale-95 transition-all cursor-pointer"
+          className="flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 flex items-center justify-center space-x-1.5 active:scale-95 transition-all cursor-pointer btn-shine-effect"
         >
           <span>Enroll Now</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
+
       </div>
 
       {/* Video Teaser Modal */}
