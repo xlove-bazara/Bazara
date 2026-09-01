@@ -169,7 +169,7 @@ export default function CheckoutPage({
             <img
               src={product.cover_image}
               alt={product.title}
-              className="w-16 h-18 rounded-2xl object-cover border border-white/10 shrink-0 shadow-md"
+              className="w-20 aspect-video rounded-xl object-cover border border-white/10 shrink-0 shadow-md"
             />
             <div className="space-y-1 flex-1">
               <h4 className="text-xs font-bold text-white line-clamp-2 leading-snug">

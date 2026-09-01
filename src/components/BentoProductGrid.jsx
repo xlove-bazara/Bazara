@@ -29,8 +29,8 @@ export default function BentoProductGrid({
               className="group relative rounded-2xl glass-panel glass-panel-hover p-2 flex flex-col justify-between cursor-pointer border border-white/[0.08] transition-all duration-200"
             >
               <div className="space-y-2">
-                {/* Media Container with G-Drive Badge matching screenshot */}
-                <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-slate-900">
+                {/* Media Container with G-Drive Badge (16:9 Widescreen) */}
+                <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-900 shadow-md">
                   <img
                     src={product.cover_image}
                     alt={product.title}

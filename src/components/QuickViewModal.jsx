@@ -30,7 +30,7 @@ export default function QuickViewModal({ product, onClose, onViewDetails, onInst
           <img
             src={product.cover_image}
             alt={product.title}
-            className="w-24 h-28 object-cover rounded-xl border border-white/10 shrink-0"
+            className="w-28 aspect-video object-cover rounded-xl border border-white/10 shrink-0 shadow-md"
           />
           <div className="space-y-1.5">
             <h3 className="text-sm font-bold text-white leading-snug">

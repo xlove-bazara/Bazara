@@ -428,7 +428,9 @@ export default function AdminPage({
 
                 {/* Cover Image & G-Drive Link */}
                 <div>
-                  <label className="font-semibold text-slate-300 block mb-1">Cover Image URL</label>
+                  <label className="font-semibold text-slate-300 block mb-1">
+                    Cover Image URL <span className="text-[10px] text-emerald-400 font-bold">(16:9 Ratio, e.g. 1920×1080)</span>
+                  </label>
                   <input
                     type="url"
                     value={formData.cover_image}
