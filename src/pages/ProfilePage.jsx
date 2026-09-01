@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   User, 
   ArrowLeft, 
@@ -13,19 +13,20 @@ import {
   Sparkles, 
   Award,
   Zap,
-  Lock,
   Mail,
-  Phone
+  Phone,
+  LogIn
 } from 'lucide-react';
 import BottomDock from '../components/BottomDock';
+import { supabase } from '../supabase';
 
-// 5 Premium Curated Creator Avatars
-const PRESET_AVATARS = [
-  { id: '1', url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80', label: 'Tech Pro' },
-  { id: '2', url: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200&auto=format&fit=crop&q=80', label: 'Creator' },
-  { id: '3', url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80', label: 'Designer' },
-  { id: '4', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80', label: 'Founder' },
-  { id: '5', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80', label: 'Producer' }
+// 5 Fun & Ultra-Cool Cartoon / Anime Style Creator Avatars (Dicebear Vector Illustrated)
+const CARTOON_AVATARS = [
+  { id: '1', url: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Jack&backgroundColor=10b981', label: 'Cartoon Boy' },
+  { id: '2', url: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Willow&backgroundColor=6366f1', label: 'Cartoon Girl' },
+  { id: '3', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Leo&backgroundColor=0ea5e9', label: 'Cool Bot' },
+  { id: '4', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zack&backgroundColor=f59e0b', label: 'Creative Pro' },
+  { id: '5', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maya&backgroundColor=ec4899', label: 'Anime Star' }
 ];
 
 export default function ProfilePage({ 
@@ -36,53 +37,118 @@ export default function ProfilePage({
   onLoginClick,
   onLogout 
 }) {
+  const [currentUser, setCurrentUser] = useState(user || null);
   const [editingName, setEditingName] = useState(false);
-  const [nameInput, setNameInput] = useState(user?.name || '');
-  const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || PRESET_AVATARS[0].url);
+  const [nameInput, setNameInput] = useState('');
+  const [selectedAvatar, setSelectedAvatar] = useState(CARTOON_AVATARS[0].url);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
 
-  // Handle Save Name & Avatar
-  const handleSaveProfile = (e) => {
+  // 1. Fetch & sync real authenticated user from Supabase session
+  useEffect(() => {
+    const syncRealUser = async () => {
+      let realEmail = null;
+      let realName = null;
+      let realPhone = null;
+      let realAvatar = null;
+      let realId = null;
+
+      // Check live Supabase Session first
+      if (supabase) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            realId = session.user.id;
+            realEmail = session.user.email;
+            realPhone = session.user.phone;
+            realName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0];
+            realAvatar = session.user.user_metadata?.avatar_url;
+          }
+        } catch (e) {
+          console.warn('Session check error:', e);
+        }
+      }
+
+      // Check stored user if supabase session didn't return email
+      if (!realEmail) {
+        try {
+          const raw = localStorage.getItem('bazara_current_user');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed?.email && parsed.email !== 'creator@bazara.in') {
+              realEmail = parsed.email;
+              realName = parsed.name || realName;
+              realPhone = parsed.phone || realPhone;
+              realAvatar = parsed.avatar || realAvatar;
+              realId = parsed.id || realId;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (realEmail || realPhone) {
+        const synched = {
+          id: realId || 'usr_' + Date.now(),
+          email: realEmail,
+          phone: realPhone,
+          name: realName || 'Creator',
+          avatar: realAvatar || CARTOON_AVATARS[0].url
+        };
+        setCurrentUser(synched);
+        setNameInput(synched.name);
+        if (synched.avatar) setSelectedAvatar(synched.avatar);
+        if (setUser) setUser(synched);
+      } else {
+        // Guest user
+        setCurrentUser(null);
+        setNameInput('Guest Creator');
+      }
+    };
+
+    syncRealUser();
+  }, [user]);
+
+  // Handle Save Name
+  const handleSaveName = (e) => {
     if (e) e.preventDefault();
-    const updatedUser = {
-      ...(user || { id: 'usr_' + Date.now(), email: 'creator@bazara.in' }),
-      name: nameInput.trim() || user?.name || 'Creator',
+    const cleanName = nameInput.trim() || currentUser?.name || 'Creator';
+    const updated = {
+      ...(currentUser || {}),
+      name: cleanName,
       avatar: selectedAvatar
     };
-    
-    // Save to local storage
-    localStorage.setItem('bazara_current_user', JSON.stringify(updatedUser));
-    
-    // Update parent state
-    if (setUser) setUser(updatedUser);
-    
+    setCurrentUser(updated);
+    localStorage.setItem('bazara_current_user', JSON.stringify(updated));
+    if (setUser) setUser(updated);
     setEditingName(false);
-    setSaveSuccessMsg('✓ Profile details saved successfully!');
+    setSaveSuccessMsg('✓ Name updated successfully!');
     setTimeout(() => setSaveSuccessMsg(''), 3000);
   };
 
-  // Handle Quick Select Avatar
-  const handleSelectAvatar = (avatarUrl) => {
+  // Handle Select Cartoon Avatar
+  const handleSelectCartoonAvatar = (avatarUrl) => {
     setSelectedAvatar(avatarUrl);
-    const updatedUser = {
-      ...(user || { id: 'usr_' + Date.now(), email: 'creator@bazara.in' }),
-      name: nameInput.trim() || user?.name || 'Creator',
+    const updated = {
+      ...(currentUser || {}),
       avatar: avatarUrl
     };
-    localStorage.setItem('bazara_current_user', JSON.stringify(updatedUser));
-    if (setUser) setUser(updatedUser);
-    setSaveSuccessMsg('✓ New avatar set!');
+    setCurrentUser(updated);
+    localStorage.setItem('bazara_current_user', JSON.stringify(updated));
+    if (setUser) setUser(updated);
+    setSaveSuccessMsg('✓ Cartoon avatar updated!');
     setTimeout(() => setSaveSuccessMsg(''), 2500);
   };
 
+  const displayEmail = currentUser?.email;
+  const displayName = currentUser?.name || nameInput || (displayEmail ? displayEmail.split('@')[0] : 'Guest Creator');
+
   return (
-    <div className="min-h-screen pb-24 md:pb-12 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
-      {/* Top Header with Desktop Branding */}
+    <div className="min-h-screen pb-28 md:pb-16 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+      {/* Top Header */}
       <header className="sticky top-0 z-30 px-4 md:px-8 py-3.5 backdrop-blur-2xl bg-[#08090E]/85 border-b border-white/[0.06]">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <button
             onClick={onBackToHome}
-            className="flex items-center space-x-2 px-3 py-1.5 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 hover:border-white/20 active:scale-95 transition-all cursor-pointer"
+            className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 hover:border-white/20 active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="text-xs font-bold hidden sm:inline">Back to Store</span>
@@ -99,17 +165,7 @@ export default function ProfilePage({
             </div>
           </div>
 
-          <div className="w-16 flex justify-end">
-            {user && (
-              <button
-                onClick={onLogout}
-                className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all border border-rose-500/20 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Logout</span>
-              </button>
-            )}
-          </div>
+          <div className="w-16" />
         </div>
       </header>
 
@@ -124,21 +180,20 @@ export default function ProfilePage({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* ================= LEFT COLUMN: User Profile, Avatar Selection & Name Editor (4 Cols) ================= */}
+          {/* ================= LEFT COLUMN: User Profile & Cartoon Avatar Selector (5 Cols) ================= */}
           <div className="lg:col-span-5 space-y-6">
             
             {/* Primary Profile Card */}
             <div className="p-6 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-5 shadow-2xl relative overflow-hidden">
-              {/* Subtle ambient glow */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-center space-x-4">
-                {/* Active Avatar */}
+                {/* Active Cartoon Avatar */}
                 <div className="relative group shrink-0">
                   <img
-                    src={user?.avatar || selectedAvatar}
-                    alt={user?.name || 'User Avatar'}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-emerald-400/80 shadow-xl shadow-emerald-500/20"
+                    src={selectedAvatar}
+                    alt={displayName}
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover bg-[#1c2237] border-2 border-emerald-400 shadow-xl shadow-emerald-500/25 p-1"
                   />
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[#121624] flex items-center justify-center">
                     <Check className="w-3 h-3 text-slate-950 stroke-[3]" />
@@ -149,7 +204,7 @@ export default function ProfilePage({
                 <div className="space-y-1 flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-black text-white truncate">
-                      {user?.name || nameInput || 'Creator Pass'}
+                      {displayName}
                     </h3>
                     <button
                       onClick={() => setEditingName(!editingName)}
@@ -160,22 +215,29 @@ export default function ProfilePage({
                     </button>
                   </div>
 
-                  <p className="text-xs text-slate-400 font-medium truncate flex items-center space-x-1">
-                    <Mail className="w-3 h-3 text-slate-500 shrink-0" />
-                    <span className="truncate">{user?.email || 'Login to sync purchases'}</span>
-                  </p>
+                  {/* Real Verified Email / Phone */}
+                  {displayEmail ? (
+                    <p className="text-xs text-emerald-400 font-mono truncate flex items-center space-x-1 font-semibold">
+                      <Mail className="w-3 h-3 text-emerald-400 shrink-0" />
+                      <span className="truncate">{displayEmail}</span>
+                    </p>
+                  ) : (
+                    <p className="text-xs text-amber-400/90 font-medium flex items-center space-x-1">
+                      <span>Guest User (Login to sync)</span>
+                    </p>
+                  )}
 
-                  {user?.phone && (
-                    <p className="text-xs text-slate-400 font-medium flex items-center space-x-1">
+                  {currentUser?.phone && (
+                    <p className="text-xs text-slate-400 font-mono flex items-center space-x-1">
                       <Phone className="w-3 h-3 text-slate-500 shrink-0" />
-                      <span>+91 {user.phone}</span>
+                      <span>+91 {currentUser.phone}</span>
                     </p>
                   )}
 
                   <div className="pt-1 flex items-center space-x-2">
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1" />
-                      VERIFIED PASS
+                      {displayEmail ? 'VERIFIED CREATOR' : 'GUEST PASS'}
                     </span>
                   </div>
                 </div>
@@ -183,7 +245,7 @@ export default function ProfilePage({
 
               {/* Editable Name Form */}
               {editingName && (
-                <form onSubmit={handleSaveProfile} className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2.5">
+                <form onSubmit={handleSaveName} className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2.5">
                   <label className="text-xs font-bold text-slate-300 block">
                     Change Display Name:
                   </label>
@@ -192,8 +254,8 @@ export default function ProfilePage({
                       type="text"
                       value={nameInput}
                       onChange={(e) => setNameInput(e.target.value)}
-                      placeholder="Enter your name..."
-                      className="flex-1 px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white text-xs focus:outline-none focus:border-emerald-400"
+                      placeholder="Apna name daalein..."
+                      className="flex-1 px-3 py-2 rounded-xl bg-black/50 border border-white/10 text-white text-xs focus:outline-none focus:border-emerald-400"
                       autoFocus
                     />
                     <button
@@ -206,34 +268,35 @@ export default function ProfilePage({
                 </form>
               )}
 
-              {/* 5 Preset Creator Avatars Selection */}
+              {/* 5 Cartoon / Anime Style Avatars */}
               <div className="pt-2 border-t border-white/[0.08] space-y-2.5">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-300 flex items-center space-x-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Choose Profile Avatar</span>
+                    <span>Choose Cartoon Avatar</span>
                   </span>
-                  <span className="text-[10px] text-slate-400 font-semibold">1-Tap to apply</span>
+                  <span className="text-[10px] text-slate-400 font-semibold">1-Tap to set</span>
                 </div>
 
-                <div className="grid grid-cols-5 gap-2">
-                  {PRESET_AVATARS.map((av) => {
-                    const isCurrent = (user?.avatar || selectedAvatar) === av.url;
+                <div className="grid grid-cols-5 gap-2.5">
+                  {CARTOON_AVATARS.map((av) => {
+                    const isCurrent = selectedAvatar === av.url;
                     return (
                       <button
                         key={av.id}
                         type="button"
-                        onClick={() => handleSelectAvatar(av.url)}
-                        className={`group relative rounded-xl overflow-hidden aspect-square border-2 transition-all cursor-pointer ${
+                        onClick={() => handleSelectCartoonAvatar(av.url)}
+                        title={av.label}
+                        className={`group relative rounded-2xl overflow-hidden aspect-square border-2 transition-all cursor-pointer p-1 bg-[#181d2e] ${
                           isCurrent 
-                            ? 'border-emerald-400 ring-2 ring-emerald-400/40 scale-105 shadow-md shadow-emerald-500/30' 
+                            ? 'border-emerald-400 ring-2 ring-emerald-400/40 scale-105 shadow-lg shadow-emerald-500/30' 
                             : 'border-white/10 hover:border-white/30 hover:scale-105'
                         }`}
                       >
                         <img
                           src={av.url}
                           alt={av.label}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                         />
                         {isCurrent && (
                           <div className="absolute inset-0 bg-emerald-500/20 flex items-center justify-center">
@@ -246,27 +309,28 @@ export default function ProfilePage({
                 </div>
               </div>
 
-              {!user && (
+              {!displayEmail && (
                 <div className="pt-2">
                   <button
                     onClick={onLoginClick}
-                    className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer btn-shine-effect"
+                    className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer flex items-center justify-center space-x-2 btn-shine-effect"
                   >
-                    Login with Google / OTP
+                    <LogIn className="w-4 h-4" />
+                    <span>Login with Google / WhatsApp OTP</span>
                   </button>
                 </div>
               )}
             </div>
 
-            {/* Account Perks & Verification Strip */}
+            {/* Membership Benefits */}
             <div className="p-5 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-3 shadow-xl">
               <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-                Creator Membership Benefits
+                Creator Membership Privileges
               </h4>
               <div className="space-y-2.5 text-xs text-slate-300 font-medium">
                 <div className="flex items-center space-x-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Instant 1-Click Google Drive Unlock</span>
+                  <span>Instant 1-Click Google Drive Vault Access</span>
                 </div>
                 <div className="flex items-center space-x-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -274,26 +338,14 @@ export default function ProfilePage({
                 </div>
                 <div className="flex items-center space-x-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Lifetime Free Updates on Purchased Vaults</span>
+                  <span>Lifetime Free Cloud Storage & Course Updates</span>
                 </div>
               </div>
             </div>
 
-            {/* Mobile Logout Button */}
-            {user && (
-              <div className="block md:hidden">
-                <button
-                  onClick={onLogout}
-                  className="w-full py-3 rounded-2xl text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 flex items-center justify-center space-x-2 transition-all cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Logout Account</span>
-                </button>
-              </div>
-            )}
           </div>
 
-          {/* ================= RIGHT COLUMN: My Purchased Assets & Community (7 Cols) ================= */}
+          {/* ================= RIGHT COLUMN: My Purchased Assets & Support (7 Cols) ================= */}
           <div className="lg:col-span-7 space-y-6">
             
             {/* My Purchased Assets / Google Drive Vault */}
@@ -424,6 +476,20 @@ export default function ProfilePage({
           </div>
 
         </div>
+
+        {/* ================= SABSE NICHE: LOGOUT BUTTON ================= */}
+        {displayEmail && (
+          <div className="pt-6 pb-2 border-t border-white/[0.08] flex justify-center">
+            <button
+              onClick={onLogout}
+              className="w-full max-w-sm py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 hover:border-rose-500/50 flex items-center justify-center space-x-2 shadow-lg transition-all cursor-pointer active:scale-95"
+            >
+              <LogOut className="w-4 h-4 text-rose-400" />
+              <span>Logout From Account</span>
+            </button>
+          </div>
+        )}
+
       </main>
 
       <BottomDock 
