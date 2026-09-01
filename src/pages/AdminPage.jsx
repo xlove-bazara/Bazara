@@ -16,7 +16,7 @@ import {
   FolderDown,
   RefreshCw
 } from 'lucide-react';
-import { saveProduct, deleteProduct, updateSettings } from '../supabase';
+import { saveProduct, deleteProduct, updateSettings, clearDemoProducts } from '../supabase';
 
 export default function AdminPage({ 
   products, 
@@ -163,6 +163,16 @@ export default function AdminPage({
     setMarqueeTexts(marqueeTexts.filter((_, i) => i !== idx));
   };
 
+  const demoIds = ['prod-reels-10k', 'prod-course-ai-edit', 'prod-ebook-100k', 'prod-software-autoreel', 'prod-mega-combo'];
+  const hasDemoProducts = products.some(p => demoIds.includes(p.id) || p.is_demo);
+
+  const handleClearDemos = async () => {
+    if (confirm('Kya aap saare 5 demo products delete karna chahte hain taaki sirf aapke real products rahein?')) {
+      await clearDemoProducts();
+      if (onRefresh) onRefresh();
+    }
+  };
+
   return (
     <div className="min-h-screen pb-20 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
       {/* Top Header */}
@@ -178,19 +188,13 @@ export default function AdminPage({
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>bazara.in Control Panel</span>
           </div>
-          <button
-            onClick={onRefresh}
-            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10"
-            title="Refresh database"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
+          <div className="w-8" />
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-3 space-y-4">
+      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
         {/* Navigation Tabs (Products vs Site Settings) */}
-        <div className="flex rounded-2xl glass-panel p-1 border border-white/10">
+        <div className="flex rounded-2xl p-1 bg-[#131724] border border-white/10">
           <button
             onClick={() => setActiveTab('products')}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
@@ -220,13 +224,25 @@ export default function AdminPage({
               <span className="text-xs font-black uppercase tracking-wider text-slate-300">
                 All Store Products
               </span>
-              <button
-                onClick={handleOpenCreate}
-                className="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center space-x-1 shadow-md active:scale-95 transition-all"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add Product</span>
-              </button>
+              <div className="flex items-center space-x-2">
+                {hasDemoProducts && (
+                  <button
+                    onClick={handleClearDemos}
+                    className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 flex items-center space-x-1 active:scale-95 transition-all"
+                    title="Remove all dummy/demo products"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    <span>Purge 5 Demos</span>
+                  </button>
+                )}
+                <button
+                  onClick={handleOpenCreate}
+                  className="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center space-x-1 shadow-md active:scale-95 transition-all"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Product</span>
+                </button>
+              </div>
             </div>
 
             {/* Products List */}

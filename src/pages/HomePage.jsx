@@ -103,6 +103,54 @@ export default function HomePage({
     };
   }, []);
 
+  // Smooth Cross-Fade Auto-Loop Reviews Data
+  const reviewsList = [
+    {
+      name: "Aman Sharma",
+      city: "Mumbai",
+      role: "Instagram Creator (85k+ Followers)",
+      avatar: "A",
+      text: "Grew my motivation page from 2k to 85k followers in just 35 days using the 4K Luxury Reels pack. Zero watermarks and the quality is insane!"
+    },
+    {
+      name: "Ritika Patel",
+      city: "Delhi",
+      role: "Freelance Video Editor",
+      avatar: "R",
+      text: "The AI video editing masterclass and CapCut XML presets saved me at least 15 hours every single week for client projects. 100% worth every rupee."
+    },
+    {
+      name: "Sameer Khan",
+      city: "Bangalore",
+      role: "Digital Marketer & Reseller",
+      avatar: "S",
+      text: "Bought the bundle with commercial PLR rights. Already generated ₹18,000 reselling with my own branding. Customer support on WhatsApp is super fast!"
+    },
+    {
+      name: "Divya L.",
+      city: "Pune",
+      role: "Fitness & Lifestyle Creator",
+      avatar: "D",
+      text: "Viral hook templates in the E-book are mindblowing. My first reel using the 3-second hook format crossed 1.2M views on Instagram!"
+    }
+  ];
+
+  const [activeReviewIdx, setActiveReviewIdx] = useState(0);
+  const [isFading, setIsFading] = useState(false);
+
+  // Auto-rotate reviews with gentle fade out -> update -> fade in
+  useEffect(() => {
+    const reviewInterval = setInterval(() => {
+      setIsFading(true);
+      setTimeout(() => {
+        setActiveReviewIdx((prev) => (prev + 1) % reviewsList.length);
+        setIsFading(false);
+      }, 400); // 400ms smooth fade transition
+    }, 4500);
+
+    return () => clearInterval(reviewInterval);
+  }, [reviewsList.length]);
+
   return (
     <div className="min-h-screen pb-24 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
       {/* 1. Continuous Infinite Marquee Ticker */}
@@ -190,148 +238,64 @@ export default function HomePage({
           onQuickViewClick={(prod) => setQuickViewProduct(prod)}
         />
 
-        {/* ⭐ 7. FEATURED SUPER VAULT SPOTLIGHT BANNER */}
-        {selectedCategory === 'all' && !searchQuery && (
-          <section className="px-4 py-2">
-            <div className="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-indigo-950/70 via-[#131724] to-emerald-950/50 border border-emerald-500/30 shadow-2xl space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-slate-950">
-                  ⚡ 90% OFF MEGA COMBO
-                </span>
-                <span className="text-xs font-bold text-emerald-400 flex items-center">
-                  <Sparkles className="w-3.5 h-3.5 mr-1" /> All-in-One Vault
-                </span>
-              </div>
-
-              <div className="space-y-1">
-                <h3 className="text-base font-black text-white leading-tight">
-                  The Ultimate Creator Mega Bundle
-                </h3>
-                <p className="text-xs text-slate-300 leading-snug">
-                  Get instant access to 15,000+ 4K Reels + 5 Masterclasses + 10 E-Books + 500+ CapCut Presets in one master Drive folder.
-                </p>
-              </div>
-
-              <div className="flex items-baseline space-x-2 pt-1">
-                <span className="text-2xl font-black text-emerald-400">₹499</span>
-                <span className="text-sm text-slate-400 line-through">₹4,999</span>
-                <span className="text-xs font-bold text-amber-400">Save ₹4,500 Today</span>
-              </div>
-
-              <button
-                onClick={() => {
-                  const combo = products.find(p => p.slug.includes('mega-bundle') || p.id.includes('combo')) || products[0];
-                  onSelectProduct(combo);
-                }}
-                className="w-full py-3 rounded-full font-black text-xs uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-1.5"
-              >
-                <span>Unlock Complete Mega Vault Now</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </section>
-        )}
-
-        {/* ⭐ 8. HOW IT WORKS (3 Simple Steps) */}
-        <section className="px-4 py-3 space-y-3">
-          <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 text-center">
-            How It Works • 3 Simple Steps
-          </h3>
-          <div className="space-y-2">
-            <div className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.08] flex items-center space-x-3.5 shadow-md">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-xs shrink-0">
-                1
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-white">Choose Your Digital Asset</h4>
-                <p className="text-[11px] text-slate-400">Pick from viral 4K reels packs, masterclass courses, or e-books.</p>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.08] flex items-center space-x-3.5 shadow-md">
-              <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-black text-xs shrink-0">
-                2
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-white">1-Tap Fast Checkout</h4>
-                <p className="text-[11px] text-slate-400">Pay securely via UPI (GPay, PhonePe, Paytm) or Cards.</p>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.08] flex items-center space-x-3.5 shadow-md">
-              <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black text-xs shrink-0">
-                3
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-white">Instant Google Drive Access</h4>
-                <p className="text-[11px] text-slate-400">Direct download link delivered on your WhatsApp & screen instantly!</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ⭐ 9. CREATOR WALL OF LOVE (Real Customer Reviews) */}
-        <section className="px-4 py-3 space-y-3">
+        {/* ⭐ CREATOR WALL OF LOVE (Horizontal Smooth Fade-In / Fade-Out Auto Loop) */}
+        <section className="px-4 py-3 space-y-2.5">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">
-              Creator Reviews & Proof
+            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center space-x-1.5">
+              <span>Creator Reviews & Proof</span>
             </h3>
-            <span className="text-[11px] text-emerald-400 font-bold">★ 4.9 Verified Rating</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20">
+              ★ 4.9 Verified Proof
+            </span>
           </div>
 
-          <div className="space-y-2.5">
-            <div className="p-4 rounded-2xl bg-[#131724] border border-white/[0.08] space-y-2 shadow-md">
+          {/* Smooth Auto Fade-in / Fade-out Card */}
+          <div className="relative min-h-[145px] p-4 rounded-3xl bg-[#131724] border border-white/[0.08] shadow-2xl flex flex-col justify-between transition-all">
+            <div className={`transition-all duration-500 ease-in-out space-y-2 ${isFading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-xs">
-                    A
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-indigo-600 font-black text-white text-xs flex items-center justify-center shadow-md">
+                    {reviewsList[activeReviewIdx].avatar}
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-white block">Aman Sharma</span>
-                    <span className="text-[10px] text-slate-400">Mumbai • Instagram Creator</span>
+                    <div className="flex items-center space-x-1.5">
+                      <span className="text-xs font-bold text-white leading-none">
+                        {reviewsList[activeReviewIdx].name}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-normal">
+                        ({reviewsList[activeReviewIdx].city})
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-emerald-400 font-medium block mt-0.5">
+                      {reviewsList[activeReviewIdx].role}
+                    </span>
                   </div>
                 </div>
-                <div className="flex text-amber-400 text-xs">★★★★★</div>
+                <div className="flex text-amber-400 text-xs tracking-tighter">★★★★★</div>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                "Grew my motivation page from 2k to 85k followers in just 35 days using the 4K Luxury Reels pack. Zero watermarks and the quality is insane!"
+
+              <p className="text-xs text-slate-300 leading-relaxed italic">
+                "{reviewsList[activeReviewIdx].text}"
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#131724] border border-white/[0.08] space-y-2 shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400 font-bold flex items-center justify-center text-xs">
-                    R
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-white block">Ritika Patel</span>
-                    <span className="text-[10px] text-slate-400">Delhi • Video Editor</span>
-                  </div>
-                </div>
-                <div className="flex text-amber-400 text-xs">★★★★★</div>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                "The AI video editing masterclass and CapCut XML presets saved me at least 15 hours every single week for client projects. 100% worth every rupee."
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-[#131724] border border-white/[0.08] space-y-2 shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 font-bold flex items-center justify-center text-xs">
-                    S
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-white block">Sameer Khan</span>
-                    <span className="text-[10px] text-slate-400">Bangalore • Digital Marketer</span>
-                  </div>
-                </div>
-                <div className="flex text-amber-400 text-xs">★★★★★</div>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                "Bought the bundle with commercial PLR rights. Already generated ₹18,000 reselling with my own branding. Customer support on WhatsApp is super fast!"
-              </p>
+            {/* Horizontal Pagination Dots */}
+            <div className="flex items-center justify-center space-x-1.5 pt-3 border-t border-white/[0.05]">
+              {reviewsList.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  onClick={() => {
+                    setIsFading(true);
+                    setTimeout(() => {
+                      setActiveReviewIdx(dotIdx);
+                      setIsFading(false);
+                    }, 200);
+                  }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    activeReviewIdx === dotIdx ? 'w-5 bg-emerald-400' : 'w-1.5 bg-white/20 hover:bg-white/40'
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </section>

@@ -90,6 +90,8 @@ export async function saveProduct(productData) {
 
   // Local storage persistence fallback
   const products = getStoredProducts();
+  const demoIds = ['prod-reels-10k', 'prod-course-ai-edit', 'prod-ebook-100k', 'prod-software-autoreel', 'prod-mega-combo'];
+  
   let updatedProducts;
   let savedItem = { ...productData };
 
@@ -101,11 +103,26 @@ export async function saveProduct(productData) {
   } else {
     savedItem.id = savedItem.id || 'prod-' + Date.now();
     savedItem.slug = savedItem.slug || savedItem.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    updatedProducts = [savedItem, ...products];
+    
+    // If only demo products exist, automatically purge demo products when first real product is created!
+    const onlyDemosLeft = products.every(p => demoIds.includes(p.id) || p.is_demo);
+    if (onlyDemosLeft) {
+      updatedProducts = [savedItem]; // Replace demo products with real product!
+    } else {
+      updatedProducts = [savedItem, ...products.filter(p => !demoIds.includes(p.id))];
+    }
   }
 
   localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updatedProducts));
   return savedItem;
+}
+
+export async function clearDemoProducts() {
+  const demoIds = ['prod-reels-10k', 'prod-course-ai-edit', 'prod-ebook-100k', 'prod-software-autoreel', 'prod-mega-combo'];
+  const products = getStoredProducts();
+  const filtered = products.filter(p => !demoIds.includes(p.id) && !p.is_demo);
+  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(filtered));
+  return filtered;
 }
 
 export async function deleteProduct(productId) {
