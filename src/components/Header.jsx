@@ -29,9 +29,11 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
             onClick={() => onNavigate('home')}
             className="flex items-center space-x-2.5 cursor-pointer group shrink-0"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 flex items-center justify-center font-black text-slate-950 text-sm shadow-md shadow-emerald-500/30">
-              b
-            </div>
+            <img
+              src="/logo.png"
+              alt="bazara.in Logo"
+              className="w-8 h-8 rounded-xl object-contain shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform"
+            />
             <div className="flex items-baseline space-x-1">
               <span className="font-extrabold text-xl tracking-tight text-white uppercase group-hover:text-emerald-400 transition-colors">
                 bazara
@@ -39,6 +41,7 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
               <span className="text-xs font-bold text-emerald-400">.in</span>
             </div>
           </div>
+
 
           {/* Desktop Search Bar */}
           <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md relative">
@@ -117,9 +120,11 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
               onClick={() => onNavigate('home')}
               className="flex items-center space-x-2 cursor-pointer group"
             >
-              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 flex items-center justify-center font-black text-slate-950 text-xs shadow-md shadow-emerald-500/30">
-                b
-              </div>
+              <img
+                src="/logo.png"
+                alt="bazara.in Logo"
+                className="w-7 h-7 rounded-lg object-contain shadow-md shadow-indigo-500/20"
+              />
               <div className="flex items-baseline space-x-1">
                 <span className="font-extrabold text-base tracking-tight text-white uppercase group-hover:text-emerald-400 transition-colors">
                   bazara
@@ -127,6 +132,7 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
                 <span className="text-[10px] font-bold text-emerald-400">.in</span>
               </div>
             </div>
+
 
             <div className="flex items-center space-x-2">
               {user ? (

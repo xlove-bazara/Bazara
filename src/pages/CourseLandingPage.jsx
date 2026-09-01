@@ -212,10 +212,12 @@ export default function CourseLandingPage({
       <header className="sticky top-0 z-40 px-4 md:px-8 py-3 backdrop-blur-2xl bg-[#08090E]/85 border-b border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           {/* Brand Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 flex items-center justify-center font-black text-slate-950 text-sm shadow-md shadow-emerald-500/30">
-              b
-            </div>
+          <div className="flex items-center space-x-2.5">
+            <img
+              src="/logo.png"
+              alt="bazara.in Logo"
+              className="w-8 h-8 rounded-xl object-contain shadow-lg shadow-indigo-500/25"
+            />
             <div className="flex items-baseline space-x-1">
               <span className="font-extrabold text-xl tracking-tight text-white uppercase">
                 bazara
@@ -226,6 +228,7 @@ export default function CourseLandingPage({
               </span>
             </div>
           </div>
+
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-300">
@@ -712,10 +715,14 @@ export default function CourseLandingPage({
 
       {/* 13. COMPLIANT FOOTER (Payment Gateway Compliant, Store link removed) */}
       <footer className="px-4 py-8 border-t border-white/[0.08] text-center space-y-4 max-w-5xl mx-auto">
-        <div className="flex items-center justify-center space-x-1">
-          <span className="text-lg font-black text-white">bazara</span>
-          <span className="text-sm font-bold text-emerald-400">.in</span>
+        <div className="flex items-center justify-center space-x-2">
+          <img src="/logo.png" alt="bazara.in" className="w-8 h-8 rounded-lg object-contain shadow-md" />
+          <div className="flex items-baseline space-x-1">
+            <span className="text-lg font-black text-white">bazara</span>
+            <span className="text-sm font-bold text-emerald-400">.in</span>
+          </div>
         </div>
+
         <p className="text-xs text-slate-400 max-w-md mx-auto">
           India's Premier Digital Learning Platform for Modern Web Development & AI Engineering. Mentored by Viplav Kumar.
         </p>

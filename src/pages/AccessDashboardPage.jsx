@@ -33,9 +33,10 @@ export default function AccessDashboardPage({
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
             Instant Access Vault
           </span>
-          <div className="w-8" />
+          <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
         </div>
       </header>
+
 
       <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
         {/* Celebration Card */}

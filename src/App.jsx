@@ -111,7 +111,9 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 rounded-full border-2 border-emerald-500/30 border-t-emerald-400 animate-spin" />
+        <div className="relative">
+          <img src="/logo.png" alt="bazara.in" className="w-14 h-14 rounded-2xl object-contain shadow-2xl shadow-indigo-500/30 animate-pulse" />
+        </div>
         <div className="flex items-center space-x-1.5">
           <span className="text-sm font-black text-white uppercase tracking-wider">bazara</span>
           <span className="text-xs font-bold text-emerald-400">.in</span>
@@ -119,6 +121,7 @@ export default function App() {
         <p className="text-xs text-slate-400">Loading ultra-premium digital learning platform...</p>
       </div>
     );
+
   }
 
   return (

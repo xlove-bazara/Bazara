@@ -20,11 +20,10 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
         
         {/* Header */}
         <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-[#121626]">
-          <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-xs">
-              §
-            </div>
+          <div className="flex items-center space-x-2.5">
+            <img src="/logo.png" alt="bazara.in Logo" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
             <div>
+
               <h3 className="text-sm font-bold text-white">bazara.in Official Legal Policies</h3>
               <p className="text-[10px] text-slate-400">Compliant with Indian IT Act, Consumer Protection & Payment Gateway Norms</p>
             </div>

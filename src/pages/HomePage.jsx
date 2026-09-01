@@ -375,10 +375,14 @@ export default function HomePage({
 
         {/* 8. Footer Info */}
         <footer className="px-4 pt-6 pb-4 border-t border-white/[0.08] text-center space-y-3">
-          <div className="flex items-center justify-center space-x-1">
-            <span className="text-base font-black text-white">bazara</span>
-            <span className="text-xs font-bold text-emerald-400">.in</span>
+          <div className="flex items-center justify-center space-x-2">
+            <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-md" />
+            <div className="flex items-baseline space-x-1">
+              <span className="text-base font-black text-white">bazara</span>
+              <span className="text-xs font-bold text-emerald-400">.in</span>
+            </div>
           </div>
+
           <p className="text-xs text-slate-400 max-w-xs mx-auto">
             India's Leading Digital Learning & Tech Skill Academy.
           </p>

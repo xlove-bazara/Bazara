@@ -149,9 +149,10 @@ export default function CheckoutPage({
             <Lock className="w-3.5 h-3.5 text-emerald-400" />
             <span>256-Bit Encrypted Checkout</span>
           </div>
-          <div className="w-8" />
+          <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
         </div>
       </header>
+
 
       <main className="max-w-md mx-auto px-4 pt-3 space-y-4">
         {/* ================= 1. ORDER SUMMARY (NOW ON TOP) ================= */}
