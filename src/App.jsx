@@ -4,25 +4,19 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
 import AdminPage from './pages/AdminPage';
+import ProfilePage from './pages/ProfilePage';
+import LoginModal from './components/LoginModal';
 import { getProducts, getSettings, createOrder } from './supabase';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'product' | 'checkout' | 'access' | 'admin'
+  const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'product' | 'checkout' | 'access' | 'admin' | 'profile'
   const [products, setProducts] = useState([]);
   const [settings, setSettings] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [completedOrder, setCompletedOrder] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Load data on startup
-  const loadStoreData = async () => {
-    try {
-      const [prods, sett] = useInitialData();
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const refreshData = async () => {
     const prods = await getProducts();
@@ -64,14 +58,16 @@ export default function App() {
   const handleNavigate = (tab) => {
     if (tab === 'home') {
       setCurrentPage('home');
-    } else if (tab === 'explore' || tab === 'deals') {
+    } else if (tab === 'deals') {
       setCurrentPage('home');
     } else if (tab === 'library') {
       if (completedOrder) {
         setCurrentPage('access');
       } else {
-        alert('You haven\'t purchased any bundles yet. Unlock any digital pack to access your vault!');
+        alert('You haven\'t purchased any bundles yet. Unlock any digital pack to access your downloads!');
       }
+    } else if (tab === 'profile') {
+      setCurrentPage('profile');
     } else if (tab === 'admin') {
       setCurrentPage('admin');
     }
@@ -134,6 +130,17 @@ export default function App() {
         />
       )}
 
+      {currentPage === 'profile' && (
+        <ProfilePage
+          user={user}
+          completedOrder={completedOrder}
+          onBackToHome={() => setCurrentPage('home')}
+          onOpenAdmin={() => setCurrentPage('admin')}
+          onLoginClick={() => setIsLoginModalOpen(true)}
+          onLogout={() => setUser(null)}
+        />
+      )}
+
       {currentPage === 'admin' && (
         <AdminPage
           products={products}
@@ -142,6 +149,16 @@ export default function App() {
           onBack={() => setCurrentPage('home')}
         />
       )}
+
+      {/* Global Login Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={(userData) => {
+          setUser(userData);
+          setIsLoginModalOpen(false);
+        }}
+      />
     </div>
   );
 }
