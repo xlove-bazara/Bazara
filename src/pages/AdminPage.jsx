@@ -36,8 +36,11 @@ import {
   MessageCircle,
   Zap,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Package,
+  Cpu
 } from 'lucide-react';
+
 
 import { 
   saveProduct, 
@@ -283,6 +286,32 @@ export default function AdminPage({
     if (!Array.isArray(cloned.gallery_images)) {
       cloned.gallery_images = cloned.cover_image ? [cloned.cover_image] : [];
     }
+    if (!Array.isArray(cloned.features)) {
+      cloned.features = [
+        '10,000+ Ultra HD Ready-to-Upload 9:16 MP4 Videos',
+        'No Watermark, No Logo - Ready for Instagram & YouTube Shorts',
+        '500+ CapCut XML Presets & Sound Effects Vault Included',
+        'Instant Lifetime Google Drive Link + Updates'
+      ];
+    }
+    if (!cloned.reels_details) {
+      cloned.reels_details = {
+        resolution: '3840 × 2160 (4K UHD)',
+        software_support: '.MP4, .PRPROJ',
+        total_count: '~42 GB Total',
+        rights: 'Commercial Use',
+        folder_categories: [
+          '1. Luxury Cars & Billionaire Ultra Mix (2,000 Reels)',
+          '2. AI Human Avatars & Tech Future (2,500 Reels)',
+          '3. Motivation, Gym & Samurai Clips (2,000 Reels)',
+          '4. Dark Psychology & Anime Edits (1,800 Reels)',
+          '5. Money, Trading & Crypto Hooks (1,700 Reels)'
+        ]
+      };
+    }
+    if (!Array.isArray(cloned.reels_details.folder_categories)) {
+      cloned.reels_details.folder_categories = [];
+    }
     setFormData(cloned);
     setEditingProduct(product);
     setIsCreatingNew(false);
@@ -293,11 +322,32 @@ export default function AdminPage({
     setFormData({
       ...emptyProduct,
       id: 'prod-' + Date.now(),
-      slug: 'new-product-' + Date.now().toString().slice(-4)
+      slug: 'new-product-' + Date.now().toString().slice(-4),
+      gallery_images: [],
+      features: [
+        '10,000+ Ultra HD Ready-to-Upload 9:16 MP4 Videos',
+        'No Watermark, No Logo - Ready for Instagram & YouTube Shorts',
+        '500+ CapCut XML Presets & Sound Effects Vault Included',
+        'Instant Lifetime Google Drive Link + Updates'
+      ],
+      reels_details: {
+        resolution: '3840 × 2160 (4K UHD)',
+        software_support: '.MP4, .PRPROJ',
+        total_count: '~42 GB Total',
+        rights: 'Commercial Use',
+        folder_categories: [
+          '1. Luxury Cars & Billionaire Ultra Mix (2,000 Reels)',
+          '2. AI Human Avatars & Tech Future (2,500 Reels)',
+          '3. Motivation, Gym & Samurai Clips (2,000 Reels)',
+          '4. Dark Psychology & Anime Edits (1,800 Reels)',
+          '5. Money, Trading & Crypto Hooks (1,700 Reels)'
+        ]
+      }
     });
     setEditingProduct(null);
     setIsCreatingNew(true);
   };
+
 
   const handleCoverFileUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -1826,8 +1876,216 @@ export default function AdminPage({
                         </div>
                       </div>
                     )}
+
+                    {/* Specifications Card Editor */}
+                    <div className="p-3.5 rounded-2xl bg-indigo-950/20 border border-indigo-500/25 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Cpu className="w-4 h-4 text-indigo-400" />
+                          <span className="text-xs font-black text-indigo-300 uppercase tracking-wider">
+                            ⚙️ Specifications & Vault Details
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-slate-400">Customer product page pe dikhega</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            Resolution / Duration
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.resolution || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), resolution: e.target.value }
+                            })}
+                            placeholder="e.g. 3840 × 2160 (4K UHD)"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            Format / Software Support
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.software_support || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), software_support: e.target.value }
+                            })}
+                            placeholder="e.g. .MP4, .PRPROJ (CapCut, Premiere)"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            File Size / Total Count
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.total_count || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), total_count: e.target.value }
+                            })}
+                            placeholder="e.g. ~42 GB Total"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            License / Rights
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.rights || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), rights: e.target.value }
+                            })}
+                            placeholder="e.g. Commercial Use (Full Resell PLR)"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Google Drive Vault Folders */}
+                      <div className="pt-2 border-t border-indigo-500/20 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[11px] font-bold text-slate-200">
+                            📁 Google Drive Vault Folders Breakdown
+                          </label>
+                          <span className="text-[10px] text-indigo-400 font-mono">
+                            {(formData.reels_details?.folder_categories || []).length} folders
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                          {(formData.reels_details?.folder_categories || []).map((folder, fIdx) => (
+                            <div key={fIdx} className="flex items-center space-x-2">
+                              <span className="text-[10px] text-emerald-400 font-mono">#{fIdx + 1}</span>
+                              <input
+                                type="text"
+                                value={folder}
+                                onChange={(e) => {
+                                  const updated = [...(formData.reels_details?.folder_categories || [])];
+                                  updated[fIdx] = e.target.value;
+                                  setFormData({
+                                    ...formData,
+                                    reels_details: { ...(formData.reels_details || {}), folder_categories: updated }
+                                  });
+                                }}
+                                className="flex-1 px-2 py-1 rounded bg-white/[0.04] border border-white/10 text-white text-xs"
+                                placeholder="e.g. 1. Luxury Cars & Lifestyle (2,000 Reels)"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...(formData.reels_details?.folder_categories || [])];
+                                  updated.splice(fIdx, 1);
+                                  setFormData({
+                                    ...formData,
+                                    reels_details: { ...(formData.reels_details || {}), folder_categories: updated }
+                                  });
+                                }}
+                                className="p-1 text-slate-500 hover:text-rose-400 cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...(formData.reels_details?.folder_categories || [])];
+                            updated.push(`${updated.length + 1}. New Category Folder`);
+                            setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), folder_categories: updated }
+                            });
+                          }}
+                          className="w-full py-1.5 rounded-xl border border-dashed border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/10 font-bold text-[11px] flex items-center justify-center space-x-1 transition-all cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>+ Add Vault Folder Category</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* What's Included Feature Checklist Editor */}
+                    <div className="p-3.5 rounded-2xl bg-emerald-950/20 border border-emerald-500/25 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Package className="w-4 h-4 text-emerald-400" />
+                          <span className="text-xs font-black text-emerald-300 uppercase tracking-wider">
+                            📦 "What's Included" Checklist Editor
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-emerald-400 font-mono">
+                          {(formData.features || []).length} items
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-400">
+                        Customer ko product detail page par green tick marks ke sath ye checklist dikhegi:
+                      </p>
+
+                      <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        {(formData.features || []).map((featureItem, featIdx) => (
+                          <div key={featIdx} className="flex items-center space-x-2">
+                            <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                              <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
+                            </div>
+                            <input
+                              type="text"
+                              value={featureItem}
+                              onChange={(e) => {
+                                const updated = [...(formData.features || [])];
+                                updated[featIdx] = e.target.value;
+                                setFormData({ ...formData, features: updated });
+                              }}
+                              placeholder="e.g. 10,000+ 4K Reels or No Watermark..."
+                              className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs focus:border-emerald-400 focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...(formData.features || [])];
+                                updated.splice(featIdx, 1);
+                                setFormData({ ...formData, features: updated });
+                              }}
+                              className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer shrink-0"
+                              title="Delete feature"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...(formData.features || [])];
+                          updated.push('New Included Benefit / Bonus');
+                          setFormData({ ...formData, features: updated });
+                        }}
+                        className="w-full py-1.5 rounded-xl border border-dashed border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-bold text-[11px] flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>+ Add What's Included Item</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
+
 
                 {/* Modal Footer / Save Action */}
                 <div className="pt-4 border-t border-white/10 flex items-center justify-between">
