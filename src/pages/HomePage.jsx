@@ -198,31 +198,7 @@ export default function HomePage({
           </>
         )}
 
-        {/* 5. Limited-Time Flash Deal Countdown Card */}
-        {selectedCategory === 'all' && !searchQuery && (
-          <div className="px-4">
-            <div className="rounded-2xl p-3.5 glass-panel border border-rose-500/20 bg-gradient-to-r from-rose-950/30 via-purple-950/20 to-transparent flex items-center justify-between">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
-                  <Clock className="w-4 h-4 animate-pulse" />
-                </div>
-                <div>
-                  <div className="flex items-center space-x-1.5">
-                    <span className="text-xs font-black text-rose-400 uppercase tracking-wider">FLASH SALE</span>
-                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-rose-500 text-slate-950 font-bold">ENDS TODAY</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400">Get 90% OFF on all digital assets</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedCategory('flash_sale')}
-                className="px-3 py-1.5 rounded-full text-xs font-bold bg-rose-500 hover:bg-rose-400 text-slate-950 shadow-md active:scale-95 transition-all"
-              >
-                Claim Deal
-              </button>
-            </div>
-          </div>
-        )}
+
 
         {/* 6. Dynamic Bento Product Grid */}
         <BentoProductGrid

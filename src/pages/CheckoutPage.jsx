@@ -201,34 +201,97 @@ export default function CheckoutPage({
           )}
         </div>
 
-        {/* Step 3: ⭐ ORDER BUMP / UPSELL CHECKBOX (High-Converting Urgency Trigger) */}
+        {/* Step 3: ⭐ ULTRA-PREMIUM ORDER BUMP / UPSELL CARD */}
         <div 
           onClick={() => setAddUpsell(!addUpsell)}
-          className={`p-5 rounded-3xl border-2 transition-all cursor-pointer shadow-2xl ${
+          className={`relative overflow-hidden p-5 rounded-3xl transition-all duration-300 cursor-pointer shadow-2xl select-none ${
             addUpsell 
-              ? 'border-emerald-500/60 bg-[#131724]' 
-              : 'border-dashed border-white/20 bg-[#131724]/60'
+              ? 'bg-gradient-to-br from-emerald-950/40 via-[#131724] to-[#0d101d] border-2 border-emerald-500 shadow-emerald-500/15 ring-1 ring-emerald-500/30' 
+              : 'bg-[#131724]/80 border border-white/10 hover:border-white/20'
           }`}
         >
-          <div className="flex items-start space-x-3.5">
-            <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-              addUpsell ? 'bg-emerald-500 shadow-md shadow-emerald-500/40' : 'border border-white/30 bg-transparent'
-            }`}>
-              {addUpsell && <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />}
-            </div>
+          {/* Subtle Ambient Radial Glow when selected */}
+          {addUpsell && (
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+          )}
 
-            <div className="space-y-1.5 flex-1">
-              <div className="flex items-center space-x-2">
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 uppercase tracking-wider">
-                  ONE TIME DEAL
+          <div className="space-y-3 relative z-10">
+            {/* Header: VIP Tag + Pricing */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-1.5">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-rose-500 text-slate-950 shadow-sm">
+                  ⚡ ONE-TIME VIP UPGRADE
                 </span>
-                <span className="text-xs font-black text-white">
-                  Add 500+ CapCut XML Presets & SFX Library
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/20">
+                  80% OFF
                 </span>
               </div>
-              <p className="text-xs text-slate-300 leading-snug">
-                One-click import into CapCut & Premiere. Normally ₹499, get it today for only <span className="font-extrabold text-emerald-400">₹99</span>!
-              </p>
+
+              <div className="flex items-baseline space-x-1.5">
+                <span className="text-xs text-slate-500 line-through">₹499</span>
+                <span className="text-base font-black text-emerald-400">+₹99</span>
+              </div>
+            </div>
+
+            {/* Product Title & Visual Preview Row */}
+            <div className="flex items-start space-x-3">
+              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-lg transition-all ${
+                addUpsell 
+                  ? 'bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 shadow-emerald-500/20' 
+                  : 'bg-white/10 text-slate-400 border border-white/10'
+              }`}>
+                <Sparkles className="w-5 h-5" />
+              </div>
+
+              <div className="space-y-1 min-w-0 flex-1">
+                <h4 className="text-xs font-black text-white leading-snug">
+                  500+ CapCut XML Presets & Viral SFX Audio Vault
+                </h4>
+                <p className="text-[11px] text-slate-300 leading-tight">
+                  Pre-configured cinematic text animations, transitions, and 300+ viral sound effects.
+                </p>
+              </div>
+            </div>
+
+            {/* Micro Benefits Checklist */}
+            <div className="grid grid-cols-1 gap-1.5 py-1 text-[11px] text-slate-300 border-t border-white/[0.06]">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                  <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
+                </div>
+                <span>1-Click import for CapCut (Mobile/PC) & Premiere Pro</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                  <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
+                </div>
+                <span>Cinematic sound effects (Whoosh, Impact, Pop, Risers)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                  <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
+                </div>
+                <span>Added instantly to your Google Drive access link</span>
+              </div>
+            </div>
+
+            {/* Dynamic Status Toggle Button */}
+            <div className={`w-full py-2.5 px-4 rounded-2xl font-bold text-xs flex items-center justify-between transition-all ${
+              addUpsell 
+                ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/25' 
+                : 'bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10'
+            }`}>
+              <div className="flex items-center space-x-2">
+                <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
+                  addUpsell ? 'bg-slate-950 text-emerald-400' : 'border border-white/40'
+                }`}>
+                  {addUpsell && <Check className="w-3 h-3 stroke-[3]" />}
+                </div>
+                <span>{addUpsell ? 'Upgrade Added to Order (+₹99)' : 'Tap to Add Upgrade for ₹99'}</span>
+              </div>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider">
+                {addUpsell ? 'INCLUDED ✓' : 'SAVE ₹400'}
+              </span>
             </div>
           </div>
         </div>
