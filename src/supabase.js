@@ -232,83 +232,70 @@ export async function getOrder(orderId) {
   }
 }
 
-// ================= SUPABASE AUTHENTICATION HELPERS =================
+// ================= OFFICIAL SUPABASE AUTHENTICATION =================
 export async function signInWithGoogle() {
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin
-        }
-      });
-      if (error) throw error;
-      return { success: true, data };
-    } catch (err) {
-      console.warn('Google sign-in error:', err);
-      throw err;
-    }
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured. Please check your environment keys.');
   }
-  return { success: false, fallback: true };
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
+  if (error) throw error;
+  return data;
 }
 
 export async function sendOtp(phoneOrEmail) {
-  if (isSupabaseConfigured && supabase) {
-    try {
-      if (phoneOrEmail.includes('@')) {
-        const { data, error } = await supabase.auth.signInWithOtp({
-          email: phoneOrEmail,
-          options: {
-            emailRedirectTo: window.location.origin
-          }
-        });
-        if (error) throw error;
-        return { success: true, type: 'email', data };
-      } else {
-        const cleanPhone = phoneOrEmail.startsWith('+') ? phoneOrEmail : `+91${phoneOrEmail.replace(/\D/g, '')}`;
-        const { data, error } = await supabase.auth.signInWithOtp({
-          phone: cleanPhone
-        });
-        if (error) throw error;
-        return { success: true, type: 'phone', data };
-      }
-    } catch (err) {
-      console.warn('Send OTP error:', err);
-      throw err;
-    }
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured. Please check your environment keys.');
   }
-  // Mock fallback for offline / development
-  return { success: true, fallback: true, mockOtp: '123456' };
+
+  if (phoneOrEmail.includes('@')) {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email: phoneOrEmail.trim(),
+      options: {
+        emailRedirectTo: window.location.origin
+      }
+    });
+    if (error) throw error;
+    return { type: 'email', data };
+  } else {
+    const cleanPhone = phoneOrEmail.startsWith('+') ? phoneOrEmail : `+91${phoneOrEmail.replace(/\D/g, '')}`;
+    const { data, error } = await supabase.auth.signInWithOtp({
+      phone: cleanPhone
+    });
+    if (error) throw error;
+    return { type: 'phone', data };
+  }
 }
 
 export async function verifyOtp(phoneOrEmail, token) {
-  if (isSupabaseConfigured && supabase) {
-    try {
-      if (phoneOrEmail.includes('@')) {
-        const { data, error } = await supabase.auth.verifyOtp({
-          email: phoneOrEmail,
-          token: token,
-          type: 'email'
-        });
-        if (error) throw error;
-        return { success: true, user: data?.user };
-      } else {
-        const cleanPhone = phoneOrEmail.startsWith('+') ? phoneOrEmail : `+91${phoneOrEmail.replace(/\D/g, '')}`;
-        const { data, error } = await supabase.auth.verifyOtp({
-          phone: cleanPhone,
-          token: token,
-          type: 'sms'
-        });
-        if (error) throw error;
-        return { success: true, user: data?.user };
-      }
-    } catch (err) {
-      console.warn('Verify OTP error:', err);
-      throw err;
-    }
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured.');
   }
-  return { success: true, fallback: true };
+
+  if (phoneOrEmail.includes('@')) {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email: phoneOrEmail.trim(),
+      token: token.trim(),
+      type: 'email'
+    });
+    if (error) throw error;
+    return data;
+  } else {
+    const cleanPhone = phoneOrEmail.startsWith('+') ? phoneOrEmail : `+91${phoneOrEmail.replace(/\D/g, '')}`;
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone: cleanPhone,
+      token: token.trim(),
+      type: 'sms'
+    });
+    if (error) throw error;
+    return data;
+  }
 }
+
 
 export async function getCurrentUser() {
   if (isSupabaseConfigured && supabase) {

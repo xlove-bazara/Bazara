@@ -25,24 +25,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     setLoading(true);
     setErrorMsg('');
     try {
-      const res = await signInWithGoogle();
-      if (res?.fallback) {
-        // Fallback simulated Google login when local/dev
-        setTimeout(() => {
-          setLoading(false);
-          const user = {
-            name: 'Google User',
-            email: 'user.google@gmail.com',
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'
-          };
-          localStorage.setItem('bazara_current_user', JSON.stringify(user));
-          onLoginSuccess(user);
-          onClose();
-        }, 500);
-      }
+      await signInWithGoogle();
+      // Browser will automatically redirect to accounts.google.com!
     } catch (err) {
       setLoading(false);
-      setErrorMsg('Google login initialization failed. Please try Phone OTP.');
+      setErrorMsg(err.message || 'Google login failed. Make sure Google provider is enabled in Supabase.');
     }
   };
 
@@ -68,9 +55,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
       setCountdown(30);
     } catch (err) {
       setLoading(false);
-      // Fallback transition
-      setStep('otp');
-      setCountdown(30);
+      setErrorMsg(err.message || 'Failed to send OTP. Please check provider settings.');
     }
   };
 
@@ -78,29 +63,28 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     e.preventDefault();
     setErrorMsg('');
     if (!otp || otp.length < 4) {
-      setErrorMsg('Please enter the 4-6 digit OTP sent to you');
+      setErrorMsg('Please enter the OTP sent to you');
       return;
     }
 
     setLoading(true);
     try {
-      await verifyOtp(identifier.trim(), otp);
+      const res = await verifyOtp(identifier.trim(), otp);
       setLoading(false);
-      const isPhone = authMode === 'phone';
-      const cleanPhone = identifier.replace(/\D/g, '');
-      const user = {
-        name: isPhone ? `Creator (${cleanPhone.slice(-4)})` : identifier.split('@')[0],
-        phone: isPhone ? cleanPhone : null,
-        email: isPhone ? `user_${cleanPhone.slice(-4)}@bazara.in` : identifier.trim()
+      const user = res?.user || {
+        name: identifier.split('@')[0] || identifier,
+        email: identifier.includes('@') ? identifier : null,
+        phone: !identifier.includes('@') ? identifier : null
       };
       localStorage.setItem('bazara_current_user', JSON.stringify(user));
       onLoginSuccess(user);
       onClose();
     } catch (err) {
       setLoading(false);
-      setErrorMsg('Invalid OTP. Please check the code and try again.');
+      setErrorMsg(err.message || 'Invalid OTP code. Please try again.');
     }
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
