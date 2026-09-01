@@ -207,14 +207,15 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               </div>
               <input
                 type="text"
-                maxLength={6}
+                maxLength={10}
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter 4 or 6 digit OTP"
+                onChange={(e) => setOtp(e.target.value.replace(/\s+/g, ''))}
+                placeholder="Enter 6 or 8 digit OTP"
                 className="w-full text-center tracking-widest text-lg font-mono font-bold py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 required
                 autoFocus
               />
+
               <div className="flex items-center justify-between text-[10px] pt-1">
                 <button
                   type="button"
