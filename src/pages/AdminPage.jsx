@@ -208,8 +208,13 @@ export default function AdminPage({
       platforms: 'Windows & Mac',
       license_type: 'Lifetime License Key',
       activation: 'Delivered via Email & WhatsApp'
-    }
+    },
+    enable_bump_offer: false,
+    bump_title: '',
+    bump_price: 99,
+    bump_desc: ''
   };
+
 
   const [formData, setFormData] = useState(emptyProduct);
 
@@ -1256,7 +1261,70 @@ export default function AdminPage({
                         placeholder="Brief summary of what the buyer receives..."
                       />
                     </div>
+
+                    {/* Order Bump Offer (Upsell) Controls */}
+                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Zap className="w-4 h-4 text-amber-400" />
+                          <span className="text-xs font-black text-amber-300 uppercase tracking-wider">
+                            Checkout Order Bump (Upsell)
+                          </span>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(formData.enable_bump_offer)}
+                            onChange={(e) => setFormData({ ...formData, enable_bump_offer: e.target.checked })}
+                            className="sr-only peer"
+                          />
+                          <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                        </label>
+                      </div>
+
+                      <p className="text-[11px] text-slate-300">
+                        Kya checkout page par is product ke sath extra Order Bump / Upgrade offer dikhana hai?
+                      </p>
+
+                      {formData.enable_bump_offer && (
+                        <div className="space-y-2.5 pt-2 border-t border-amber-500/20 text-xs">
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="col-span-2">
+                              <label className="font-semibold text-slate-300 block mb-1">Bump Offer Title</label>
+                              <input
+                                type="text"
+                                value={formData.bump_title || ''}
+                                onChange={(e) => setFormData({ ...formData, bump_title: e.target.value })}
+                                placeholder="e.g. 500+ CapCut XML Presets Pack"
+                                className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="font-semibold text-slate-300 block mb-1">Bump Price (₹)</label>
+                              <input
+                                type="number"
+                                value={formData.bump_price || 99}
+                                onChange={(e) => setFormData({ ...formData, bump_price: Number(e.target.value) })}
+                                className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-amber-400 font-bold focus:border-amber-400 focus:outline-none"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="font-semibold text-slate-300 block mb-1">Bump Short Description</label>
+                            <input
+                              type="text"
+                              value={formData.bump_desc || ''}
+                              onChange={(e) => setFormData({ ...formData, bump_desc: e.target.value })}
+                              placeholder="e.g. Pre-configured cinematic animations & sound effects..."
+                              className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white focus:border-amber-400 focus:outline-none text-[11px]"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
 
                   {/* RIGHT COLUMN: Video Trailer & Course Curriculum */}
                   <div className="space-y-3">

@@ -95,7 +95,9 @@ export const initialProducts = [
     tag: "⭐ TOP RATED MASTERCLASS",
     is_trending: true,
     is_flash_sale: false,
+    enable_bump_offer: false,
     badge: "🎓 Complete Video Course",
+
     cover_image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80",
     gallery_images: [
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80",
