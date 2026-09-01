@@ -92,7 +92,72 @@ export async function getProductBySlug(slug) {
   return products.find(p => p.slug === slug || p.id === slug) || null;
 }
 
+// Direct Image Upload Helper (Supports Supabase Storage & compressed Web-ready Base64 fallback)
+export async function uploadImageFile(file) {
+  if (!file) return null;
+
+  // 1. Try Supabase Storage if configured
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const ext = file.name ? file.name.split('.').pop() : 'jpg';
+      const cleanExt = ext.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'jpg';
+      const fileName = `prod_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${cleanExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('products')
+        .upload(fileName, file, { cacheControl: '3600', upsert: true });
+
+      if (!error && data) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('products')
+          .getPublicUrl(fileName);
+        if (publicUrl) return publicUrl;
+      }
+    } catch (err) {
+      console.warn('Supabase storage upload failed, falling back to optimized compression:', err);
+    }
+  }
+
+  // 2. High-speed Canvas compression fallback (max 1200px, 85% JPEG quality)
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          resolve(dataUrl);
+        } catch (canvasErr) {
+          resolve(e.target.result);
+        }
+      };
+      img.onerror = () => resolve(e.target.result);
+      img.src = e.target.result;
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
+
 export async function saveProduct(productData) {
+
   if (isSupabaseConfigured && supabase) {
     try {
       if (productData.id && !productData.id.startsWith('prod-')) {

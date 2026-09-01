@@ -35,6 +35,7 @@ import {
   Search,
   MessageCircle,
   Zap,
+  Upload,
   Image as ImageIcon
 } from 'lucide-react';
 
@@ -47,8 +48,10 @@ import {
   saveAdminPassword,
   checkAdminSession,
   setAdminSession,
-  getOrders
+  getOrders,
+  uploadImageFile
 } from '../supabase';
+
 
 
 export default function AdminPage({ 
@@ -139,8 +142,11 @@ export default function AdminPage({
   );
   const [newTickerText, setNewTickerText] = useState('');
   const [saveStatus, setSaveStatus] = useState('');
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
 
   // Default clean product template for creating new product
+
   const emptyProduct = {
     id: '',
     title: '',
@@ -293,7 +299,44 @@ export default function AdminPage({
     setIsCreatingNew(true);
   };
 
+  const handleCoverFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    try {
+      const url = await uploadImageFile(file);
+      if (url) {
+        setFormData(prev => ({ ...prev, cover_image: url }));
+      }
+    } catch (err) {
+      alert('Error uploading cover photo: ' + err.message);
+    } finally {
+      setUploadingCover(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleGalleryFilesUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    setUploadingGallery(true);
+    try {
+      const urls = await Promise.all(files.map(f => uploadImageFile(f)));
+      const validUrls = urls.filter(Boolean);
+      setFormData(prev => ({
+        ...prev,
+        gallery_images: [...(prev.gallery_images || []), ...validUrls]
+      }));
+    } catch (err) {
+      alert('Error uploading gallery photos: ' + err.message);
+    } finally {
+      setUploadingGallery(false);
+      e.target.value = '';
+    }
+  };
+
   const handleSaveProduct = async (e) => {
+
     e.preventDefault();
     setSaveStatus('Saving...');
     try {
@@ -1248,56 +1291,100 @@ export default function AdminPage({
                       </div>
                     </div>
 
-                    {/* Cover & G-Drive Link */}
-                    {/* Cover Image */}
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="font-semibold text-slate-300">Cover Image URL (Main Display Image)</label>
+                    {/* Cover Image (Device Upload + Direct URL) */}
+                    <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="font-semibold text-slate-200 text-xs flex items-center space-x-1.5">
+                          <ImageIcon className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Cover Image (Main Thumbnail Photo)</span>
+                        </label>
                         {formData.cover_image && (
-                          <span className="text-[10px] text-emerald-400 font-bold">✓ Preview Active</span>
+                          <span className="text-[10px] text-emerald-400 font-bold">✓ Active</span>
                         )}
                       </div>
-                      <div className="flex items-center space-x-2">
-                        {formData.cover_image && (
+
+                      {/* Preview & Direct File Upload */}
+                      <div className="flex items-center gap-3">
+                        {formData.cover_image ? (
                           <img 
                             src={formData.cover_image} 
                             alt="Cover" 
-                            className="w-9 h-9 rounded-xl object-cover bg-white/5 border border-emerald-500/30 shrink-0"
-                            onError={(e) => { e.target.style.display = 'none'; }}
+                            className="w-16 h-16 rounded-2xl object-cover bg-white/5 border-2 border-emerald-500/40 shrink-0 shadow-lg shadow-emerald-500/10"
+                            onError={(e) => { e.target.src = 'https://placehold.co/100x100/1e293b/94a3b8?text=Preview'; }}
                           />
+                        ) : (
+                          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center text-slate-500 shrink-0 text-[10px]">
+                            <ImageIcon className="w-5 h-5 mb-0.5" />
+                            <span>No Photo</span>
+                          </div>
                         )}
+
+                        <div className="flex-1 space-y-1.5">
+                          <label className="inline-flex items-center space-x-2 px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer transition-all active:scale-95 shadow-lg shadow-emerald-500/20">
+                            <Upload className="w-3.5 h-3.5 stroke-[2.5]" />
+                            <span>{uploadingCover ? 'Uploading...' : '📁 Upload Photo from Device'}</span>
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              onChange={handleCoverFileUpload}
+                              disabled={uploadingCover}
+                              className="sr-only" 
+                            />
+                          </label>
+                          <p className="text-[10px] text-slate-400">
+                            Phone ya PC se photo select karein (automatic fit ho jayegi).
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Or enter Direct URL */}
+                      <div className="pt-2 border-t border-white/[0.06]">
+                        <label className="text-[11px] text-slate-400 block mb-1">Ya direct Image URL paste karein:</label>
                         <input
                           type="url"
                           value={formData.cover_image}
                           onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white focus:border-emerald-400 focus:outline-none"
+                          className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white focus:border-emerald-400 focus:outline-none text-xs font-mono"
                           placeholder="https://images.unsplash.com/... or image url"
                           required
                         />
                       </div>
                     </div>
 
-                    {/* Multiple Product Gallery Images (1 se jyada images) */}
-                    <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2.5">
+                    {/* Multiple Product Gallery Images (Upload Multiple + URL) */}
+                    <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
                       <div className="flex items-center justify-between">
                         <label className="font-bold text-slate-200 flex items-center space-x-1.5 text-xs">
-                          <ImageIcon className="w-3.5 h-3.5 text-emerald-400" />
+                          <Layers className="w-3.5 h-3.5 text-indigo-400" />
                           <span>Product Extra Gallery Images (Multiple Photos)</span>
                         </label>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30">
                           {(formData.gallery_images || []).length} photos
                         </span>
                       </div>
                       <p className="text-[10px] text-slate-400 leading-tight">
-                        💡 Yahan aap 1 se jyada images (screenshots, samples, proofs) add kar sakte hain. Customer jab product kholega toh ye saari photos slider me dikhengi!
+                        💡 Yahan aap 1 se jyada images (screenshots, proofs) add karein. Customer jab product kholega toh ye saari photos slider me swipe hongi!
                       </p>
+
+                      {/* Multi-File Upload Button from Device */}
+                      <label className="w-full py-2.5 px-3 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/40 text-indigo-200 font-bold text-xs flex items-center justify-center space-x-2 cursor-pointer transition-all active:scale-95 shadow-sm">
+                        <Upload className="w-4 h-4 text-indigo-300" />
+                        <span>{uploadingGallery ? 'Uploading Photos...' : '📁 Upload Photos from Device (Ek sath 2-5 select karein)'}</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          multiple 
+                          onChange={handleGalleryFilesUpload}
+                          disabled={uploadingGallery}
+                          className="sr-only" 
+                        />
+                      </label>
 
                       {/* Image List */}
                       <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                         {(formData.gallery_images || []).map((imgUrl, gIdx) => (
                           <div key={gIdx} className="flex items-center space-x-2">
                             <span className="text-[10px] font-mono text-slate-400 w-4 shrink-0">#{gIdx + 1}</span>
-                            {/* Preview thumbnail */}
                             <img
                               src={imgUrl || 'https://placehold.co/80x80/1e293b/94a3b8?text=Image'}
                               alt=""
@@ -1331,7 +1418,7 @@ export default function AdminPage({
                         ))}
                       </div>
 
-                      {/* Add Image Button */}
+                      {/* Add Image by URL Button */}
                       <button
                         type="button"
                         onClick={() => {
@@ -1339,12 +1426,13 @@ export default function AdminPage({
                           updated.push('');
                           setFormData({ ...formData, gallery_images: updated });
                         }}
-                        className="w-full py-1.5 rounded-xl border border-dashed border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-bold text-[11px] flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+                        className="w-full py-1.5 rounded-xl border border-dashed border-white/20 text-slate-400 hover:text-white hover:bg-white/[0.04] font-semibold text-[11px] flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
                       >
                         <Plus className="w-3 h-3" />
-                        <span>+ Add 1 More Product Image URL</span>
+                        <span>+ Add 1 More Image by URL</span>
                       </button>
                     </div>
+
 
 
                     <div>
