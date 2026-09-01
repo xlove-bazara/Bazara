@@ -61,7 +61,9 @@ export default function HomePage({
   const filteredProducts = products.filter((p) => {
     const matchesCategory = 
       selectedCategory === 'all' || 
-      (selectedCategory === 'flash_sale' ? p.is_flash_sale : p.category === selectedCategory);
+      p.category === selectedCategory ||
+      p.product_type === selectedCategory;
+
 
     const matchesSearch = searchQuery === '' || 
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

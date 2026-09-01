@@ -348,10 +348,12 @@ export default function AdminPage({
     if (filterCategory === 'all') return true;
     if (filterCategory === 'course') return p.category === 'course' || p.product_type === 'course';
     if (filterCategory === 'reels') return p.category === 'reels' || p.product_type === 'reels';
+    if (filterCategory === 'subscription') return p.category === 'subscription' || p.product_type === 'subscription';
     if (filterCategory === 'ebook') return p.category === 'ebook' || p.product_type === 'ebook';
     if (filterCategory === 'software') return p.category === 'software' || p.product_type === 'software';
     return true;
   });
+
 
   // ================= 1. ADMIN AUTHENTICATION GATE =================
   if (!isAdminAuthenticated) {
@@ -897,11 +899,13 @@ export default function AdminPage({
               <span className="text-xs font-semibold text-slate-400 mr-1">Filter:</span>
               {[
                 { id: 'all', label: `All (${products.length})` },
+                { id: 'reels', label: '🎬 Reel Bundles' },
                 { id: 'course', label: `🎓 Courses (${allCourses.length})` },
-                { id: 'reels', label: '🎬 Reels Bundles' },
-                { id: 'ebook', label: '📚 E-Books' },
-                { id: 'software', label: '💻 Software / Tools' }
+                { id: 'subscription', label: '👑 Subscriptions' },
+                { id: 'software', label: '💻 Software' },
+                { id: 'ebook', label: '📚 E-Books' }
               ].map(cat => (
+
                 <button
                   key={cat.id}
                   onClick={() => setFilterCategory(cat.id)}
@@ -1176,17 +1180,23 @@ export default function AdminPage({
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="font-semibold text-slate-300 block mb-1">Category</label>
+                        <label className="font-semibold text-slate-300 block mb-1">
+                          Product Category <span className="text-emerald-400 font-bold">(Website pe kahan dikhega)</span>
+                        </label>
                         <select
                           value={formData.category}
-                          onChange={(e) => setFormData({ ...formData, category: e.target.value, product_type: e.target.value === 'flash_sale' ? 'reels' : e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-[#161a28] border border-white/10 text-white focus:border-emerald-400 focus:outline-none"
+                          onChange={(e) => setFormData({ 
+                            ...formData, 
+                            category: e.target.value, 
+                            product_type: e.target.value === 'subscription' ? 'course' : e.target.value 
+                          })}
+                          className="w-full px-3 py-2 rounded-xl bg-[#161a28] border border-white/10 text-white focus:border-emerald-400 focus:outline-none font-bold text-xs"
                         >
+                          <option value="reels">🎬 Reel Bundle</option>
                           <option value="course">🎓 Video Course</option>
-                          <option value="reels">🎬 Reels Bundle</option>
-                          <option value="ebook">📚 E-Book / Guide</option>
-                          <option value="software">💻 Software / Tool</option>
-                          <option value="flash_sale">🔥 Flash Deal Combo</option>
+                          <option value="subscription">👑 Subscription</option>
+                          <option value="software">💻 Software</option>
+                          <option value="ebook">📚 E-Book</option>
                         </select>
                       </div>
 
@@ -1195,14 +1205,16 @@ export default function AdminPage({
                         <select
                           value={formData.product_type}
                           onChange={(e) => setFormData({ ...formData, product_type: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-[#161a28] border border-white/10 text-white focus:border-emerald-400 focus:outline-none"
+                          className="w-full px-3 py-2 rounded-xl bg-[#161a28] border border-white/10 text-white focus:border-emerald-400 focus:outline-none text-xs"
                         >
-                          <option value="course">Course Layout</option>
                           <option value="reels">Reels Layout</option>
-                          <option value="ebook">E-Book Layout</option>
+                          <option value="course">Course / Video Layout</option>
+                          <option value="subscription">Subscription Layout</option>
                           <option value="software">Software Layout</option>
+                          <option value="ebook">E-Book Layout</option>
                         </select>
                       </div>
+
                     </div>
 
                     {/* Pricing */}

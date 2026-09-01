@@ -1,15 +1,15 @@
 import React from 'react';
-import { Flame, Film, GraduationCap, Laptop, BookOpen, Gift } from 'lucide-react';
+import { Flame, Film, GraduationCap, Laptop, BookOpen, Crown } from 'lucide-react';
 
 const categories = [
   { id: 'all', label: 'All Assets', icon: Flame, color: 'from-amber-500 to-rose-600' },
-  { id: 'flash_sale', label: 'Flash Sale', icon: Flame, color: 'from-rose-500 to-orange-500', isHot: true },
-  { id: 'reels', label: '10K Reels', icon: Film, color: 'from-emerald-400 to-cyan-500' },
+  { id: 'reels', label: 'Reel Bundle', icon: Film, color: 'from-emerald-400 to-cyan-500' },
   { id: 'course', label: 'Video Course', icon: GraduationCap, color: 'from-indigo-500 to-purple-600' },
-  { id: 'software', label: 'AI Software', icon: Laptop, color: 'from-blue-500 to-indigo-500' },
-  { id: 'ebook', label: 'E-Books', icon: BookOpen, color: 'from-purple-500 to-pink-500' },
-  { id: 'freebies', label: 'Free Assets', icon: Gift, color: 'from-teal-400 to-emerald-500' }
+  { id: 'subscription', label: 'Subscription', icon: Crown, color: 'from-amber-400 to-yellow-600' },
+  { id: 'software', label: 'Software', icon: Laptop, color: 'from-blue-500 to-indigo-500' },
+  { id: 'ebook', label: 'E-Book', icon: BookOpen, color: 'from-purple-500 to-pink-500' }
 ];
+
 
 export default function StoryCategories({ selectedCategory, onSelectCategory }) {
   return (
