@@ -238,7 +238,19 @@ export async function signInWithGoogle() {
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase is not configured. Please check your environment keys.');
   }
-  const redirectUrl = typeof window !== 'undefined' ? window.location.origin : 'https://bazara.in';
+
+  // Save current exact page path so user returns to the exact same page
+  if (typeof window !== 'undefined') {
+    try {
+      const returnPath = window.location.pathname + window.location.search;
+      localStorage.setItem('bazara_auth_return_url', returnPath);
+    } catch (e) {}
+  }
+
+  const redirectUrl = typeof window !== 'undefined' 
+    ? window.location.href.split('#')[0] 
+    : 'https://bazara.in/home';
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -248,6 +260,7 @@ export async function signInWithGoogle() {
   if (error) throw error;
   return data;
 }
+
 
 export async function sendOtp(phoneOrEmail) {
   if (!isSupabaseConfigured || !supabase) {

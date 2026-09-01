@@ -77,12 +77,30 @@ export default function App() {
           };
           setUser(formattedUser);
           localStorage.setItem('bazara_current_user', JSON.stringify(formattedUser));
+
+          // Clean up hash (#access_token=...) and navigate back to original page (e.g. /home)
+          try {
+            const returnUrl = localStorage.getItem('bazara_auth_return_url');
+            if (returnUrl) {
+              localStorage.removeItem('bazara_auth_return_url');
+              window.history.replaceState({}, '', returnUrl);
+              const cleanPath = returnUrl.split('?')[0].toLowerCase();
+              if (cleanPath === '/home') setCurrentPage('home');
+              else if (cleanPath === '/checkout') setCurrentPage('checkout');
+              else if (cleanPath === '/access') setCurrentPage('access');
+              else if (cleanPath === '/profile') setCurrentPage('profile');
+              else if (cleanPath === '/admin') setCurrentPage('admin');
+            } else if (window.location.hash && window.location.hash.includes('access_token')) {
+              window.history.replaceState({}, '', window.location.pathname + window.location.search);
+            }
+          } catch (e) {}
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
           localStorage.removeItem('bazara_current_user');
         }
       });
       return () => subscription.unsubscribe();
+
     }
   }, []);
 
