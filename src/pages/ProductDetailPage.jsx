@@ -262,7 +262,7 @@ export default function ProductDetailPage({
                   ? (product.course_details?.duration || '6.5 Hours')
                   : product.product_type === 'ebook'
                     ? (product.ebook_details?.pages_count || '145 Pages')
-                    : (product.reels_details?.resolution || '3840 × 2160 (4K UHD)')}
+                    : '3840 × 2160 (4K UHD)'}
               </span>
             </div>
 
@@ -274,10 +274,10 @@ export default function ProductDetailPage({
                 {product.product_type === 'course' 
                   ? 'HD Video Stream, MP4'
                   : product.product_type === 'ebook'
-                    ? (product.ebook_details?.format || '.PDF, .EPUB')
+                    ? '.PDF, .EPUB'
                     : product.product_type === 'software'
-                      ? (product.software_details?.platforms || 'Installer (.EXE, .DMG)')
-                      : (product.reels_details?.software_support || '.MP4, .PRPROJ')}
+                      ? 'Installer (.EXE, .DMG)'
+                      : '.MP4, .PRPROJ'}
               </span>
             </div>
 
@@ -288,7 +288,7 @@ export default function ProductDetailPage({
               <span className="text-sm font-extrabold text-white block">
                 {product.product_type === 'software'
                   ? (product.software_details?.platforms || 'Windows & macOS')
-                  : (product.reels_details?.total_count || '~42 GB Total')}
+                  : '~42 GB Total'}
               </span>
             </div>
 
@@ -299,13 +299,13 @@ export default function ProductDetailPage({
               <span className="text-sm font-extrabold text-white block">
                 {product.product_type === 'software'
                   ? (product.software_details?.license_type || 'Lifetime License')
-                  : (product.reels_details?.rights || 'Commercial Use')}
+                  : 'Commercial Use'}
               </span>
             </div>
           </div>
 
-          {/* Optional Folders breakdown for Reels / Digital Vaults */}
-          {product.reels_details?.folder_categories && product.reels_details.folder_categories.length > 0 && (
+          {/* Optional Folders breakdown for Reels */}
+          {product.product_type === 'reels' && product.reels_details?.folder_categories && (
             <div className="pt-3 border-t border-white/[0.06] space-y-2">
               <span className="text-[11px] font-bold text-slate-300">📁 Google Drive Vault Folders:</span>
               <div className="space-y-1.5 text-xs text-slate-400">
@@ -318,7 +318,6 @@ export default function ProductDetailPage({
               </div>
             </div>
           )}
-
 
           {/* Optional Course Curriculum for Courses */}
           {product.product_type === 'course' && product.course_details?.curriculum && (
