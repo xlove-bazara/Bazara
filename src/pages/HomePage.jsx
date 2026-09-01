@@ -47,22 +47,51 @@ export default function HomePage({
     return matchesCategory && matchesSearch;
   });
 
-  // Recent buyer ticker simulation (Conversion booster)
+  // Recent buyer ticker simulation (Conversion booster with 20+ unique names)
   useEffect(() => {
     const buyers = [
-      { name: "Rahul S.", city: "Mumbai", product: "10,000+ Viral Reels Bundle", time: "2m ago" },
-      { name: "Aakash V.", city: "Delhi", product: "AI Video Editing Course", time: "4m ago" },
-      { name: "Priya M.", city: "Bangalore", product: "Zero to 100K Followers E-Book", time: "1m ago" },
-      { name: "Sameer K.", city: "Hyderabad", product: "Ultimate Creator Mega Bundle", time: "just now" }
+      { name: "Rahul S.", city: "Mumbai", time: "2m ago" },
+      { name: "Aakash V.", city: "Delhi", time: "4m ago" },
+      { name: "Priya M.", city: "Bangalore", time: "1m ago" },
+      { name: "Sameer K.", city: "Hyderabad", time: "just now" },
+      { name: "Aditya P.", city: "Pune", time: "3m ago" },
+      { name: "Sneha R.", city: "Kolkata", time: "5m ago" },
+      { name: "Vikram N.", city: "Ahmedabad", time: "2m ago" },
+      { name: "Kunal T.", city: "Jaipur", time: "1m ago" },
+      { name: "Ananya B.", city: "Chandigarh", time: "just now" },
+      { name: "Deepak G.", city: "Lucknow", time: "6m ago" },
+      { name: "Rohan M.", city: "Indore", time: "3m ago" },
+      { name: "Neha J.", city: "Surat", time: "2m ago" },
+      { name: "Karan S.", city: "Bhopal", time: "4m ago" },
+      { name: "Pooja D.", city: "Nagpur", time: "1m ago" },
+      { name: "Manish K.", city: "Patna", time: "3m ago" },
+      { name: "Ritika C.", city: "Noida", time: "just now" },
+      { name: "Arjun W.", city: "Gurgaon", time: "2m ago" },
+      { name: "Divya L.", city: "Coimbatore", time: "5m ago" },
+      { name: "Siddharth T.", city: "Kochi", time: "3m ago" },
+      { name: "Megha S.", city: "Visakhapatnam", time: "4m ago" }
     ];
 
-    const interval = setInterval(() => {
-      const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
-      setRecentBuyer(randomBuyer);
-      setTimeout(() => setRecentBuyer(null), 4000);
-    }, 10000);
+    let currentIndex = 0;
 
-    return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      setRecentBuyer(buyers[currentIndex % buyers.length]);
+      currentIndex++;
+      // Show for 6.5 seconds so it is comfortably readable
+      setTimeout(() => setRecentBuyer(null), 6500);
+    }, 14000);
+
+    // Initial first show after 3 seconds
+    const initialTimer = setTimeout(() => {
+      setRecentBuyer(buyers[0]);
+      currentIndex++;
+      setTimeout(() => setRecentBuyer(null), 6500);
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(initialTimer);
+    };
   }, []);
 
   return (
@@ -200,16 +229,22 @@ export default function HomePage({
         }}
       />
 
-      {/* Social Proof Purchase Toast */}
+      {/* Social Proof Purchase Toast (Solid Opaque, No Overlap, No Product Name) */}
       {recentBuyer && (
-        <div className="fixed bottom-20 left-4 z-40 max-w-xs animate-slideUp pointer-events-none">
-          <div className="p-2.5 rounded-2xl glass-panel border border-emerald-500/30 bg-[#0c101d]/90 shadow-2xl flex items-center space-x-2.5">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <div className="text-[11px]">
-              <span className="font-bold text-white">{recentBuyer.name}</span>
-              <span className="text-slate-400"> ({recentBuyer.city}) bought </span>
-              <span className="font-semibold text-emerald-400">{recentBuyer.product}</span>
-              <div className="text-[9px] text-slate-400">{recentBuyer.time}</div>
+        <div className="fixed bottom-16 left-3.5 z-40 max-w-[270px] pointer-events-none animate-slideUp">
+          <div className="px-3 py-2 rounded-2xl bg-[#131724] border border-emerald-500/40 shadow-2xl shadow-black flex items-center space-x-2.5">
+            <div className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+            </div>
+            <div className="text-xs min-w-0">
+              <div className="font-bold text-white truncate">
+                {recentBuyer.name} <span className="text-slate-400 font-normal text-[11px]">({recentBuyer.city})</span>
+              </div>
+              <div className="text-[10px] text-emerald-400 font-semibold flex items-center space-x-1">
+                <span>Instant Access Unlocked</span>
+                <span className="text-slate-500">•</span>
+                <span className="text-slate-400">{recentBuyer.time}</span>
+              </div>
             </div>
           </div>
         </div>
