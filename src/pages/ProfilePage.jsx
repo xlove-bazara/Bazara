@@ -37,86 +37,26 @@ export default function ProfilePage({
   onLoginClick,
   onLogout 
 }) {
-  const [currentUser, setCurrentUser] = useState(user || null);
   const [editingName, setEditingName] = useState(false);
-  const [nameInput, setNameInput] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(CARTOON_AVATARS[0].url);
+  const [nameInput, setNameInput] = useState(user?.name || '');
+  const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || CARTOON_AVATARS[0].url);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
 
-  // 1. Fetch & sync real authenticated user from Supabase session
+  // Sync state only when incoming user name/avatar changes (No infinite loops!)
   useEffect(() => {
-    const syncRealUser = async () => {
-      let realEmail = null;
-      let realName = null;
-      let realPhone = null;
-      let realAvatar = null;
-      let realId = null;
-
-      // Check live Supabase Session first
-      if (supabase) {
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) {
-            realId = session.user.id;
-            realEmail = session.user.email;
-            realPhone = session.user.phone;
-            realName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0];
-            realAvatar = session.user.user_metadata?.avatar_url;
-          }
-        } catch (e) {
-          console.warn('Session check error:', e);
-        }
-      }
-
-      // Check stored user if supabase session didn't return email
-      if (!realEmail) {
-        try {
-          const raw = localStorage.getItem('bazara_current_user');
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed?.email && parsed.email !== 'creator@bazara.in') {
-              realEmail = parsed.email;
-              realName = parsed.name || realName;
-              realPhone = parsed.phone || realPhone;
-              realAvatar = parsed.avatar || realAvatar;
-              realId = parsed.id || realId;
-            }
-          }
-        } catch (e) {}
-      }
-
-      if (realEmail || realPhone) {
-        const synched = {
-          id: realId || 'usr_' + Date.now(),
-          email: realEmail,
-          phone: realPhone,
-          name: realName || 'Creator',
-          avatar: realAvatar || CARTOON_AVATARS[0].url
-        };
-        setCurrentUser(synched);
-        setNameInput(synched.name);
-        if (synched.avatar) setSelectedAvatar(synched.avatar);
-        if (setUser) setUser(synched);
-      } else {
-        // Guest user
-        setCurrentUser(null);
-        setNameInput('Guest Creator');
-      }
-    };
-
-    syncRealUser();
-  }, [user]);
+    if (user?.name) setNameInput(user.name);
+    if (user?.avatar) setSelectedAvatar(user.avatar);
+  }, [user?.name, user?.avatar]);
 
   // Handle Save Name
   const handleSaveName = (e) => {
     if (e) e.preventDefault();
-    const cleanName = nameInput.trim() || currentUser?.name || 'Creator';
+    const cleanName = nameInput.trim() || user?.name || 'Creator';
     const updated = {
-      ...(currentUser || {}),
+      ...(user || {}),
       name: cleanName,
       avatar: selectedAvatar
     };
-    setCurrentUser(updated);
     localStorage.setItem('bazara_current_user', JSON.stringify(updated));
     if (setUser) setUser(updated);
     setEditingName(false);
@@ -128,18 +68,18 @@ export default function ProfilePage({
   const handleSelectCartoonAvatar = (avatarUrl) => {
     setSelectedAvatar(avatarUrl);
     const updated = {
-      ...(currentUser || {}),
+      ...(user || {}),
       avatar: avatarUrl
     };
-    setCurrentUser(updated);
     localStorage.setItem('bazara_current_user', JSON.stringify(updated));
     if (setUser) setUser(updated);
     setSaveSuccessMsg('✓ Cartoon avatar updated!');
     setTimeout(() => setSaveSuccessMsg(''), 2500);
   };
 
-  const displayEmail = currentUser?.email;
-  const displayName = currentUser?.name || nameInput || (displayEmail ? displayEmail.split('@')[0] : 'Guest Creator');
+  const displayEmail = user?.email && user.email !== 'creator@bazara.in' ? user.email : null;
+  const displayName = user?.name || nameInput || (displayEmail ? displayEmail.split('@')[0] : 'Guest Creator');
+
 
   return (
     <div className="min-h-screen pb-28 md:pb-16 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
@@ -227,12 +167,13 @@ export default function ProfilePage({
                     </p>
                   )}
 
-                  {currentUser?.phone && (
+                  {user?.phone && (
                     <p className="text-xs text-slate-400 font-mono flex items-center space-x-1">
                       <Phone className="w-3 h-3 text-slate-500 shrink-0" />
-                      <span>+91 {currentUser.phone}</span>
+                      <span>+91 {user.phone}</span>
                     </p>
                   )}
+
 
                   <div className="pt-1 flex items-center space-x-2">
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
