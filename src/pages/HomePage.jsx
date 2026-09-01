@@ -340,28 +340,7 @@ export default function HomePage({
           </div>
         </section>
 
-        {/* ⭐ 11. VIP COMMUNITY BANNER */}
-        <section className="px-4 py-2">
-          <div className="p-4 rounded-3xl bg-indigo-950/30 border border-indigo-500/20 space-y-2.5 text-center">
-            <h4 className="text-xs font-extrabold text-white uppercase tracking-wider">
-              Join 12,000+ Creators on Telegram
-            </h4>
-            <p className="text-[11px] text-slate-300 max-w-xs mx-auto">
-              Get free viral audio hooks, CapCut templates, and algorithm updates every single week.
-            </p>
-            <a
-              href="https://t.me/bazara_creators"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-full text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all"
-            >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>Join Free VIP Mastermind →</span>
-            </a>
-          </div>
-        </section>
-
-        {/* 12. Why bazara.in? Trust Badges */}
+        {/* 11. Why bazara.in? Trust Badges */}
         <section className="px-4 py-3 space-y-3">
           <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 text-center">
             Why 25,000+ Creators Choose bazara.in
@@ -389,6 +368,28 @@ export default function HomePage({
             </div>
           </div>
         </section>
+
+        {/* ⭐ 12. VIP COMMUNITY BANNER */}
+        <section className="px-4 py-2">
+          <div className="p-4 rounded-3xl bg-indigo-950/30 border border-indigo-500/20 space-y-2.5 text-center">
+            <h4 className="text-xs font-extrabold text-white uppercase tracking-wider">
+              Join 12,000+ Creators on Telegram
+            </h4>
+            <p className="text-[11px] text-slate-300 max-w-xs mx-auto">
+              Get free viral audio hooks, CapCut templates, and algorithm updates every single week.
+            </p>
+            <a
+              href="https://t.me/bazara_creators"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-full text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all"
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>Join Free VIP Mastermind →</span>
+            </a>
+          </div>
+        </section>
+
 
         {/* 8. Footer Info */}
         <footer className="px-4 pt-6 pb-4 border-t border-white/[0.08] text-center space-y-3">
