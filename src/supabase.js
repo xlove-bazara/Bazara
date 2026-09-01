@@ -340,7 +340,15 @@ export async function signOutUser() {
     }
   }
   localStorage.removeItem('bazara_current_user');
+  try {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('sb-') || key.includes('supabase.auth')) {
+        localStorage.removeItem(key);
+      }
+    });
+  } catch (e) {}
 }
+
 
 // ================= ADMIN PASSWORD & SECURITY HELPERS =================
 const ADMIN_PASS_KEY = 'bazara_admin_password_v1';

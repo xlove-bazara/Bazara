@@ -8,8 +8,10 @@ import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginModal from './components/LoginModal';
 import PolicyModal from './components/PolicyModal';
-import { getProducts, getSettings, createOrder, getCurrentUser, supabase } from './supabase';
+import { getProducts, getSettings, createOrder, getCurrentUser, signOutUser, supabase } from './supabase';
 import { sendOrderDeliveryEmail } from './services/emailService';
+
+
 
 
 export default function App() {
@@ -142,6 +144,13 @@ export default function App() {
     navigateTo('access', '/access');
   };
 
+  const handleUserLogout = async () => {
+    await signOutUser();
+    setUser(null);
+    navigateTo('home', '/home');
+  };
+
+
 
   const handleNavigate = (tab) => {
     if (tab === 'landing') {
@@ -242,8 +251,9 @@ export default function App() {
           onBackToHome={() => navigateTo('home', '/home')}
           onOpenAdmin={() => navigateTo('admin', '/admin')}
           onLoginClick={() => setIsLoginModalOpen(true)}
-          onLogout={() => setUser(null)}
+          onLogout={handleUserLogout}
         />
+
       )}
 
       {/* 7. ADMIN CONTROL PANEL */}

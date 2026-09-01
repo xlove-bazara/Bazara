@@ -62,10 +62,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setErrorMsg('');
-    if (!otp || otp.length < 4) {
-      setErrorMsg('Please enter the OTP sent to you');
+    if (!otp || otp.length < 6) {
+      setErrorMsg('Please enter the 6-digit OTP sent to your email');
       return;
     }
+
 
     setLoading(true);
     try {
@@ -200,21 +201,22 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           <form onSubmit={handleVerifyOtp} className="space-y-3">
             <div className="space-y-1">
               <div className="flex justify-between items-center text-xs">
-                <label className="text-[11px] font-semibold text-slate-300">Enter OTP Code</label>
+                <label className="text-[11px] font-semibold text-slate-300">Enter 6-Digit OTP Code</label>
                 <span className="text-[10px] text-emerald-400 font-mono">
                   Sent to {authMode === 'phone' ? `+91 ${identifier}` : identifier}
                 </span>
               </div>
               <input
                 type="text"
-                maxLength={10}
+                maxLength={6}
                 value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\s+/g, ''))}
-                placeholder="Enter 6 or 8 digit OTP"
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                placeholder="Enter 6-digit OTP"
                 className="w-full text-center tracking-widest text-lg font-mono font-bold py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 required
                 autoFocus
               />
+
 
               <div className="flex items-center justify-between text-[10px] pt-1">
                 <button
