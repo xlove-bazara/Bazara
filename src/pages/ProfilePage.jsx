@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   User, 
   ArrowLeft, 
@@ -6,185 +6,424 @@ import {
   ExternalLink, 
   MessageCircle, 
   ShieldCheck, 
-  Lock, 
   LogOut, 
-  HelpCircle,
-  Sparkles,
-  Award
+  Check, 
+  CheckCircle2, 
+  Edit3, 
+  Sparkles, 
+  Award,
+  Zap,
+  Lock,
+  Mail,
+  Phone
 } from 'lucide-react';
 import BottomDock from '../components/BottomDock';
 
+// 5 Premium Curated Creator Avatars
+const PRESET_AVATARS = [
+  { id: '1', url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80', label: 'Tech Pro' },
+  { id: '2', url: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200&auto=format&fit=crop&q=80', label: 'Creator' },
+  { id: '3', url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80', label: 'Designer' },
+  { id: '4', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80', label: 'Founder' },
+  { id: '5', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80', label: 'Producer' }
+];
+
 export default function ProfilePage({ 
   user, 
+  setUser,
   completedOrder, 
   onBackToHome, 
-  onOpenAdmin, 
   onLoginClick,
   onLogout 
 }) {
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState(user?.name || '');
+  const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || PRESET_AVATARS[0].url);
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
+
+  // Handle Save Name & Avatar
+  const handleSaveProfile = (e) => {
+    if (e) e.preventDefault();
+    const updatedUser = {
+      ...(user || { id: 'usr_' + Date.now(), email: 'creator@bazara.in' }),
+      name: nameInput.trim() || user?.name || 'Creator',
+      avatar: selectedAvatar
+    };
+    
+    // Save to local storage
+    localStorage.setItem('bazara_current_user', JSON.stringify(updatedUser));
+    
+    // Update parent state
+    if (setUser) setUser(updatedUser);
+    
+    setEditingName(false);
+    setSaveSuccessMsg('✓ Profile details saved successfully!');
+    setTimeout(() => setSaveSuccessMsg(''), 3000);
+  };
+
+  // Handle Quick Select Avatar
+  const handleSelectAvatar = (avatarUrl) => {
+    setSelectedAvatar(avatarUrl);
+    const updatedUser = {
+      ...(user || { id: 'usr_' + Date.now(), email: 'creator@bazara.in' }),
+      name: nameInput.trim() || user?.name || 'Creator',
+      avatar: avatarUrl
+    };
+    localStorage.setItem('bazara_current_user', JSON.stringify(updatedUser));
+    if (setUser) setUser(updatedUser);
+    setSaveSuccessMsg('✓ New avatar set!');
+    setTimeout(() => setSaveSuccessMsg(''), 2500);
+  };
+
   return (
-    <div className="min-h-screen pb-24 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
-      {/* Top Header */}
-      <header className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
-        <div className="max-w-md mx-auto flex items-center justify-between">
+    <div className="min-h-screen pb-24 md:pb-12 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+      {/* Top Header with Desktop Branding */}
+      <header className="sticky top-0 z-30 px-4 md:px-8 py-3.5 backdrop-blur-2xl bg-[#08090E]/85 border-b border-white/[0.06]">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <button
             onClick={onBackToHome}
-            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all"
+            className="flex items-center space-x-2 px-3 py-1.5 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 hover:border-white/20 active:scale-95 transition-all cursor-pointer"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-xs font-bold hidden sm:inline">Back to Store</span>
           </button>
-          <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
-            Account & Profile
-          </span>
-          <div className="w-8" />
+
+          <div className="flex items-center space-x-2">
+            <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-xl object-contain shadow-md" />
+            <div className="flex items-baseline space-x-1">
+              <span className="font-black text-base text-white">bazara</span>
+              <span className="text-xs font-bold text-emerald-400">.in</span>
+              <span className="ml-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white/[0.05] px-2 py-0.5 rounded-full border border-white/10">
+                Account & Vault
+              </span>
+            </div>
+          </div>
+
+          <div className="w-16 flex justify-end">
+            {user && (
+              <button
+                onClick={onLogout}
+                className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all border border-rose-500/20 cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Logout</span>
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
-        {/* User Card */}
-        <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-3 shadow-2xl shadow-black/50">
-          <div className="flex items-center space-x-3.5">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-emerald-500/25">
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-            </div>
-            <div className="space-y-0.5 flex-1">
-              <h3 className="text-base font-extrabold text-white">
-                {user?.name || 'Guest Creator'}
-              </h3>
-              <p className="text-xs text-slate-400 font-medium">
-                {user?.phone ? `+91 ${user.phone}` : (user?.email || 'Login to sync your purchases')}
-              </p>
-              <div className="inline-flex items-center space-x-1 text-[10px] font-bold text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Verified Creator Pass</span>
-              </div>
-            </div>
+      {/* Main Desktop Dashboard Container (2-Column Grid) */}
+      <main className="max-w-6xl mx-auto px-4 md:px-8 pt-6 md:pt-8 space-y-6">
+        
+        {saveSuccessMsg && (
+          <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold text-center animate-fade-in shadow-lg">
+            {saveSuccessMsg}
           </div>
-
-          {!user && (
-            <div className="pt-2">
-              <button
-                onClick={onLoginClick}
-                className="w-full py-2.5 rounded-2xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md active:scale-95 transition-all"
-              >
-                Login with Google / WhatsApp OTP
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* My Purchases / Instant Downloads */}
-        <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-3 shadow-2xl shadow-black/50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <FolderDown className="w-4 h-4" />
-              </div>
-              <h4 className="text-sm font-extrabold text-white">My Purchased Assets</h4>
-            </div>
-            <span className="text-[10px] font-bold text-emerald-400">G-Drive Active</span>
-          </div>
-
-          <div className="border-b border-white/[0.08]" />
-
-          {completedOrder ? (
-            <div className="p-3.5 rounded-2xl bg-[#0a0d16] border border-white/10 space-y-2.5">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h5 className="text-xs font-bold text-white">{completedOrder.productTitle}</h5>
-                  <span className="text-[10px] text-slate-400 font-mono">Order: {completedOrder.id}</span>
-                </div>
-                <span className="text-[10px] font-extrabold text-emerald-400">Paid ₹{completedOrder.amount}</span>
-              </div>
-
-              <a
-                href={completedOrder.driveUrl || "https://drive.google.com"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center space-x-1.5 transition-all"
-              >
-                <FolderDown className="w-3.5 h-3.5" />
-                <span>Open in Google Drive 📁</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          ) : (
-            <div className="p-4 rounded-2xl bg-[#0a0d16] border border-white/5 text-center space-y-2">
-              <p className="text-xs text-slate-400">No active orders yet.</p>
-              <button
-                onClick={onBackToHome}
-                className="text-xs font-bold text-emerald-400 hover:underline"
-              >
-                Browse Viral Bundles & Courses →
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Quick Links & Community */}
-        <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-3 shadow-2xl shadow-black/50">
-          <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-            Support & Community
-          </h4>
-
-          <div className="space-y-2">
-            <a
-              href="https://wa.me/919876543210"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-2xl bg-[#0a0d16] border border-white/10 flex items-center justify-between hover:bg-[#0e1220] transition-colors"
-            >
-              <div className="flex items-center space-x-3">
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold text-slate-200">24/7 WhatsApp Support</span>
-              </div>
-              <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-            </a>
-
-            <a
-              href="https://t.me/bazara_creators"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-2xl bg-[#0a0d16] border border-white/10 flex items-center justify-between hover:bg-[#0e1220] transition-colors"
-            >
-              <div className="flex items-center space-x-3">
-                <Award className="w-4 h-4 text-indigo-400" />
-                <span className="text-xs font-bold text-slate-200">Join VIP Telegram Mastermind</span>
-              </div>
-              <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-            </a>
-          </div>
-        </div>
-
-        {/* Owner / Store Admin Section (Discreet & Private) */}
-        <div className="p-4 rounded-3xl bg-gradient-to-r from-emerald-950/20 via-[#131724] to-indigo-950/20 border border-emerald-500/20 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 text-xs font-bold text-white">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Store Owner Controls</span>
-            </div>
-            <span className="text-[10px] font-bold text-slate-400">Admin Only</span>
-          </div>
-          <p className="text-[11px] text-slate-400">
-            Manage your store: add new reels packs, courses, edit prices, drive links and marquee ticker.
-          </p>
-          <button
-            onClick={onOpenAdmin}
-            className="w-full py-2.5 rounded-2xl text-xs font-bold bg-white/10 hover:bg-white/15 text-white border border-white/10 flex items-center justify-center space-x-1.5 transition-all"
-          >
-            <span>Open bazara.in Admin Panel ⚙️</span>
-          </button>
-        </div>
-
-        {user && (
-          <button
-            onClick={onLogout}
-            className="w-full py-3 rounded-2xl text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 flex items-center justify-center space-x-2 transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout Account</span>
-          </button>
         )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* ================= LEFT COLUMN: User Profile, Avatar Selection & Name Editor (4 Cols) ================= */}
+          <div className="lg:col-span-5 space-y-6">
+            
+            {/* Primary Profile Card */}
+            <div className="p-6 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-5 shadow-2xl relative overflow-hidden">
+              {/* Subtle ambient glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex items-center space-x-4">
+                {/* Active Avatar */}
+                <div className="relative group shrink-0">
+                  <img
+                    src={user?.avatar || selectedAvatar}
+                    alt={user?.name || 'User Avatar'}
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-emerald-400/80 shadow-xl shadow-emerald-500/20"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[#121624] flex items-center justify-center">
+                    <Check className="w-3 h-3 text-slate-950 stroke-[3]" />
+                  </div>
+                </div>
+
+                {/* Name & Contact Info */}
+                <div className="space-y-1 flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-black text-white truncate">
+                      {user?.name || nameInput || 'Creator Pass'}
+                    </h3>
+                    <button
+                      onClick={() => setEditingName(!editingName)}
+                      className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                      title="Edit Display Name"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-slate-400 font-medium truncate flex items-center space-x-1">
+                    <Mail className="w-3 h-3 text-slate-500 shrink-0" />
+                    <span className="truncate">{user?.email || 'Login to sync purchases'}</span>
+                  </p>
+
+                  {user?.phone && (
+                    <p className="text-xs text-slate-400 font-medium flex items-center space-x-1">
+                      <Phone className="w-3 h-3 text-slate-500 shrink-0" />
+                      <span>+91 {user.phone}</span>
+                    </p>
+                  )}
+
+                  <div className="pt-1 flex items-center space-x-2">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1" />
+                      VERIFIED PASS
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Editable Name Form */}
+              {editingName && (
+                <form onSubmit={handleSaveProfile} className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2.5">
+                  <label className="text-xs font-bold text-slate-300 block">
+                    Change Display Name:
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      placeholder="Enter your name..."
+                      className="flex-1 px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white text-xs focus:outline-none focus:border-emerald-400"
+                      autoFocus
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs cursor-pointer active:scale-95 transition-all"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* 5 Preset Creator Avatars Selection */}
+              <div className="pt-2 border-t border-white/[0.08] space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-300 flex items-center space-x-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Choose Profile Avatar</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-semibold">1-Tap to apply</span>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2">
+                  {PRESET_AVATARS.map((av) => {
+                    const isCurrent = (user?.avatar || selectedAvatar) === av.url;
+                    return (
+                      <button
+                        key={av.id}
+                        type="button"
+                        onClick={() => handleSelectAvatar(av.url)}
+                        className={`group relative rounded-xl overflow-hidden aspect-square border-2 transition-all cursor-pointer ${
+                          isCurrent 
+                            ? 'border-emerald-400 ring-2 ring-emerald-400/40 scale-105 shadow-md shadow-emerald-500/30' 
+                            : 'border-white/10 hover:border-white/30 hover:scale-105'
+                        }`}
+                      >
+                        <img
+                          src={av.url}
+                          alt={av.label}
+                          className="w-full h-full object-cover"
+                        />
+                        {isCurrent && (
+                          <div className="absolute inset-0 bg-emerald-500/20 flex items-center justify-center">
+                            <Check className="w-3.5 h-3.5 text-white stroke-[3]" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {!user && (
+                <div className="pt-2">
+                  <button
+                    onClick={onLoginClick}
+                    className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer btn-shine-effect"
+                  >
+                    Login with Google / OTP
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Account Perks & Verification Strip */}
+            <div className="p-5 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-3 shadow-xl">
+              <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+                Creator Membership Benefits
+              </h4>
+              <div className="space-y-2.5 text-xs text-slate-300 font-medium">
+                <div className="flex items-center space-x-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Instant 1-Click Google Drive Unlock</span>
+                </div>
+                <div className="flex items-center space-x-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>100% Commercial Monetization & Resell Rights</span>
+                </div>
+                <div className="flex items-center space-x-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Lifetime Free Updates on Purchased Vaults</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Logout Button */}
+            {user && (
+              <div className="block md:hidden">
+                <button
+                  onClick={onLogout}
+                  className="w-full py-3 rounded-2xl text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout Account</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* ================= RIGHT COLUMN: My Purchased Assets & Community (7 Cols) ================= */}
+          <div className="lg:col-span-7 space-y-6">
+            
+            {/* My Purchased Assets / Google Drive Vault */}
+            <div className="p-6 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-4 shadow-2xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-md">
+                    <FolderDown className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-black text-white">My Purchased Assets</h4>
+                    <span className="text-xs text-slate-400 font-medium">Direct Google Drive cloud downloads</span>
+                  </div>
+                </div>
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                  G-Drive Active
+                </span>
+              </div>
+
+              <div className="border-b border-white/[0.08]" />
+
+              {completedOrder ? (
+                <div className="p-5 rounded-2xl bg-[#090c15] border border-emerald-500/25 space-y-4 shadow-inner">
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                    <div>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-400 uppercase tracking-wider">
+                        Active Order
+                      </span>
+                      <h5 className="text-sm sm:text-base font-extrabold text-white mt-1">
+                        {completedOrder.productTitle}
+                      </h5>
+                      <span className="text-xs text-slate-400 font-mono">
+                        Order ID: {completedOrder.id}
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20 self-start sm:self-auto">
+                      Paid ₹{completedOrder.amount}
+                    </span>
+                  </div>
+
+                  <a
+                    href={completedOrder.driveUrl || "https://drive.google.com"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-lg shadow-emerald-500/25 active:scale-[0.98] cursor-pointer btn-shine-effect"
+                  >
+                    <FolderDown className="w-4 h-4 text-slate-950 stroke-[2.5]" />
+                    <span>Open in Google Drive 📁</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-950" />
+                  </a>
+                </div>
+              ) : (
+                <div className="p-8 rounded-2xl bg-[#090c15] border border-white/5 text-center space-y-3">
+                  <FolderDown className="w-10 h-10 text-slate-600 mx-auto" />
+                  <p className="text-xs font-semibold text-slate-400">
+                    Aapke account me abhi koi active purchase nahi hai.
+                  </p>
+                  <button
+                    onClick={onBackToHome}
+                    className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md transition-all cursor-pointer"
+                  >
+                    <span>Browse Bundles & Masterclass →</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Support & Community Mastermind */}
+            <div className="p-6 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-4 shadow-2xl">
+              <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+                Direct VIP Support & Community
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <a
+                  href="https://wa.me/919876543210"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-4 rounded-2xl bg-[#090c15] border border-white/10 hover:border-emerald-500/40 flex items-center justify-between group transition-all"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
+                      <MessageCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-white block group-hover:text-emerald-400 transition-colors">
+                        WhatsApp Support
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">Instant 24/7 Response</span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+                </a>
+
+                <a
+                  href="https://t.me/bazara_creators"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-4 rounded-2xl bg-[#090c15] border border-white/10 hover:border-indigo-500/40 flex items-center justify-between group transition-all"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center">
+                      <Award className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-white block group-hover:text-indigo-400 transition-colors">
+                        Telegram Mastermind
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">12K+ Creators Community</span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+                </a>
+              </div>
+            </div>
+
+            {/* Trust & Safe Delivery Guarantee */}
+            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-between text-[11px] text-slate-400 font-medium flex-wrap gap-2">
+              <span className="flex items-center">
+                <Zap className="w-3.5 h-3.5 mr-1 text-emerald-400" /> Instant Access via Google Drive
+              </span>
+              <span className="flex items-center">
+                <ShieldCheck className="w-3.5 h-3.5 mr-1 text-emerald-400" /> 100% Encrypted Payments
+              </span>
+              <span>♾️ Lifetime Vault Access</span>
+            </div>
+
+          </div>
+
+        </div>
       </main>
 
       <BottomDock 

@@ -265,14 +265,14 @@ export default function App() {
       {currentPage === 'profile' && (
         <ProfilePage
           user={user}
+          setUser={setUser}
           completedOrder={completedOrder}
           onBackToHome={() => navigateTo('home', '/home')}
-          onOpenAdmin={() => navigateTo('admin', '/admin')}
           onLoginClick={() => setIsLoginModalOpen(true)}
           onLogout={handleUserLogout}
         />
-
       )}
+
 
       {/* 7. ADMIN CONTROL PANEL */}
       {currentPage === 'admin' && (
