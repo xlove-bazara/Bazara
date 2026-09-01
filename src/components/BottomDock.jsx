@@ -3,12 +3,12 @@ import { Home, Flame, FolderDown, User, GraduationCap } from 'lucide-react';
 
 export default function BottomDock({ activeTab, onTabChange }) {
   const tabs = [
-    { id: 'landing', label: 'Masterclass', icon: GraduationCap },
     { id: 'home', label: 'Store', icon: Home },
     { id: 'deals', label: 'Deals', icon: Flame },
     { id: 'library', label: 'Downloads', icon: FolderDown },
     { id: 'profile', label: 'Profile', icon: User }
   ];
+
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 block md:hidden glass-dock bg-[#090b14]/75 backdrop-blur-2xl border-t border-white/10 pb-2 pt-2">

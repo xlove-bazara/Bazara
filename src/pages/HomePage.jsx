@@ -40,10 +40,22 @@ export default function HomePage({
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [recentBuyer, setRecentBuyer] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
   const [policyModal, setPolicyModal] = useState({ isOpen: false, tab: 'terms' });
+
+
+
+
+  // Live root course that appears on bazara.in
+  const featuredCourseId = settings?.featured_course_id || 'prod-course-ai';
+  const featuredCourse = 
+    products.find(p => p.id === featuredCourseId) ||
+    products.find(p => p.category === 'course' || p.product_type === 'course') ||
+    products[0];
+
 
   // Filter products based on Category & Search
   const filteredProducts = products.filter((p) => {
@@ -177,7 +189,12 @@ export default function HomePage({
         {/* 4. Hero Conversion Section */}
         {selectedCategory === 'all' && !searchQuery && (
           <>
-            <HeroSection onExploreClick={() => setSelectedCategory('reels')} />
+            <HeroSection 
+              featuredCourse={featuredCourse}
+              onEnroll={() => onInstantBuy(featuredCourse)}
+              onViewCourse={() => onSelectProduct(featuredCourse)}
+            />
+
 
             {/* Live Stats Strip */}
             <div className="grid grid-cols-4 gap-2 md:gap-4 text-center">
