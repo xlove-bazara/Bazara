@@ -238,10 +238,11 @@ export async function signInWithGoogle() {
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase is not configured. Please check your environment keys.');
   }
+  const redirectUrl = typeof window !== 'undefined' ? window.location.origin : 'https://bazara.in';
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin
+      redirectTo: redirectUrl
     }
   });
   if (error) throw error;
@@ -252,12 +253,14 @@ export async function sendOtp(phoneOrEmail) {
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase is not configured. Please check your environment keys.');
   }
+  const redirectUrl = typeof window !== 'undefined' ? window.location.origin : 'https://bazara.in';
 
   if (phoneOrEmail.includes('@')) {
     const { data, error } = await supabase.auth.signInWithOtp({
       email: phoneOrEmail.trim(),
       options: {
-        emailRedirectTo: window.location.origin
+        emailRedirectTo: redirectUrl,
+        shouldCreateUser: true
       }
     });
     if (error) throw error;
@@ -265,12 +268,16 @@ export async function sendOtp(phoneOrEmail) {
   } else {
     const cleanPhone = phoneOrEmail.startsWith('+') ? phoneOrEmail : `+91${phoneOrEmail.replace(/\D/g, '')}`;
     const { data, error } = await supabase.auth.signInWithOtp({
-      phone: cleanPhone
+      phone: cleanPhone,
+      options: {
+        shouldCreateUser: true
+      }
     });
     if (error) throw error;
     return { type: 'phone', data };
   }
 }
+
 
 export async function verifyOtp(phoneOrEmail, token) {
   if (!isSupabaseConfigured || !supabase) {
