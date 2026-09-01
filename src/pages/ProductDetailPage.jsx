@@ -240,65 +240,7 @@ export default function ProductDetailPage({
           </div>
         </section>
 
-        {/* 4. What's Included Card (Matching media_1788259387781.png) */}
-        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Package className="w-4 h-4" />
-            </div>
-            <h3 className="text-lg font-extrabold text-white tracking-tight">What's Included</h3>
-          </div>
-
-          <div className="border-b border-white/[0.08]" />
-
-          <div className="space-y-3.5">
-            {product.features && product.features.length > 0 ? (
-              product.features.map((item, idx) => (
-                <div key={idx} className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
-                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
-                  </div>
-                  <span className="leading-snug">{item}</span>
-                </div>
-              ))
-            ) : (
-              <>
-                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
-                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
-                  </div>
-                  <span className="leading-snug">2000+ Luxury Lifestyle B-Roll Clips (4K, 60fps)</span>
-                </div>
-                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
-                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
-                  </div>
-                  <span className="leading-snug">1500+ Motivation & Success Templates</span>
-                </div>
-                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
-                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
-                  </div>
-                  <span className="leading-snug">500+ Seamless Transitions & Effects</span>
-                </div>
-                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
-                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
-                  </div>
-                  <span className="leading-snug">Curated Trending Audio Library</span>
-                </div>
-                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
-                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
-                  </div>
-                  <span className="leading-snug">CapCut & Premiere Pro Project Files</span>
-                </div>
-              </>
-            )}
-          </div>
-        </section>
-
-        {/* 5. Specifications Card (Matching media_1788259387781.png) */}
+        {/* 4. Specifications Card (Now on Top) */}
         <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
@@ -309,7 +251,7 @@ export default function ProductDetailPage({
 
           <div className="border-b border-white/[0.08]" />
 
-          {/* Clean 2x2 Grid exactly matching the user's reference */}
+          {/* Clean 2x2 Grid matching reference */}
           <div className="grid grid-cols-2 gap-y-4 gap-x-4">
             <div>
               <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">
@@ -391,6 +333,64 @@ export default function ProductDetailPage({
               </div>
             </div>
           )}
+        </section>
+
+        {/* 5. What's Included Card (Now below Specifications) */}
+        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <Package className="w-4 h-4" />
+            </div>
+            <h3 className="text-lg font-extrabold text-white tracking-tight">What's Included</h3>
+          </div>
+
+          <div className="border-b border-white/[0.08]" />
+
+          <div className="space-y-3.5">
+            {product.features && product.features.length > 0 ? (
+              product.features.map((item, idx) => (
+                <div key={idx} className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">{item}</span>
+                </div>
+              ))
+            ) : (
+              <>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">2000+ Luxury Lifestyle B-Roll Clips (4K, 60fps)</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">1500+ Motivation & Success Templates</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">500+ Seamless Transitions & Effects</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">Curated Trending Audio Library</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">CapCut & Premiere Pro Project Files</span>
+                </div>
+              </>
+            )}
+          </div>
         </section>
 
         {/* 6. FAQ Accordion */}
