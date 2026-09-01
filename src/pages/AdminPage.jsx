@@ -33,8 +33,11 @@ import {
   TrendingUp,
   Phone,
   Search,
-  MessageCircle
+  MessageCircle,
+  Zap,
+  Image as ImageIcon
 } from 'lucide-react';
+
 import { 
   saveProduct, 
   deleteProduct, 
@@ -270,10 +273,15 @@ export default function AdminPage({
 
 
   const handleOpenEdit = (product) => {
-    setFormData(JSON.parse(JSON.stringify(product)));
+    const cloned = JSON.parse(JSON.stringify(product));
+    if (!Array.isArray(cloned.gallery_images)) {
+      cloned.gallery_images = cloned.cover_image ? [cloned.cover_image] : [];
+    }
+    setFormData(cloned);
     setEditingProduct(product);
     setIsCreatingNew(false);
   };
+
 
   const handleOpenCreate = () => {
     setFormData({
@@ -1241,16 +1249,103 @@ export default function AdminPage({
                     </div>
 
                     {/* Cover & G-Drive Link */}
+                    {/* Cover Image */}
                     <div>
-                      <label className="font-semibold text-slate-300 block mb-1">Cover Image URL</label>
-                      <input
-                        type="url"
-                        value={formData.cover_image}
-                        onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white focus:border-emerald-400 focus:outline-none"
-                        required
-                      />
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="font-semibold text-slate-300">Cover Image URL (Main Display Image)</label>
+                        {formData.cover_image && (
+                          <span className="text-[10px] text-emerald-400 font-bold">✓ Preview Active</span>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {formData.cover_image && (
+                          <img 
+                            src={formData.cover_image} 
+                            alt="Cover" 
+                            className="w-9 h-9 rounded-xl object-cover bg-white/5 border border-emerald-500/30 shrink-0"
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                        )}
+                        <input
+                          type="url"
+                          value={formData.cover_image}
+                          onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white focus:border-emerald-400 focus:outline-none"
+                          placeholder="https://images.unsplash.com/... or image url"
+                          required
+                        />
+                      </div>
                     </div>
+
+                    {/* Multiple Product Gallery Images (1 se jyada images) */}
+                    <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <label className="font-bold text-slate-200 flex items-center space-x-1.5 text-xs">
+                          <ImageIcon className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Product Extra Gallery Images (Multiple Photos)</span>
+                        </label>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+                          {(formData.gallery_images || []).length} photos
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 leading-tight">
+                        💡 Yahan aap 1 se jyada images (screenshots, samples, proofs) add kar sakte hain. Customer jab product kholega toh ye saari photos slider me dikhengi!
+                      </p>
+
+                      {/* Image List */}
+                      <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        {(formData.gallery_images || []).map((imgUrl, gIdx) => (
+                          <div key={gIdx} className="flex items-center space-x-2">
+                            <span className="text-[10px] font-mono text-slate-400 w-4 shrink-0">#{gIdx + 1}</span>
+                            {/* Preview thumbnail */}
+                            <img
+                              src={imgUrl || 'https://placehold.co/80x80/1e293b/94a3b8?text=Image'}
+                              alt=""
+                              onError={(e) => { e.target.src = 'https://placehold.co/80x80/1e293b/94a3b8?text=Image'; }}
+                              className="w-8 h-8 rounded-lg object-cover bg-white/5 border border-white/10 shrink-0"
+                            />
+                            <input
+                              type="url"
+                              value={imgUrl}
+                              onChange={(e) => {
+                                const updated = [...(formData.gallery_images || [])];
+                                updated[gIdx] = e.target.value;
+                                setFormData({ ...formData, gallery_images: updated });
+                              }}
+                              placeholder="Image direct URL (e.g. https://...)"
+                              className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs focus:border-emerald-400 focus:outline-none font-mono"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...(formData.gallery_images || [])];
+                                updated.splice(gIdx, 1);
+                                setFormData({ ...formData, gallery_images: updated });
+                              }}
+                              className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer shrink-0"
+                              title="Delete photo"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Image Button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...(formData.gallery_images || [])];
+                          updated.push('');
+                          setFormData({ ...formData, gallery_images: updated });
+                        }}
+                        className="w-full py-1.5 rounded-xl border border-dashed border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-bold text-[11px] flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>+ Add 1 More Product Image URL</span>
+                      </button>
+                    </div>
+
 
                     <div>
                       <label className="font-semibold text-slate-300 block mb-1">Google Drive Download URL (Delivered to buyer)</label>
