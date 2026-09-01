@@ -7,7 +7,7 @@ import AccessDashboardPage from './pages/AccessDashboardPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginModal from './components/LoginModal';
-import { getProducts, getSettings, createOrder, getCurrentUser } from './supabase';
+import { getProducts, getSettings, createOrder, getCurrentUser, supabase } from './supabase';
 
 
 export default function App() {
@@ -47,6 +47,26 @@ export default function App() {
       if (currentUser) setUser(currentUser);
       setLoading(false);
     })();
+
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+          const formattedUser = {
+            id: session.user.id,
+            email: session.user.email,
+            phone: session.user.phone,
+            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+            avatar: session.user.user_metadata?.avatar_url
+          };
+          setUser(formattedUser);
+          localStorage.setItem('bazara_current_user', JSON.stringify(formattedUser));
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+          localStorage.removeItem('bazara_current_user');
+        }
+      });
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
 
