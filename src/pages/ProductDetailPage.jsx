@@ -17,7 +17,10 @@ import {
   BookOpen, 
   Monitor, 
   Award,
-  Sparkles
+  Sparkles,
+  Package,
+  Cpu,
+  Check
 } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
 
@@ -237,170 +240,157 @@ export default function ProductDetailPage({
           </div>
         </section>
 
-        {/* 4. Dynamic Content Section (Adapts based on Product Type) */}
-
-        {/* A. If Reels Bundle */}
-        {product.product_type === 'reels' && product.reels_details && (
-          <section className="p-4 rounded-3xl glass-panel border border-white/10 space-y-3 bg-[#0d101d]">
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-              <Layers className="w-4 h-4 text-emerald-400" />
-              <span>Reels Pack Specifications</span>
-            </h3>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">Total Reels</span>
-                <span className="font-bold text-slate-200">{product.reels_details.total_count}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">Quality</span>
-                <span className="font-bold text-emerald-400">{product.reels_details.resolution}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">Watermark</span>
-                <span className="font-bold text-slate-200">{product.reels_details.watermark}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">Commercial License</span>
-                <span className="font-bold text-emerald-400">{product.reels_details.rights}</span>
-              </div>
+        {/* 4. What's Included Card (Matching media_1788259387781.png) */}
+        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <Package className="w-4 h-4" />
             </div>
+            <h3 className="text-lg font-extrabold text-white tracking-tight">What's Included</h3>
+          </div>
 
-            {product.reels_details.folder_categories && (
-              <div className="pt-2 space-y-1.5">
-                <span className="text-[11px] font-bold text-slate-300">📁 Google Drive Folders Included:</span>
-                <div className="space-y-1 text-xs text-slate-400">
-                  {product.reels_details.folder_categories.map((folder, idx) => (
-                    <div key={idx} className="flex items-center space-x-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{folder}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
-        )}
+          <div className="border-b border-white/[0.08]" />
 
-        {/* B. If Course */}
-        {product.product_type === 'course' && product.course_details && (
-          <section className="p-4 rounded-3xl glass-panel border border-white/10 space-y-3 bg-[#0d101d]">
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-              <BookOpen className="w-4 h-4 text-emerald-400" />
-              <span>Course Curriculum & Lessons</span>
-            </h3>
-
-            <div className="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-500/20 text-xs text-slate-300 flex items-center justify-between">
-              <div>
-                <span className="font-bold text-white block">Instructor: {product.course_details.instructor}</span>
-                <span className="text-[11px] text-indigo-300">{product.course_details.duration} • {product.course_details.modules_count}</span>
-              </div>
-              <Award className="w-6 h-6 text-indigo-400 shrink-0" />
-            </div>
-
-            {/* Curriculum Accordion */}
-            <div className="space-y-2 pt-1">
-              {product.course_details.curriculum?.map((module, idx) => {
-                const isOpen = openAccordion === idx;
-                return (
-                  <div key={idx} className="rounded-2xl border border-white/[0.08] overflow-hidden bg-white/[0.02]">
-                    <button
-                      onClick={() => setOpenAccordion(isOpen ? -1 : idx)}
-                      className="w-full p-3 text-left flex items-center justify-between text-xs font-bold text-slate-200"
-                    >
-                      <span>{module.title}</span>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[10px] text-slate-400 font-normal">{module.duration}</span>
-                        {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </div>
-                    </button>
-                    {isOpen && (
-                      <div className="px-3 pb-3 pt-1 space-y-1.5 border-t border-white/[0.05] text-[11px] text-slate-400">
-                        {module.lessons?.map((lesson, lIdx) => (
-                          <div key={lIdx} className="flex items-center space-x-2">
-                            <Play className="w-3 h-3 text-emerald-400 shrink-0" />
-                            <span>{lesson}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+          <div className="space-y-3.5">
+            {product.features && product.features.length > 0 ? (
+              product.features.map((item, idx) => (
+                <div key={idx} className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
                   </div>
-                );
-              })}
+                  <span className="leading-snug">{item}</span>
+                </div>
+              ))
+            ) : (
+              <>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">2000+ Luxury Lifestyle B-Roll Clips (4K, 60fps)</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">1500+ Motivation & Success Templates</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">500+ Seamless Transitions & Effects</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">Curated Trending Audio Library</span>
+                </div>
+                <div className="flex items-start space-x-3 text-sm font-semibold text-slate-200">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-emerald-500/30">
+                    <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                  </div>
+                  <span className="leading-snug">CapCut & Premiere Pro Project Files</span>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+
+        {/* 5. Specifications Card (Matching media_1788259387781.png) */}
+        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <Cpu className="w-4 h-4" />
             </div>
-          </section>
-        )}
+            <h3 className="text-lg font-extrabold text-white tracking-tight">Specifications</h3>
+          </div>
 
-        {/* C. If E-Book */}
-        {product.product_type === 'ebook' && product.ebook_details && (
-          <section className="p-4 rounded-3xl glass-panel border border-white/10 space-y-3 bg-[#0d101d]">
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-              <BookOpen className="w-4 h-4 text-emerald-400" />
-              <span>E-Book Blueprint Overview</span>
-            </h3>
+          <div className="border-b border-white/[0.08]" />
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">Length</span>
-                <span className="font-bold text-slate-200">{product.ebook_details.pages_count}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">Format</span>
-                <span className="font-bold text-emerald-400">{product.ebook_details.format}</span>
-              </div>
+          {/* Clean 2x2 Grid exactly matching the user's reference */}
+          <div className="grid grid-cols-2 gap-y-4 gap-x-4">
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">
+                {product.product_type === 'course' ? 'DURATION' : product.product_type === 'ebook' ? 'LENGTH' : 'RESOLUTION'}
+              </span>
+              <span className="text-sm font-extrabold text-white block">
+                {product.product_type === 'course' 
+                  ? (product.course_details?.duration || '6.5 Hours')
+                  : product.product_type === 'ebook'
+                    ? (product.ebook_details?.pages_count || '145 Pages')
+                    : '3840 × 2160 (4K UHD)'}
+              </span>
             </div>
 
-            <div className="pt-2 space-y-1.5">
-              <span className="text-[11px] font-bold text-slate-300">📑 Chapters Included:</span>
-              <div className="space-y-1 text-xs text-slate-400">
-                {product.ebook_details.chapters?.map((chap, idx) => (
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">
+                FORMAT
+              </span>
+              <span className="text-sm font-extrabold text-white block">
+                {product.product_type === 'course' 
+                  ? 'HD Video Stream, MP4'
+                  : product.product_type === 'ebook'
+                    ? '.PDF, .EPUB'
+                    : product.product_type === 'software'
+                      ? 'Installer (.EXE, .DMG)'
+                      : '.MP4, .PRPROJ'}
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">
+                {product.product_type === 'software' ? 'PLATFORM' : 'FILE SIZE'}
+              </span>
+              <span className="text-sm font-extrabold text-white block">
+                {product.product_type === 'software'
+                  ? (product.software_details?.platforms || 'Windows & macOS')
+                  : '~42 GB Total'}
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">
+                LICENSE
+              </span>
+              <span className="text-sm font-extrabold text-white block">
+                {product.product_type === 'software'
+                  ? (product.software_details?.license_type || 'Lifetime License')
+                  : 'Commercial Use'}
+              </span>
+            </div>
+          </div>
+
+          {/* Optional Folders breakdown for Reels */}
+          {product.product_type === 'reels' && product.reels_details?.folder_categories && (
+            <div className="pt-3 border-t border-white/[0.06] space-y-2">
+              <span className="text-[11px] font-bold text-slate-300">📁 Google Drive Vault Folders:</span>
+              <div className="space-y-1.5 text-xs text-slate-400">
+                {product.reels_details.folder_categories.map((folder, idx) => (
                   <div key={idx} className="flex items-center space-x-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>{chap}</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>{folder}</span>
                   </div>
                 ))}
               </div>
             </div>
-          </section>
-        )}
+          )}
 
-        {/* D. If Software */}
-        {product.product_type === 'software' && product.software_details && (
-          <section className="p-4 rounded-3xl glass-panel border border-white/10 space-y-3 bg-[#0d101d]">
-            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-              <Monitor className="w-4 h-4 text-emerald-400" />
-              <span>Software License Details</span>
-            </h3>
-
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">Platforms</span>
-                <span className="font-bold text-slate-200">{product.software_details.platforms}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                <span className="text-[10px] text-slate-400 block">License Validity</span>
-                <span className="font-bold text-emerald-400">{product.software_details.license_type}</span>
+          {/* Optional Course Curriculum for Courses */}
+          {product.product_type === 'course' && product.course_details?.curriculum && (
+            <div className="pt-3 border-t border-white/[0.06] space-y-2">
+              <span className="text-[11px] font-bold text-slate-300">🎓 Modules Breakdown:</span>
+              <div className="space-y-1.5 text-xs text-slate-400">
+                {product.course_details.curriculum.map((m, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-white/[0.02]">
+                    <span className="font-semibold text-slate-200">{m.title}</span>
+                    <span className="text-[10px] text-indigo-300">{m.duration}</span>
+                  </div>
+                ))}
               </div>
             </div>
-
-            <div className="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/20 text-xs text-emerald-300">
-              ⚡ {product.software_details.activation}
-            </div>
-          </section>
-        )}
-
-        {/* 5. Features Checklist */}
-        <section className="p-4 rounded-3xl glass-panel border border-white/10 space-y-2.5">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-300">
-            What's Included in This Bundle
-          </h3>
-          <div className="space-y-2 text-xs text-slate-300">
-            {product.features?.map((feat, idx) => (
-              <div key={idx} className="flex items-start space-x-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{feat}</span>
-              </div>
-            ))}
-          </div>
+          )}
         </section>
 
         {/* 6. FAQ Accordion */}
