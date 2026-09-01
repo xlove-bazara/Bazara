@@ -173,6 +173,32 @@ export default function AdminPage({
     }
   };
 
+  const featuredCourseId = settings?.featured_course_id || 'prod-course-ai';
+  const allCourses = products.filter(p => p.category === 'course' || p.product_type === 'course');
+  const currentFeaturedCourse = products.find(p => p.id === featuredCourseId) || allCourses[0];
+
+  const handleSetFeaturedCourse = async (courseId) => {
+    setSaveStatus('Setting Homepage Course...');
+    await updateSettings({
+      ...settings,
+      featured_course_id: courseId
+    });
+    setSaveStatus('Homepage Course Updated! ✓');
+    setTimeout(() => {
+      setSaveStatus('');
+      if (onRefresh) onRefresh();
+    }, 700);
+  };
+
+  const [productCategoryFilter, setProductCategoryFilter] = useState('all');
+
+  const filteredAdminProducts = products.filter(p => {
+    if (productCategoryFilter === 'all') return true;
+    if (productCategoryFilter === 'course') return p.category === 'course' || p.product_type === 'course';
+    if (productCategoryFilter === 'reels') return p.category === 'reels';
+    return p.category === productCategoryFilter;
+  });
+
   return (
     <div className="min-h-screen pb-20 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
       {/* Top Header */}
@@ -180,7 +206,7 @@ export default function AdminPage({
         <div className="max-w-md mx-auto flex items-center justify-between">
           <button
             onClick={onBack}
-            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all"
+            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -193,21 +219,81 @@ export default function AdminPage({
       </header>
 
       <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
+        {/* ================= PROMINENT FEATURED HOMEPAGE COURSE SELECTOR ================= */}
+        <div className="p-4 rounded-3xl bg-gradient-to-br from-emerald-950/40 via-[#121624] to-[#0c0f1a] border border-emerald-500/30 shadow-xl space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+              <h3 className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+                Active Homepage Course (bazara.in /)
+              </h3>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              Live on /
+            </span>
+          </div>
+
+          <p className="text-[11px] text-slate-300">
+            Select which video course is displayed on the root landing page (<span className="text-emerald-400 font-semibold">bazara.in</span>).
+          </p>
+
+          {/* Current Selection Dropdown */}
+          <div className="space-y-2">
+            <select
+              value={featuredCourseId}
+              onChange={(e) => handleSetFeaturedCourse(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-xl bg-[#181d2e] border border-emerald-500/40 text-xs font-bold text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 cursor-pointer"
+            >
+              {allCourses.length === 0 && (
+                <option value="">No courses available — Add a course first</option>
+              )}
+              {allCourses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  🎓 {c.title} (₹{c.price})
+                </option>
+              ))}
+            </select>
+
+            {currentFeaturedCourse && (
+              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between space-x-2">
+                <div className="flex items-center space-x-2 min-w-0">
+                  <img
+                    src={currentFeaturedCourse.cover_image}
+                    alt=""
+                    className="w-10 h-10 rounded-lg object-cover border border-white/10 shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <h5 className="text-xs font-bold text-white truncate">{currentFeaturedCourse.title}</h5>
+                    <span className="text-[10px] text-emerald-400 font-bold">₹{currentFeaturedCourse.price} • {currentFeaturedCourse.course_details?.duration || 'Video Course'}</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleOpenEdit(currentFeaturedCourse)}
+                  className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white/10 hover:bg-white/20 text-white shrink-0 cursor-pointer"
+                >
+                  Edit
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Navigation Tabs (Products vs Site Settings) */}
         <div className="flex rounded-2xl p-1 bg-[#131724] border border-white/10">
           <button
             onClick={() => setActiveTab('products')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               activeTab === 'products'
                 ? 'bg-emerald-500 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Products ({products.length})
+            Products & Courses ({products.length})
           </button>
           <button
             onClick={() => setActiveTab('settings')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
               activeTab === 'settings'
                 ? 'bg-emerald-500 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -228,7 +314,7 @@ export default function AdminPage({
                 {hasDemoProducts && (
                   <button
                     onClick={handleClearDemos}
-                    className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 flex items-center space-x-1 active:scale-95 transition-all"
+                    className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 flex items-center space-x-1 active:scale-95 transition-all cursor-pointer"
                     title="Remove all dummy/demo products"
                   >
                     <Trash2 className="w-3 h-3" />
@@ -237,7 +323,7 @@ export default function AdminPage({
                 )}
                 <button
                   onClick={handleOpenCreate}
-                  className="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center space-x-1 shadow-md active:scale-95 transition-all"
+                  className="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center space-x-1 shadow-md active:scale-95 transition-all cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Product</span>
@@ -245,49 +331,103 @@ export default function AdminPage({
               </div>
             </div>
 
+            {/* Filter Pills */}
+            <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-1 text-[11px] font-bold">
+              {[
+                { id: 'all', label: 'All (' + products.length + ')' },
+                { id: 'course', label: '🎓 Courses (' + allCourses.length + ')' },
+                { id: 'reels', label: '🎬 Reels' },
+                { id: 'ebook', label: '📚 E-Books' },
+                { id: 'software', label: '💻 Tools' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setProductCategoryFilter(f.id)}
+                  className={`px-3 py-1 rounded-full transition-all whitespace-nowrap cursor-pointer ${
+                    productCategoryFilter === f.id
+                      ? 'bg-white/20 text-white border border-white/30'
+                      : 'bg-white/[0.04] text-slate-400 hover:text-white border border-white/[0.06]'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
             {/* Products List */}
             <div className="space-y-2.5">
-              {products.map((p) => (
-                <div
-                  key={p.id}
-                  className="p-3 rounded-2xl glass-panel border border-white/10 bg-[#0d101a] flex items-center justify-between space-x-3"
-                >
-                  <img
-                    src={p.cover_image}
-                    alt={p.title}
-                    className="w-14 h-16 rounded-xl object-cover border border-white/10 shrink-0"
-                  />
-                  <div className="flex-1 min-w-0 space-y-0.5">
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-white/10 text-emerald-400 uppercase">
-                      {p.category}
-                    </span>
-                    <h4 className="text-xs font-bold text-white truncate">{p.title}</h4>
-                    <p className="text-xs font-extrabold text-emerald-400">
-                      ₹{p.price} <span className="text-[10px] text-slate-400 line-through">₹{p.original_price}</span>
-                    </p>
-                  </div>
+              {filteredAdminProducts.map((p) => {
+                const isFeatured = p.id === featuredCourseId;
+                const isCourse = p.category === 'course' || p.product_type === 'course';
 
-                  <div className="flex items-center space-x-1.5 shrink-0">
-                    <button
-                      onClick={() => handleOpenEdit(p)}
-                      className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/10"
-                      title="Edit Product"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      className="p-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/20"
-                      title="Delete Product"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                return (
+                  <div
+                    key={p.id}
+                    className={`p-3 rounded-2xl glass-panel border bg-[#0d101a] space-y-2.5 transition-all ${
+                      isFeatured ? 'border-emerald-500/50 shadow-md shadow-emerald-500/10' : 'border-white/10'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between space-x-3">
+                      <img
+                        src={p.cover_image}
+                        alt={p.title}
+                        className="w-14 h-16 rounded-xl object-cover border border-white/10 shrink-0"
+                      />
+                      <div className="flex-1 min-w-0 space-y-0.5">
+                        <div className="flex items-center space-x-1.5">
+                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-white/10 text-emerald-400 uppercase">
+                            {p.category}
+                          </span>
+                          {isFeatured && (
+                            <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                              ⭐ LIVE ON /
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="text-xs font-bold text-white truncate">{p.title}</h4>
+                        <p className="text-xs font-extrabold text-emerald-400">
+                          ₹{p.price} <span className="text-[10px] text-slate-400 line-through">₹{p.original_price}</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center space-x-1.5 shrink-0">
+                        <button
+                          onClick={() => handleOpenEdit(p)}
+                          className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/10 cursor-pointer"
+                          title="Edit Product"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className="p-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/20 cursor-pointer"
+                          title="Delete Product"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Action for Courses: Set as Homepage */}
+                    {isCourse && !isFeatured && (
+                      <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between text-[11px]">
+                        <span className="text-slate-400">Make this the homepage course:</span>
+                        <button
+                          type="button"
+                          onClick={() => handleSetFeaturedCourse(p.id)}
+                          className="px-2.5 py-1 rounded-lg font-bold bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 transition-all cursor-pointer"
+                        >
+                          Set as Homepage Course
+                        </button>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
+
 
         {/* ================= TAB 2: MARQUEE & SETTINGS ================= */}
         {activeTab === 'settings' && (
@@ -451,44 +591,109 @@ export default function AdminPage({
                   />
                 </div>
 
-                {/* 4 Sample Reels for 2x2 Grid */}
-                <div className="pt-2 border-t border-white/10 space-y-2">
-                  <span className="font-bold text-white block">2x2 Video Showcase Grid (4 Sample Reels)</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    {formData.sample_reels?.map((reel, rIdx) => (
-                      <div key={rIdx} className="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1">
-                        <span className="text-[10px] text-emerald-400 font-bold block">Reel #{rIdx + 1} Title</span>
+                {/* Short Description */}
+                <div>
+                  <label className="font-semibold text-slate-300 block mb-1">Short Description / Subtitle</label>
+                  <textarea
+                    rows={2}
+                    value={formData.short_desc || ''}
+                    onChange={(e) => setFormData({ ...formData, short_desc: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white focus:border-emerald-400 focus:outline-none"
+                    placeholder="Brief description of this course or product..."
+                  />
+                </div>
+
+                {/* Specific Fields for Courses */}
+                {(formData.category === 'course' || formData.product_type === 'course') && (
+                  <div className="p-3 rounded-2xl bg-indigo-950/20 border border-indigo-500/20 space-y-2.5">
+                    <span className="text-xs font-bold text-indigo-300 block">🎓 Course & Masterclass Details</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="font-semibold text-slate-300 block mb-1">Instructor / Mentor</label>
                         <input
                           type="text"
-                          value={reel.title}
-                          onChange={(e) => {
-                            const updated = [...formData.sample_reels];
-                            updated[rIdx].title = e.target.value;
-                            setFormData({ ...formData, sample_reels: updated });
-                          }}
-                          className="w-full px-2 py-1 rounded bg-white/[0.05] text-[11px] text-white"
-                        />
-                        <span className="text-[9px] text-slate-400 block">Sample Video MP4</span>
-                        <input
-                          type="text"
-                          value={reel.video_url}
-                          onChange={(e) => {
-                            const updated = [...formData.sample_reels];
-                            updated[rIdx].video_url = e.target.value;
-                            setFormData({ ...formData, sample_reels: updated });
-                          }}
-                          className="w-full px-2 py-1 rounded bg-white/[0.05] text-[10px] text-slate-300"
+                          value={formData.course_details?.instructor || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            course_details: { ...formData.course_details, instructor: e.target.value }
+                          })}
+                          placeholder="e.g. Vikram Sharma"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white"
                         />
                       </div>
-                    ))}
+                      <div>
+                        <label className="font-semibold text-slate-300 block mb-1">Duration</label>
+                        <input
+                          type="text"
+                          value={formData.course_details?.duration || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            course_details: { ...formData.course_details, duration: e.target.value }
+                          })}
+                          placeholder="e.g. 6.5+ Hours HD"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white"
+                        />
+                      </div>
+                    </div>
+
+                    <label className="flex items-center space-x-2 pt-1 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.id === featuredCourseId}
+                        onChange={(e) => {
+                          if (e.target.checked && formData.id) {
+                            handleSetFeaturedCourse(formData.id);
+                          }
+                        }}
+                        className="rounded border-white/20 text-emerald-500 focus:ring-emerald-400"
+                      />
+                      <span className="text-xs text-emerald-300 font-bold">
+                        Feature this course on root Homepage (bazara.in /)
+                      </span>
+                    </label>
                   </div>
-                </div>
+                )}
+
+                {/* 4 Sample Reels for 2x2 Grid (if reels/software) */}
+                {formData.category !== 'course' && (
+                  <div className="pt-2 border-t border-white/10 space-y-2">
+                    <span className="font-bold text-white block">2x2 Video Showcase Grid (4 Sample Reels)</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {formData.sample_reels?.map((reel, rIdx) => (
+                        <div key={rIdx} className="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+                          <span className="text-[10px] text-emerald-400 font-bold block">Reel #{rIdx + 1} Title</span>
+                          <input
+                            type="text"
+                            value={reel.title}
+                            onChange={(e) => {
+                              const updated = [...formData.sample_reels];
+                              updated[rIdx].title = e.target.value;
+                              setFormData({ ...formData, sample_reels: updated });
+                            }}
+                            className="w-full px-2 py-1 rounded bg-white/[0.05] text-[11px] text-white"
+                          />
+                          <span className="text-[9px] text-slate-400 block">Sample Video MP4</span>
+                          <input
+                            type="text"
+                            value={reel.video_url}
+                            onChange={(e) => {
+                              const updated = [...formData.sample_reels];
+                              updated[rIdx].video_url = e.target.value;
+                              setFormData({ ...formData, sample_reels: updated });
+                            }}
+                            className="w-full px-2 py-1 rounded bg-white/[0.05] text-[10px] text-slate-300"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Save Button */}
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all"
+                    className="w-full py-3 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
                   >
                     {saveStatus || 'Save Product to Store 🚀'}
                   </button>

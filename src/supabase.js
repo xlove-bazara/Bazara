@@ -37,11 +37,13 @@ const getStoredSettings = () => {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSiteSettings));
       return defaultSiteSettings;
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return { ...defaultSiteSettings, ...parsed };
   } catch (e) {
     return defaultSiteSettings;
   }
 };
+
 
 // API Functions
 export async function getProducts() {

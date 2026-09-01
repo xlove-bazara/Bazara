@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, User, Sparkles, X, Shield, ArrowRight, Home, Flame, FolderDown } from 'lucide-react';
+import { Search, User, Sparkles, X, Shield, ArrowRight, Home, Flame, FolderDown, GraduationCap } from 'lucide-react';
 
 export default function Header({ onSearch, onNavigate, onOpenLogin, user, activeTab = 'home' }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,6 +12,7 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
   };
 
   const navLinks = [
+    { id: 'landing', label: 'Masterclass', icon: GraduationCap },
     { id: 'home', label: 'Store', icon: Home },
     { id: 'deals', label: 'Deals', icon: Flame },
     { id: 'library', label: 'Downloads', icon: FolderDown },

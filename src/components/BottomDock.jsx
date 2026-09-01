@@ -1,8 +1,9 @@
 import React from 'react';
-import { Home, Flame, FolderDown, User } from 'lucide-react';
+import { Home, Flame, FolderDown, User, GraduationCap } from 'lucide-react';
 
 export default function BottomDock({ activeTab, onTabChange }) {
   const tabs = [
+    { id: 'landing', label: 'Masterclass', icon: GraduationCap },
     { id: 'home', label: 'Store', icon: Home },
     { id: 'deals', label: 'Deals', icon: Flame },
     { id: 'library', label: 'Downloads', icon: FolderDown },
