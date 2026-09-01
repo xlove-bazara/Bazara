@@ -9,6 +9,8 @@ import ProfilePage from './pages/ProfilePage';
 import LoginModal from './components/LoginModal';
 import PolicyModal from './components/PolicyModal';
 import { getProducts, getSettings, createOrder, getCurrentUser, supabase } from './supabase';
+import { sendOrderDeliveryEmail } from './services/emailService';
+
 
 export default function App() {
   const getPolicyTabFromPath = () => {
@@ -124,8 +126,22 @@ export default function App() {
       userId: user?.id || null
     });
     setCompletedOrder(order);
+
+    // Automatically send official Google Drive delivery email via Brevo
+    if (orderPayload.customerEmail) {
+      sendOrderDeliveryEmail({
+        customerEmail: orderPayload.customerEmail,
+        customerName: orderPayload.customerName || user?.name,
+        productTitle: orderPayload.productTitle,
+        driveUrl: orderPayload.driveUrl,
+        orderId: order.id,
+        amount: orderPayload.amount
+      }).catch(err => console.warn('Automated delivery email failed:', err));
+    }
+
     navigateTo('access', '/access');
   };
+
 
   const handleNavigate = (tab) => {
     if (tab === 'landing') {
