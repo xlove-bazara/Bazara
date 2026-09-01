@@ -22,11 +22,11 @@ export default function AccessDashboardPage({
   return (
     <div className="min-h-screen pb-20 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
-        <div className="max-w-md mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-30 px-4 sm:px-8 py-3.5 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <button
             onClick={onBackToHome}
-            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all"
+            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -37,8 +37,8 @@ export default function AccessDashboardPage({
         </div>
       </header>
 
+      <main className="max-w-2xl mx-auto px-4 py-6 space-y-5">
 
-      <main className="max-w-md mx-auto px-4 pt-4 space-y-4">
         {/* Celebration Card */}
         <div className="text-center p-6 rounded-3xl glass-panel border border-emerald-500/30 bg-gradient-to-b from-emerald-950/30 via-[#0e121d] to-[#0a0c16] space-y-2">
           <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-500/25">
@@ -70,12 +70,13 @@ export default function AccessDashboardPage({
             href={driveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/30 active:scale-[0.98] transition-all flex items-center justify-center space-x-2.5"
+            className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/30 active:scale-[0.98] transition-all flex items-center justify-center space-x-2.5 btn-shine-effect cursor-pointer"
           >
             <FolderDown className="w-5 h-5 fill-slate-950" />
             <span>OPEN IN GOOGLE DRIVE 📁</span>
             <ExternalLink className="w-4 h-4 text-slate-950" />
           </a>
+
 
           {order.upsellIncluded && (
             <div className="pt-2 border-t border-white/10 space-y-2">

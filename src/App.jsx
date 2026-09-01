@@ -7,7 +7,8 @@ import AccessDashboardPage from './pages/AccessDashboardPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginModal from './components/LoginModal';
-import { getProducts, getSettings, createOrder } from './supabase';
+import { getProducts, getSettings, createOrder, getCurrentUser } from './supabase';
+
 
 export default function App() {
   // Determine initial page from URL pathname
@@ -42,9 +43,12 @@ export default function App() {
     (async () => {
       setLoading(true);
       await refreshData();
+      const currentUser = await getCurrentUser();
+      if (currentUser) setUser(currentUser);
       setLoading(false);
     })();
   }, []);
+
 
   // Listen to browser Back/Forward navigation
   useEffect(() => {

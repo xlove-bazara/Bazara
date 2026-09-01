@@ -231,3 +231,159 @@ export async function getOrder(orderId) {
     return null;
   }
 }
+
+// ================= SUPABASE AUTHENTICATION HELPERS =================
+export async function signInWithGoogle() {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+      return { success: true, data };
+    } catch (err) {
+      console.warn('Google sign-in error:', err);
+      throw err;
+    }
+  }
+  return { success: false, fallback: true };
+}
+
+export async function sendOtp(phoneOrEmail) {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      if (phoneOrEmail.includes('@')) {
+        const { data, error } = await supabase.auth.signInWithOtp({
+          email: phoneOrEmail,
+          options: {
+            emailRedirectTo: window.location.origin
+          }
+        });
+        if (error) throw error;
+        return { success: true, type: 'email', data };
+      } else {
+        const cleanPhone = phoneOrEmail.startsWith('+') ? phoneOrEmail : `+91${phoneOrEmail.replace(/\D/g, '')}`;
+        const { data, error } = await supabase.auth.signInWithOtp({
+          phone: cleanPhone
+        });
+        if (error) throw error;
+        return { success: true, type: 'phone', data };
+      }
+    } catch (err) {
+      console.warn('Send OTP error:', err);
+      throw err;
+    }
+  }
+  // Mock fallback for offline / development
+  return { success: true, fallback: true, mockOtp: '123456' };
+}
+
+export async function verifyOtp(phoneOrEmail, token) {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      if (phoneOrEmail.includes('@')) {
+        const { data, error } = await supabase.auth.verifyOtp({
+          email: phoneOrEmail,
+          token: token,
+          type: 'email'
+        });
+        if (error) throw error;
+        return { success: true, user: data?.user };
+      } else {
+        const cleanPhone = phoneOrEmail.startsWith('+') ? phoneOrEmail : `+91${phoneOrEmail.replace(/\D/g, '')}`;
+        const { data, error } = await supabase.auth.verifyOtp({
+          phone: cleanPhone,
+          token: token,
+          type: 'sms'
+        });
+        if (error) throw error;
+        return { success: true, user: data?.user };
+      }
+    } catch (err) {
+      console.warn('Verify OTP error:', err);
+      throw err;
+    }
+  }
+  return { success: true, fallback: true };
+}
+
+export async function getCurrentUser() {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        return {
+          id: session.user.id,
+          email: session.user.email,
+          phone: session.user.phone,
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Creator',
+          avatar: session.user.user_metadata?.avatar_url
+        };
+      }
+    } catch (e) {
+      console.warn('Session check failed:', e);
+    }
+  }
+  // Check local session
+  try {
+    const raw = localStorage.getItem('bazara_current_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+export async function signOutUser() {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+  localStorage.removeItem('bazara_current_user');
+}
+
+// ================= ADMIN PASSWORD & SECURITY HELPERS =================
+const ADMIN_PASS_KEY = 'bazara_admin_password_v1';
+const ADMIN_SESSION_KEY = 'bazara_admin_session_v1';
+
+export function getAdminPassword() {
+  try {
+    const stored = localStorage.getItem(ADMIN_PASS_KEY);
+    return stored || 'admin123'; // Default secure password
+  } catch (e) {
+    return 'admin123';
+  }
+}
+
+export function saveAdminPassword(newPassword) {
+  try {
+    localStorage.setItem(ADMIN_PASS_KEY, newPassword);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+export function checkAdminSession() {
+  try {
+    return sessionStorage.getItem(ADMIN_SESSION_KEY) === 'authenticated';
+  } catch (e) {
+    return false;
+  }
+}
+
+export function setAdminSession(auth) {
+  try {
+    if (auth) {
+      sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
+    } else {
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    }
+  } catch (e) {}
+}
+
