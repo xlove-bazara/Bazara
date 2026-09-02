@@ -77,8 +77,9 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   };
 
   const handleVerifyOtp = async (e) => {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
     setErrorMsg('');
+    const cleanId = (identifier || '').trim();
     if (!otp || otp.length < 6) {
       setErrorMsg(`Please enter the 6-digit OTP sent to your ${authMode === 'phone' ? 'WhatsApp' : 'email'}`);
       return;
@@ -100,9 +101,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           throw new Error('Invalid OTP code. Please check WhatsApp and enter the correct code.');
         }
         sessionStorage.removeItem('bazara_pending_otp');
+        const phoneNum = (parsed.phone || cleanId).trim();
         const user = {
-          name: `Creator ${cleanId.slice(-4)}`,
-          phone: cleanId,
+          id: `user_${phoneNum.replace(/\D/g, '')}`,
+          name: `Creator ${phoneNum.slice(-4)}`,
+          phone: phoneNum,
           email: null
         };
         localStorage.setItem('bazara_current_user', JSON.stringify(user));
@@ -112,12 +115,19 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         return;
       }
 
-      const res = await verifyOtp(identifier.trim(), otp);
+      const res = await verifyOtp(cleanId, otp);
       setLoading(false);
-      const user = res?.user || {
-        name: identifier.split('@')[0] || identifier,
-        email: identifier.includes('@') ? identifier : null,
-        phone: !identifier.includes('@') ? identifier : null
+      const user = res?.user ? {
+        id: res.user.id,
+        email: res.user.email,
+        phone: res.user.phone,
+        name: res.user.user_metadata?.full_name || res.user.email?.split('@')[0] || 'Creator',
+        avatar: res.user.user_metadata?.avatar_url
+      } : {
+        id: `user_${cleanId.replace(/[^a-zA-Z0-9]/g, '')}`,
+        name: cleanId.split('@')[0] || cleanId,
+        email: cleanId.includes('@') ? cleanId : null,
+        phone: !cleanId.includes('@') ? cleanId : null
       };
       localStorage.setItem('bazara_current_user', JSON.stringify(user));
       onLoginSuccess(user);
