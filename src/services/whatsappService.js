@@ -41,13 +41,17 @@ async function sendMetaTemplateMessage({ to, templateName, components }) {
       })
     });
 
-    if (res.ok) {
+    const isJson = res.headers.get('content-type')?.includes('application/json');
+    if (res.ok && isJson) {
       const data = await res.json();
       console.log('WhatsApp template dispatched via serverless:', data);
       return { success: true, data };
+    } else {
+      const errText = await res.text();
+      console.warn('Serverless endpoint response issue:', res.status, errText.slice(0, 100));
     }
   } catch (err) {
-    console.warn('Serverless WhatsApp endpoint unavailable, attempting direct fallback...');
+    console.warn('Serverless WhatsApp endpoint unavailable, attempting direct fallback...', err);
   }
 
   // Attempt 2: Direct Meta Graph API fallback
