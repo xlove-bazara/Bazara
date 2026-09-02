@@ -4,7 +4,7 @@ import { Star, ArrowRight, ShieldCheck, Zap, Video, CheckCircle, GraduationCap, 
 export default function HeroSection({ featuredCourse, onEnroll, onViewCourse }) {
   const course = featuredCourse || {
     id: 'prod-course-ai',
-    title: 'Website Development with AI Masterclass',
+    title: 'Full-Stack App & Website Development with AI Masterclass',
     price: 499,
     original_price: 3999,
     discount_percentage: 88,
@@ -80,7 +80,7 @@ export default function HeroSection({ featuredCourse, onEnroll, onViewCourse }) 
                 {course.title}
               </h1>
               <p className="text-xs sm:text-sm md:text-base text-slate-300 mt-1 sm:mt-2 leading-relaxed line-clamp-2 sm:line-clamp-none max-w-2xl">
-                Zero coding headache se live production website banana seekhein using AI Tools (Cursor, ChatGPT & Vercel). Instant 1-Second Drive Access.
+                Zero coding headache se live production mobile apps & websites banana seekhein using AI Tools (Cursor, ChatGPT & Vercel). Instant 1-Second Drive Access.
               </p>
             </div>
 

@@ -56,7 +56,7 @@ export default function CourseLandingPage({
 
   const defaultWebDevCourse = {
     id: 'prod-course-ai',
-    title: 'Website Development with AI Masterclass',
+    title: 'Full-Stack App & Website Development with AI Masterclass',
     price: 499,
     original_price: 3999,
     discount_percentage: 88,
@@ -65,13 +65,13 @@ export default function CourseLandingPage({
     reviews_count: 1680,
     downloads_count: 12400,
     cover_image: '/course-banner.jpg',
-    short_desc: 'Master modern full-stack website development with cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, connect dynamic backends, and get high-paying freelance web clients.',
+    short_desc: 'Master modern full-stack app & website development using cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, mobile apps, connect dynamic backends, and get high-paying freelance clients.',
     course_details: {
       instructor: 'Viplav Kumar (Senior Full-Stack Engineer & AI Specialist)',
       duration: '8.5+ Hours of HD Video Lessons',
       modules_count: '5 In-Depth Modules (32 Lessons)',
       level: 'Beginner to Advanced (Zero coding background required)',
-      certificate: 'Official bazara.in Verified Web Development Certificate'
+      certificate: 'Official bazara.in Verified App & Web Development Certificate'
     }
   };
 
@@ -361,7 +361,7 @@ export default function CourseLandingPage({
                 className="w-full py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
               >
                 <Zap className="w-4 h-4 fill-slate-950" />
-                <span>Enroll in Web Dev Masterclass (Instant Access)</span>
+                <span>Enroll in App & Web Dev Masterclass (Instant Access)</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 

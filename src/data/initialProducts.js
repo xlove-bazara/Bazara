@@ -85,8 +85,8 @@ export const initialProducts = [
   },
   {
     id: "prod-course-ai",
-    slug: "website-development-with-ai-masterclass",
-    title: "Website Development with AI Masterclass",
+    slug: "app-and-website-development-with-ai-masterclass",
+    title: "Full-Stack App & Website Development with AI Masterclass",
     category: "course",
     product_type: "course",
     price: 499,
@@ -143,13 +143,13 @@ export const initialProducts = [
     reviews_count: 1680,
     downloads_count: 12400,
     drive_download_url: "https://drive.google.com/drive/folders/bazara-web-dev-ai-course-modules",
-    short_desc: "Master modern website development using cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, connect dynamic backends, and get high-paying freelance web clients.",
+    short_desc: "Master modern full-stack app & website development using cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, mobile apps, connect dynamic backends, and get high-paying freelance clients.",
     course_details: {
       instructor: "Viplav Kumar (Senior Full-Stack Engineer & AI Mentor)",
       duration: "8.5 Hours Total On-Demand HD Video",
       modules_count: "5 Modules (32 Lessons)",
       level: "Beginner to Advanced (Zero coding background required)",
-      certificate: "Official bazara.in Verified Web Development Certificate",
+      certificate: "Official bazara.in Verified App & Web Development Certificate",
       curriculum: [
         {
           title: "Module 1: Web Development Foundations & AI Coding Setup",

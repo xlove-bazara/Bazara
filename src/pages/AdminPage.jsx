@@ -1102,8 +1102,7 @@ export default function AdminPage({
               )}
             </div>
           </div>
-        </div>
-      )}
+        )}
 
         {/* ================= TAB 1: PRODUCTS & COURSES MANAGEMENT ================= */}
 
