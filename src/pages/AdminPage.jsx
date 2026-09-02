@@ -38,7 +38,10 @@ import {
   Upload,
   Image as ImageIcon,
   Cpu,
-  Package
+  Package,
+  Ticket,
+  Percent,
+  Tag
 } from 'lucide-react';
 
 import { 
@@ -51,7 +54,9 @@ import {
   checkAdminSession,
   setAdminSession,
   getOrders,
-  uploadImageFile
+  uploadImageFile,
+  getCoupons,
+  saveCoupons
 } from '../supabase';
 
 
@@ -74,10 +79,33 @@ export default function AdminPage({
   const [passChangeStatus, setPassChangeStatus] = useState('');
 
   // Tab & Editor State
-  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'products' | 'settings'
+  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'products' | 'coupons' | 'settings'
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
+
+  // Coupon Management State
+  const [coupons, setCoupons] = useState([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(false);
+  const [isCreatingCoupon, setIsCreatingCoupon] = useState(false);
+  const [couponFormData, setCouponFormData] = useState({
+    code: '',
+    discount_type: 'percentage',
+    discount_value: 10,
+    is_active: true
+  });
+  const [couponSaveStatus, setCouponSaveStatus] = useState('');
+
+  const loadCoupons = async () => {
+    setLoadingCoupons(true);
+    try {
+      const data = await getCoupons();
+      setCoupons(data || []);
+    } catch (e) {
+      console.warn('Failed to load coupons:', e);
+    }
+    setLoadingCoupons(false);
+  };
 
   const loadRealOrders = async () => {
     setLoadingOrders(true);
@@ -92,6 +120,7 @@ export default function AdminPage({
 
   React.useEffect(() => {
     loadRealOrders();
+    loadCoupons();
   }, []);
 
   // Real Calculated Metrics
@@ -440,6 +469,68 @@ export default function AdminPage({
     setMarqueeTexts(marqueeTexts.filter((_, idx) => idx !== index));
   };
 
+  const handleSaveCoupon = async (e) => {
+    e.preventDefault();
+    const cleanCode = (couponFormData.code || '').trim().toUpperCase();
+    if (!cleanCode) {
+      alert('Please enter a coupon code name (e.g. VIP20)');
+      return;
+    }
+    setCouponSaveStatus('Saving coupon...');
+    try {
+      const newCoupon = {
+        id: 'coup-' + Date.now(),
+        code: cleanCode,
+        discount_type: couponFormData.discount_type || 'percentage',
+        discount_value: Number(couponFormData.discount_value) || 0,
+        is_active: couponFormData.is_active !== false,
+        created_at: new Date().toISOString()
+      };
+
+      const existingIdx = coupons.findIndex(c => c.code?.toUpperCase() === cleanCode);
+      let updated;
+      if (existingIdx >= 0) {
+        updated = [...coupons];
+        updated[existingIdx] = { ...updated[existingIdx], ...newCoupon };
+      } else {
+        updated = [newCoupon, ...coupons];
+      }
+
+      await saveCoupons(updated);
+      setCoupons(updated);
+      setCouponSaveStatus('Saved Successfully! ✓');
+      setTimeout(() => {
+        setCouponSaveStatus('');
+        setIsCreatingCoupon(false);
+        setCouponFormData({
+          code: '',
+          discount_type: 'percentage',
+          discount_value: 10,
+          is_active: true
+        });
+      }, 500);
+    } catch (err) {
+      alert('Error saving coupon: ' + err.message);
+      setCouponSaveStatus('');
+    }
+  };
+
+  const handleToggleCoupon = async (couponId) => {
+    const updated = coupons.map(c => 
+      c.id === couponId ? { ...c, is_active: !c.is_active } : c
+    );
+    setCoupons(updated);
+    await saveCoupons(updated);
+  };
+
+  const handleDeleteCoupon = async (couponId) => {
+    if (window.confirm('Are you sure you want to delete this coupon code? Customers will get an invalid code error.')) {
+      const updated = coupons.filter(c => c.id !== couponId);
+      setCoupons(updated);
+      await saveCoupons(updated);
+    }
+  };
+
   const allCourses = products.filter(p => p.category === 'course' || p.product_type === 'course');
   const featuredCourseId = settings?.featured_course_id || 'prod-course-ai';
   const currentFeaturedCourse = products.find(p => p.id === featuredCourseId) || allCourses[0];
@@ -693,6 +784,17 @@ export default function AdminPage({
               <span>Products & Courses ({products.length})</span>
             </button>
             <button
+              onClick={() => setActiveTab('coupons')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
+                activeTab === 'coupons'
+                  ? 'bg-emerald-500 text-slate-950 font-black shadow-lg shadow-emerald-500/25'
+                  : 'bg-[#131724] text-slate-400 hover:text-white border border-white/[0.06]'
+              }`}
+            >
+              <Ticket className="w-3.5 h-3.5" />
+              <span>Coupons ({coupons.length})</span>
+            </button>
+            <button
               onClick={() => setActiveTab('settings')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
                 activeTab === 'settings'
@@ -704,6 +806,18 @@ export default function AdminPage({
               <span>Marquee & Security</span>
             </button>
           </div>
+
+          {activeTab === 'coupons' && (
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setIsCreatingCoupon(true)}
+                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center space-x-1.5 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer btn-shine-effect"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create Coupon Code</span>
+              </button>
+            </div>
+          )}
 
           {activeTab === 'products' && (
             <div className="flex items-center space-x-2">
@@ -1232,6 +1346,202 @@ export default function AdminPage({
                 <p>• Password change karne ke baad agli baar login karte waqt naya password use hoga.</p>
                 <p>• Panel close karne ke baad top header me <strong className="text-rose-400">Lock Admin</strong> button dabakar lock kar sakte hain.</p>
               </div>
+            </div>
+        {/* ================= TAB 3: COUPON CODES MANAGEMENT ================= */}
+        {activeTab === 'coupons' && (
+          <div className="space-y-5 animate-fadeIn">
+            {/* Header info card */}
+            <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-base font-black text-white flex items-center space-x-2">
+                  <Ticket className="w-4 h-4 text-emerald-400" />
+                  <span>Coupon Codes & Discounts Management</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+                  Yahan se banaye huye active coupons hi checkout page par discount denge. Agar koi customer galat coupon code daalega toh website use <strong>"Wrong coupon code!"</strong> batayegi.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsCreatingCoupon(true)}
+                className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center space-x-1.5 shadow-lg shadow-emerald-500/25 cursor-pointer shrink-0 btn-shine-effect"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Naya Coupon Banayein</span>
+              </button>
+            </div>
+
+            {/* Coupons Grid / Empty State */}
+            {coupons.length === 0 ? (
+              <div className="p-12 rounded-3xl bg-[#131724]/60 border border-dashed border-white/10 text-center space-y-3">
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.04] text-slate-400 flex items-center justify-center mx-auto">
+                  <Ticket className="w-7 h-7" />
+                </div>
+                <h4 className="text-sm font-bold text-white">Abhi koi coupon code create nahi kiya gaya hai</h4>
+                <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                  Checkout me coupon code ka box available hai, per koi code active nahi hone ke karan agar customer kuch bhi type karega toh turant <strong>"Wrong coupon code"</strong> batayega.
+                </p>
+                <button
+                  onClick={() => setIsCreatingCoupon(true)}
+                  className="mt-2 px-4 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 text-xs font-bold cursor-pointer transition-all"
+                >
+                  + Generate First Coupon Code
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {coupons.map((coupon) => (
+                  <div
+                    key={coupon.id || coupon.code}
+                    className={`p-4 rounded-2xl border transition-all ${
+                      coupon.is_active !== false
+                        ? 'bg-[#131724] border-emerald-500/30 shadow-lg shadow-emerald-500/5'
+                        : 'bg-[#0d101d] border-white/[0.06] opacity-60'
+                    } space-y-3`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono font-black text-sm tracking-wider">
+                            {coupon.code}
+                          </span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            coupon.is_active !== false 
+                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                              : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                          }`}>
+                            {coupon.is_active !== false ? 'ACTIVE' : 'DISABLED'}
+                          </span>
+                        </div>
+                        <p className="text-xs font-bold text-white pt-1">
+                          {coupon.discount_type === 'percentage' 
+                            ? `${coupon.discount_value}% Discount on Total` 
+                            : `Flat ₹${coupon.discount_value} OFF`}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteCoupon(coupon.id)}
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer transition-colors"
+                        title="Delete Coupon"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
+                      <span className="text-slate-400 text-[11px]">
+                        Created: {coupon.created_at ? new Date(coupon.created_at).toLocaleDateString() : 'Active'}
+                      </span>
+                      <button
+                        onClick={() => handleToggleCoupon(coupon.id)}
+                        className={`text-[11px] font-bold px-2.5 py-1 rounded-lg cursor-pointer transition-all ${
+                          coupon.is_active !== false
+                            ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30'
+                            : 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30'
+                        }`}
+                      >
+                        {coupon.is_active !== false ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Create Coupon Modal */}
+        {isCreatingCoupon && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+            <div className="relative w-full max-w-md rounded-3xl p-6 glass-panel border border-white/15 shadow-2xl bg-[#0e111d] space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                <div className="flex items-center space-x-2">
+                  <Ticket className="w-4 h-4 text-emerald-400" />
+                  <h3 className="text-base font-black text-white">Generate Discount Coupon</h3>
+                </div>
+                <button
+                  onClick={() => setIsCreatingCoupon(false)}
+                  className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {couponSaveStatus && (
+                <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-300 text-xs font-bold text-center border border-emerald-500/30">
+                  {couponSaveStatus}
+                </div>
+              )}
+
+              <form onSubmit={handleSaveCoupon} className="space-y-4 text-xs">
+                <div>
+                  <label className="font-semibold text-slate-300 block mb-1">Coupon Code (Promo Name)</label>
+                  <input
+                    type="text"
+                    value={couponFormData.code}
+                    onChange={(e) => setCouponFormData({ ...couponFormData, code: e.target.value.toUpperCase() })}
+                    placeholder="e.g. VIP20, LAUNCH50, SPECIAL10"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white font-mono font-bold tracking-wider uppercase focus:outline-none focus:border-emerald-400"
+                    required
+                  />
+                  <span className="text-[10px] text-slate-500 block mt-1">Customer ko yahi code checkout page me daalna hoga.</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-semibold text-slate-300 block mb-1">Discount Type</label>
+                    <select
+                      value={couponFormData.discount_type}
+                      onChange={(e) => setCouponFormData({ ...couponFormData, discount_type: e.target.value })}
+                      className="w-full px-3 py-2.5 rounded-xl bg-[#131724] border border-white/10 text-white cursor-pointer focus:outline-none focus:border-emerald-400"
+                    >
+                      <option value="percentage">Percentage (% OFF)</option>
+                      <option value="flat">Flat Rupees (₹ OFF)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="font-semibold text-slate-300 block mb-1">Discount Value</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={couponFormData.discount_value}
+                      onChange={(e) => setCouponFormData({ ...couponFormData, discount_value: e.target.value })}
+                      placeholder={couponFormData.discount_type === 'percentage' ? "e.g. 10" : "e.g. 50"}
+                      className="w-full px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white font-bold focus:outline-none focus:border-emerald-400"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="is_active_check"
+                    checked={couponFormData.is_active}
+                    onChange={(e) => setCouponFormData({ ...couponFormData, is_active: e.target.checked })}
+                    className="rounded border-white/20 text-emerald-500 focus:ring-emerald-400 cursor-pointer"
+                  />
+                  <label htmlFor="is_active_check" className="font-semibold text-slate-300 cursor-pointer">
+                    Enable Coupon immediately (Active)
+                  </label>
+                </div>
+
+                <div className="flex items-center justify-end space-x-2 pt-3 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setIsCreatingCoupon(false)}
+                    className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black uppercase tracking-wider cursor-pointer btn-shine-effect shadow-lg shadow-emerald-500/25"
+                  >
+                    Save & Activate Coupon
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

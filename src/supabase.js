@@ -15,6 +15,7 @@ export const supabase = isSupabaseConfigured
 const PRODUCTS_KEY = 'bazara_products_v3';
 const SETTINGS_KEY = 'bazara_settings_v3';
 const ORDERS_KEY = 'bazara_orders_v1';
+const COUPONS_KEY = 'bazara_coupons_v1';
 
 // Seed initial products into localStorage if empty, and ensure latest course data
 const getStoredProducts = () => {
@@ -24,6 +25,9 @@ const getStoredProducts = () => {
     if (raw) {
       prods = JSON.parse(raw);
     }
+    // Filter out system records from stored products
+    prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
+
     // Guarantee that prod-course-ai defaults to Website Development with AI course while preserving user edits
     const latestWebDev = initialProducts.find(p => p.id === 'prod-course-ai');
     if (latestWebDev) {
@@ -39,7 +43,7 @@ const getStoredProducts = () => {
     return prods;
   } catch (e) {
     console.warn('LocalStorage error, using initialProducts', e);
-    return initialProducts;
+    return initialProducts.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
   }
 };
 
@@ -69,9 +73,12 @@ export async function getProducts() {
         .select('*')
         .order('created_at', { ascending: false });
       if (!error && data && data.length > 0) {
+        // Filter out system internal config records
+        const userProducts = data.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
+
         // Guarantee the course masterclass is available for landing page and admin management
-        const hasCourse = data.some(p => p.id === 'prod-course-ai' || p.category === 'course');
-        const prods = hasCourse ? data : [...data, latestWebDev].filter(Boolean);
+        const hasCourse = userProducts.some(p => p.id === 'prod-course-ai' || p.category === 'course');
+        const prods = hasCourse ? userProducts : [...userProducts, latestWebDev].filter(Boolean);
 
         const mapped = prods.map(p => {
           if (p.id === 'prod-course-ai' && latestWebDev) {
@@ -87,6 +94,58 @@ export async function getProducts() {
     }
   }
   return getStoredProducts();
+}
+
+// Coupons API Functions
+export async function getCoupons() {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('features')
+        .eq('id', 'system-coupons')
+        .maybeSingle();
+      if (!error && data && Array.isArray(data.features)) {
+        localStorage.setItem(COUPONS_KEY, JSON.stringify(data.features));
+        return data.features;
+      }
+    } catch (err) {
+      console.warn('Supabase getCoupons failed:', err);
+    }
+  }
+  try {
+    const raw = localStorage.getItem(COUPONS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+export async function saveCoupons(couponsList) {
+  const cleanList = Array.isArray(couponsList) ? couponsList : [];
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ features: cleanList })
+        .eq('id', 'system-coupons');
+      if (error) {
+        await supabase.from('products').upsert({
+          id: 'system-coupons',
+          title: 'Coupon Codes Configuration',
+          price: 0,
+          drive_download_url: 'system',
+          cover_image: 'system',
+          category: 'system',
+          features: cleanList
+        });
+      }
+    } catch (err) {
+      console.warn('Supabase saveCoupons failed:', err);
+    }
+  }
+  localStorage.setItem(COUPONS_KEY, JSON.stringify(cleanList));
+  return cleanList;
 }
 
 
