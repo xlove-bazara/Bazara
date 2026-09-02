@@ -453,14 +453,10 @@ export default function ProductDetailPage({
         </div>
       </div>
 
-      {/* Fullscreen Video Modal for 2x2 Reels */}
+      {/* Sample Video Preview Modal */}
       <VideoModal
         reel={activeReelModal}
         onClose={() => setActiveReelModal(null)}
-        onBuyClick={() => {
-          setActiveReelModal(null);
-          onBuyNow(product);
-        }}
       />
     </div>
   );

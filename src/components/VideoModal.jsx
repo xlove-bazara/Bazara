@@ -8,19 +8,28 @@ function getYouTubeId(url) {
   return match && match[1] ? match[1] : null;
 }
 
-export default function VideoModal({ isOpen, reel, videoUrl, title, onClose, onBuyClick }) {
+export default function VideoModal({ 
+  isOpen, 
+  reel, 
+  videoUrl, 
+  title, 
+  onClose, 
+  onBuyClick,
+  showBuyButton = false,
+  buyButtonText = 'Enroll Now • Instant Access ⚡'
+}) {
   if (isOpen === false || (!isOpen && !reel)) return null;
 
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef(null);
 
-  const activeVideoUrl = videoUrl || reel?.video_url || 'https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-code-screen-close-up-43093-large.mp4';
-  const activeTitle = title || reel?.title || 'Website Development with AI: Practical Workflow Preview';
-  const activeThumbnail = reel?.thumbnail || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80';
+  const activeVideoUrl = videoUrl || reel?.video_url || '';
+  const activeTitle = title || reel?.title || 'Sample Video Preview';
+  const activeThumbnail = reel?.thumbnail || '';
 
   const ytId = getYouTubeId(activeVideoUrl);
-  const isShorts = activeVideoUrl && activeVideoUrl.includes('/shorts/');
+  const isShorts = activeVideoUrl && (activeVideoUrl.includes('/shorts/') || activeVideoUrl.includes('shorts'));
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -40,24 +49,47 @@ export default function VideoModal({ isOpen, reel, videoUrl, title, onClose, onB
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
-      <div className={`relative w-full ${isShorts ? 'max-w-sm' : 'max-w-xl'} rounded-3xl overflow-hidden glass-panel border border-white/20 shadow-2xl bg-[#090b14] flex flex-col`}>
-        {/* Top Controls */}
-        <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-auto">
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-black/75 backdrop-blur-md text-emerald-400 border border-emerald-500/30 flex items-center space-x-1.5 shadow-lg">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-            <span>{ytId ? 'YouTube Video Preview' : 'Masterclass Preview • Viplav Kumar'}</span>
-          </span>
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/95 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+    >
+      {/* 1. Floating Close Button - Always anchored to top-right of screen, ALWAYS visible */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        className="fixed top-4 right-4 z-50 p-2.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-white/20 shadow-2xl active:scale-90 transition-all cursor-pointer flex items-center justify-center"
+        title="Close Video (✕)"
+      >
+        <X className="w-5 h-5 text-white" />
+      </button>
+
+      {/* 2. Video Card Container (fits within mobile screen height) */}
+      <div 
+        className={`relative w-full ${isShorts ? 'max-w-[340px] sm:max-w-sm max-h-[82dvh] h-[75dvh]' : 'max-w-xl max-h-[80dvh]'} rounded-3xl overflow-hidden glass-panel border border-white/20 shadow-2xl bg-[#090b14] flex flex-col`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Top Header Strip */}
+        <div className="px-4 py-2.5 bg-[#0e121e] border-b border-white/10 flex items-center justify-between shrink-0">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] font-bold text-slate-200 uppercase tracking-wider truncate max-w-[200px]">
+              {ytId ? 'Video Preview' : 'Sample Preview'}
+            </span>
+          </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 rounded-full bg-black/75 hover:bg-black/90 text-white backdrop-blur-md border border-white/10 transition-colors cursor-pointer shadow-lg"
+            className="text-[11px] font-semibold text-slate-400 hover:text-white px-2 py-0.5 rounded-md hover:bg-white/10 transition-colors cursor-pointer"
           >
-            <X className="w-4 h-4" />
+            Close ✕
           </button>
         </div>
 
-        {/* Video Player Container */}
-        <div className={`relative w-full ${isShorts ? 'aspect-[9/16]' : 'aspect-video'} bg-slate-950 flex items-center justify-center`}>
+        {/* Video Player Area */}
+        <div className="relative flex-1 w-full bg-slate-950 flex items-center justify-center overflow-hidden">
           {ytId ? (
             <iframe
               src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
@@ -71,7 +103,7 @@ export default function VideoModal({ isOpen, reel, videoUrl, title, onClose, onB
               <video
                 ref={videoRef}
                 src={activeVideoUrl}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 autoPlay
                 loop
                 playsInline
@@ -100,50 +132,43 @@ export default function VideoModal({ isOpen, reel, videoUrl, title, onClose, onB
               </button>
             </div>
           ) : (
-            <img src={activeThumbnail} alt={activeTitle} className="w-full h-full object-cover" />
-          )}
-
-          {/* Bottom Title Overlay (only for non-YT or overlay) */}
-          {!ytId && (
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/70 to-transparent space-y-1 pointer-events-none">
-              <h4 className="text-sm font-bold text-white drop-shadow-md">{activeTitle}</h4>
-              <div className="flex items-center space-x-2 text-xs text-emerald-400 font-semibold">
-                <span>HD 1080p Lesson Preview</span>
-                <span>•</span>
-                <span>Full Source Code Included</span>
-              </div>
+            <div className="flex flex-col items-center justify-center p-6 text-center text-slate-400">
+              <Play className="w-10 h-10 mb-2 opacity-50" />
+              <p className="text-xs">No video preview link available</p>
             </div>
           )}
         </div>
 
-        {/* YouTube direct fallback link */}
-        {ytId && (
-          <div className="px-4 py-2 bg-black/70 border-t border-white/10 flex items-center justify-between text-[11px]">
-            <span className="text-slate-300 font-medium truncate max-w-[210px]">{activeTitle}</span>
+        {/* Bottom Bar: Video Title & Direct YouTube Link */}
+        <div className="px-4 py-2.5 bg-[#0a0d16] border-t border-white/10 flex items-center justify-between text-xs shrink-0">
+          <span className="text-slate-300 font-medium truncate max-w-[190px] sm:max-w-xs">{activeTitle}</span>
+          {ytId && (
             <a
               href={`https://www.youtube.com/watch?v=${ytId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-400 font-bold hover:underline flex items-center space-x-1 shrink-0"
+              className="text-emerald-400 font-bold hover:underline flex items-center space-x-1 shrink-0 ml-2 text-[11px]"
             >
               <span>Watch on YouTube ↗</span>
             </a>
+          )}
+        </div>
+
+        {/* Optional Buy Button (Only when explicitly enabled, e.g. on Course page) */}
+        {showBuyButton && onBuyClick && (
+          <div className="p-3 bg-[#0d101a] border-t border-white/10 shrink-0">
+            <button
+              onClick={() => {
+                onClose();
+                onBuyClick();
+              }}
+              className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+            >
+              <Zap className="w-4 h-4 fill-slate-950" />
+              <span>{buyButtonText}</span>
+            </button>
           </div>
         )}
-
-        {/* Action Button with Shine Animation */}
-        <div className="p-3 bg-[#0d101a] border-t border-white/10">
-          <button
-            onClick={() => {
-              onClose();
-              if (onBuyClick) onBuyClick();
-            }}
-            className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center justify-center space-x-1.5 cursor-pointer btn-shine-effect"
-          >
-            <Zap className="w-4 h-4 fill-slate-950" />
-            <span>Enroll in Masterclass Now • Instant Access ⚡</span>
-          </button>
-        </div>
       </div>
     </div>
   );
