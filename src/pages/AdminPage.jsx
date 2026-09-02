@@ -1102,7 +1102,8 @@ export default function AdminPage({
               )}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
         {/* ================= TAB 1: PRODUCTS & COURSES MANAGEMENT ================= */}
 
@@ -1347,6 +1348,9 @@ export default function AdminPage({
                 <p>• Panel close karne ke baad top header me <strong className="text-rose-400">Lock Admin</strong> button dabakar lock kar sakte hain.</p>
               </div>
             </div>
+          </div>
+        )}
+
         {/* ================= TAB 3: COUPON CODES MANAGEMENT ================= */}
         {activeTab === 'coupons' && (
           <div className="space-y-5 animate-fadeIn">
