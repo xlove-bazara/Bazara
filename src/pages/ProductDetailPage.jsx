@@ -412,7 +412,7 @@ export default function ProductDetailPage({
       </main>
 
       {/* 7. ⭐ BOTTOM FLOATING STICKY BAR WITH ANIMATED SHINING BUY BUTTON */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-3 backdrop-blur-2xl bg-[#090b12]/90 border-t border-white/10 shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 w-full z-50 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-2xl bg-[#090b12]/95 border-t border-white/10 shadow-2xl">
         <div className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto flex items-center justify-between space-x-4">
           {/* Left Price Info */}
           <div className="pl-1">
