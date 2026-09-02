@@ -8,7 +8,7 @@ export default function HeroSection({ featuredCourse, onEnroll, onViewCourse }) 
     price: 499,
     original_price: 3999,
     discount_percentage: 88,
-    cover_image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80'
+    cover_image: '/course-banner.jpg'
   };
 
   return (
@@ -27,7 +27,7 @@ export default function HeroSection({ featuredCourse, onEnroll, onViewCourse }) 
               className="group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-slate-950 cursor-pointer aspect-[2.2/1] sm:aspect-video lg:aspect-[4/3] lg:min-h-[340px] transition-all hover:border-emerald-500/50 hover:shadow-emerald-500/20"
             >
               <img
-                src={course.cover_image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80'}
+                src={course.cover_image || '/course-banner.jpg'}
                 alt={course.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />

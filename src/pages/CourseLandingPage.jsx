@@ -71,7 +71,7 @@ export default function CourseLandingPage({
     rating: 4.96,
     reviews_count: 1680,
     downloads_count: 12400,
-    cover_image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80',
+    cover_image: '/course-banner.jpg',
     short_desc: 'Master modern full-stack website development with cutting-edge AI tools (Cursor, ChatGPT, Claude & v0). Learn to build and launch responsive websites, connect dynamic backends, and get high-paying freelance web clients.',
     course_details: {
       instructor: 'Viplav Kumar (Senior Full-Stack Engineer & AI Specialist)',
@@ -82,11 +82,9 @@ export default function CourseLandingPage({
     }
   };
 
-  const activeCourse = isOldVideoEditing ? defaultWebDevCourse : {
-    ...course,
-    cover_image: course.cover_image?.includes('1574717024653') 
-      ? 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80' 
-      : course.cover_image
+  const activeCourse = {
+    ...(isOldVideoEditing ? defaultWebDevCourse : course),
+    cover_image: '/course-banner.jpg'
   };
 
   const defaultWebDevCurriculum = [
@@ -314,41 +312,26 @@ export default function CourseLandingPage({
             </div>
           </div>
 
-          {/* Video Preview Card / Cover */}
+          {/* Course Cover Banner Image (Only image as requested, video player removed for now) */}
           <div className="pt-4 max-w-3xl mx-auto">
-            <div className="relative rounded-3xl overflow-hidden border border-white/15 shadow-2xl shadow-emerald-500/10 group bg-slate-900 aspect-video md:aspect-[21/9]">
+            <div className="relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl shadow-emerald-500/10 group bg-slate-900 aspect-video">
               <img
-                src={activeCourse.cover_image}
+                src="/course-banner.jpg"
                 alt={activeCourse.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#08090E] via-black/40 to-transparent" />
+            </div>
 
-              {/* Play Button Overlay */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                <button
-                  onClick={() => setActiveVideo({
-                    title: activeCourse.title + ' - Course Video Preview',
-                    url: trailerUrl
-                  })}
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-emerald-500/90 hover:bg-emerald-400 text-slate-950 flex items-center justify-center shadow-xl shadow-emerald-500/40 hover:scale-110 active:scale-95 transition-all cursor-pointer btn-shine-effect"
-                >
-                  <Play className="w-7 h-7 md:w-8 md:h-8 fill-slate-950 ml-1" />
-                </button>
-                <span className="mt-3 text-xs font-bold text-white tracking-wide bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                  Watch Free Course Trailer (2 mins)
-                </span>
-              </div>
-
-              {/* Badges on Video */}
-              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] text-white">
-                <span className="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md font-semibold border border-white/10">
-                  HD 1080p • 32 On-Demand Lessons
-                </span>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-500/80 text-slate-950 font-bold">
-                  Lifetime G-Drive Access
-                </span>
-              </div>
+            {/* Feature Badges below the banner */}
+            <div className="mt-3 flex items-center justify-between text-[11px] sm:text-xs text-slate-300 px-1">
+              <span className="px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md font-semibold border border-white/10 text-slate-300 flex items-center space-x-1.5 shadow-sm">
+                <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                <span>HD 1080p • 32 On-Demand Lessons</span>
+              </span>
+              <span className="px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold backdrop-blur-md flex items-center space-x-1.5 shadow-sm">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Lifetime G-Drive Access</span>
+              </span>
             </div>
           </div>
 

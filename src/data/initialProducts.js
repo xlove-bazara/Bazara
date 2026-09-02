@@ -98,7 +98,7 @@ export const initialProducts = [
     enable_bump_offer: false,
     badge: "🎓 Complete Video Course",
 
-    cover_image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80",
+    cover_image: "/course-banner.jpg",
     gallery_images: [
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80",
