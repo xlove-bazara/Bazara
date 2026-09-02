@@ -202,7 +202,9 @@ export default function AdminPage({
             'Mobile Responsiveness & Glassmorphism Animation Effects'
           ]
         }
-       reels_details: {
+      ]
+    },
+    reels_details: {
       total_count: '10,000+ 4K Reels (~42 GB)',
       resolution: '3840 × 2160 (4K UHD)',
       software_support: '.MP4, .PRPROJ, CapCut XML',
