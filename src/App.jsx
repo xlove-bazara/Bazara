@@ -115,6 +115,35 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Restore selectedProduct from URL query parameter on refresh or direct link visit
+  useEffect(() => {
+    if (products && products.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const prodIdOrSlug = params.get('id') || params.get('product') || params.get('p');
+
+      if (prodIdOrSlug) {
+        const matched = products.find(p => 
+          String(p.id).toLowerCase() === prodIdOrSlug.toLowerCase() || 
+          (p.slug && String(p.slug).toLowerCase() === prodIdOrSlug.toLowerCase())
+        );
+        if (matched) {
+          setSelectedProduct(matched);
+          return;
+        }
+      }
+
+      // If on product or checkout page and no product matched or selected yet, select default
+      if (!selectedProduct && (currentPage === 'product' || currentPage === 'checkout')) {
+        const fallback = 
+          products.find(p => p.category === 'course' || p.product_type === 'course') ||
+          products[0];
+        if (fallback) {
+          setSelectedProduct(fallback);
+        }
+      }
+    }
+  }, [products, currentPage]);
+
   // Helper to change page and push history state
   const navigateTo = (page, pathUrl) => {
     setCurrentPage(page);
@@ -138,7 +167,7 @@ export default function App() {
 
   const handleInstantBuy = (product) => {
     setSelectedProduct(product);
-    navigateTo('checkout', '/checkout');
+    navigateTo('checkout', `/checkout?id=${product.slug || product.id}`);
   };
 
   const handlePaymentComplete = async (orderPayload) => {
@@ -245,25 +274,39 @@ export default function App() {
       )}
 
       {/* 3. PRODUCT DETAIL PAGE */}
-      {currentPage === 'product' && selectedProduct && (
-        <div key={`product-${selectedProduct.id}`} className="animate-page-enter">
-          <ProductDetailPage
-            product={selectedProduct}
-            onBack={() => navigateTo('home', '/home')}
-            onBuyNow={handleInstantBuy}
-          />
+      {currentPage === 'product' && (
+        <div key={`product-${selectedProduct?.id || 'loading'}`} className="animate-page-enter">
+          {selectedProduct ? (
+            <ProductDetailPage
+              product={selectedProduct}
+              onBack={() => navigateTo('home', '/home')}
+              onBuyNow={handleInstantBuy}
+            />
+          ) : (
+            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-[#08090E] text-slate-400">
+              <div className="w-8 h-8 rounded-full border-2 border-emerald-400/20 border-t-emerald-400 animate-spin" />
+              <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Product...</p>
+            </div>
+          )}
         </div>
       )}
 
       {/* 4. CHECKOUT PAGE */}
-      {currentPage === 'checkout' && selectedProduct && (
-        <div key={`checkout-${selectedProduct.id}`} className="animate-page-enter">
-          <CheckoutPage
-            product={selectedProduct}
-            user={user}
-            onBack={() => navigateTo(selectedProduct.category === 'course' ? 'landing' : 'home', selectedProduct.category === 'course' ? '/' : '/home')}
-            onPaymentComplete={handlePaymentComplete}
-          />
+      {currentPage === 'checkout' && (
+        <div key={`checkout-${selectedProduct?.id || 'loading'}`} className="animate-page-enter">
+          {selectedProduct ? (
+            <CheckoutPage
+              product={selectedProduct}
+              user={user}
+              onBack={() => navigateTo(selectedProduct.category === 'course' ? 'landing' : 'home', selectedProduct.category === 'course' ? '/' : '/home')}
+              onPaymentComplete={handlePaymentComplete}
+            />
+          ) : (
+            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-[#08090E] text-slate-400">
+              <div className="w-8 h-8 rounded-full border-2 border-emerald-400/20 border-t-emerald-400 animate-spin" />
+              <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Checkout...</p>
+            </div>
+          )}
         </div>
       )}
 
