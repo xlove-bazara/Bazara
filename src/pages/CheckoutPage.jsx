@@ -102,6 +102,8 @@ export default function CheckoutPage({
               customerPhone: phone,
               customerEmail: email || `user_${phone.slice(-4)}@bazara.in`,
               upsellIncluded: hasBumpOffer && addUpsell,
+              upsellTitle: (hasBumpOffer && addUpsell) ? upsellTitle : null,
+              upsellDriveUrl: (hasBumpOffer && addUpsell) ? (product.bump_drive_url || null) : null,
               driveUrl: product.drive_download_url,
               razorpayPaymentId: response.razorpay_payment_id
             };
@@ -134,6 +136,8 @@ export default function CheckoutPage({
         customerPhone: phone,
         customerEmail: email || `user_${phone.slice(-4)}@bazara.in`,
         upsellIncluded: hasBumpOffer && addUpsell,
+        upsellTitle: (hasBumpOffer && addUpsell) ? upsellTitle : null,
+        upsellDriveUrl: (hasBumpOffer && addUpsell) ? (product.bump_drive_url || null) : null,
         driveUrl: product.drive_download_url,
         razorpayPaymentId: 'rzp_pay_' + Date.now()
       };

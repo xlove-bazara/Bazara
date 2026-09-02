@@ -36,7 +36,9 @@ import {
   MessageCircle,
   Zap,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Cpu,
+  Package
 } from 'lucide-react';
 
 import { 
@@ -200,13 +202,18 @@ export default function AdminPage({
             'Mobile Responsiveness & Glassmorphism Animation Effects'
           ]
         }
-      ]
-    },
-    reels_details: {
-      total_count: '5,000+ 4K Reels',
-      resolution: '4K Ultra HD',
+       reels_details: {
+      total_count: '10,000+ 4K Reels (~42 GB)',
+      resolution: '3840 × 2160 (4K UHD)',
+      software_support: '.MP4, .PRPROJ, CapCut XML',
       watermark: 'Zero Watermark',
-      rights: 'Commercial PLR Rights'
+      rights: '100% Commercial Monetization & Resell Rights',
+      folder_categories: [
+        '1. AI Avatars & Tech Models',
+        '2. Luxury Cars & Mansions',
+        '3. Motivation & Billionaire Mindset',
+        '4. Fitness & Health Motivation'
+      ]
     },
     ebook_details: {
       pages_count: '120 Pages',
@@ -219,9 +226,11 @@ export default function AdminPage({
       activation: 'Delivered via Email & WhatsApp'
     },
     enable_bump_offer: false,
+    bump_product_id: '',
     bump_title: '',
     bump_price: 99,
-    bump_desc: ''
+    bump_desc: '',
+    bump_drive_url: ''
   };
 
 
@@ -277,11 +286,29 @@ export default function AdminPage({
     }
   };
 
-
   const handleOpenEdit = (product) => {
     const cloned = JSON.parse(JSON.stringify(product));
     if (!Array.isArray(cloned.gallery_images)) {
       cloned.gallery_images = cloned.cover_image ? [cloned.cover_image] : [];
+    }
+    if (!Array.isArray(cloned.features)) {
+      cloned.features = [
+        'Instant Google Drive Lifetime Access',
+        '100% Commercial Monetization Rights',
+        'Lifetime Free Cloud Updates'
+      ];
+    }
+    if (!cloned.reels_details) {
+      cloned.reels_details = {
+        total_count: '~42 GB Total',
+        resolution: '3840 × 2160 (4K UHD)',
+        software_support: '.MP4, .PRPROJ',
+        rights: '100% Commercial Monetization & Resell Rights',
+        folder_categories: []
+      };
+    }
+    if (!Array.isArray(cloned.reels_details.folder_categories)) {
+      cloned.reels_details.folder_categories = [];
     }
     setFormData(cloned);
     setEditingProduct(product);
@@ -293,7 +320,24 @@ export default function AdminPage({
     setFormData({
       ...emptyProduct,
       id: 'prod-' + Date.now(),
-      slug: 'new-product-' + Date.now().toString().slice(-4)
+      slug: 'new-product-' + Date.now().toString().slice(-4),
+      features: [
+        'Instant Google Drive Lifetime Access',
+        '100% Commercial Monetization Rights',
+        'Lifetime Free Cloud Updates'
+      ],
+      reels_details: {
+        total_count: '10,000+ 4K Reels (~42 GB)',
+        resolution: '3840 × 2160 (4K UHD)',
+        software_support: '.MP4, .PRPROJ, CapCut XML',
+        rights: '100% Commercial Monetization & Resell Rights',
+        folder_categories: [
+          '1. AI Avatars & Tech Models',
+          '2. Luxury Cars & Mansions',
+          '3. Motivation & Billionaire Mindset',
+          '4. Fitness & Health Motivation'
+        ]
+      }
     });
     setEditingProduct(null);
     setIsCreatingNew(true);
@@ -1482,7 +1526,63 @@ export default function AdminPage({
                       </p>
 
                       {formData.enable_bump_offer && (
-                        <div className="space-y-2.5 pt-2 border-t border-amber-500/20 text-xs">
+                        <div className="space-y-3 pt-2 border-t border-amber-500/20 text-xs">
+                          {/* 1-Click Select / Search from Existing Store Products */}
+                          <div className="p-3 rounded-xl bg-black/50 border border-amber-500/30 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <label className="text-xs font-bold text-amber-300 flex items-center space-x-1.5">
+                                <Package className="w-3.5 h-3.5 text-amber-400" />
+                                <span>Store Products me se Chunein (1-Click Auto-Fill):</span>
+                              </label>
+                              {formData.bump_product_id && (
+                                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold">
+                                  ✓ Linked
+                                </span>
+                              )}
+                            </div>
+                            <select
+                              value={formData.bump_product_id || ''}
+                              onChange={(e) => {
+                                const selectedId = e.target.value;
+                                if (!selectedId) {
+                                  setFormData({
+                                    ...formData,
+                                    bump_product_id: '',
+                                    bump_title: '',
+                                    bump_price: 99,
+                                    bump_desc: '',
+                                    bump_drive_url: ''
+                                  });
+                                  return;
+                                }
+                                const p = (products || []).find(prod => String(prod.id) === String(selectedId));
+                                if (p) {
+                                  setFormData({
+                                    ...formData,
+                                    bump_product_id: p.id,
+                                    bump_title: p.title,
+                                    bump_price: p.bump_price || p.price || 99,
+                                    bump_desc: p.short_desc || p.title,
+                                    bump_drive_url: p.drive_download_url || ''
+                                  });
+                                }
+                              }}
+                              className="w-full px-3 py-2 rounded-xl bg-[#0f1320] border border-white/20 text-white font-medium focus:border-amber-400 focus:outline-none text-xs cursor-pointer"
+                            >
+                              <option value="">-- Apne kisi bhi Product ko Upsell banayein --</option>
+                              {(products || [])
+                                .filter(p => String(p.id) !== String(formData.id))
+                                .map(p => (
+                                  <option key={p.id} value={p.id}>
+                                    {p.title} (₹{p.price})
+                                  </option>
+                                ))}
+                            </select>
+                            <p className="text-[10px] text-slate-400">
+                              💡 Koi bhi product select karte hi uska Title, Price, Description aur Google Drive Link yahan auto-fill ho jayega.
+                            </p>
+                          </div>
+
                           <div className="grid grid-cols-3 gap-2">
                             <div className="col-span-2">
                               <label className="font-semibold text-slate-300 block mb-1">Bump Offer Title</label>
@@ -1513,6 +1613,19 @@ export default function AdminPage({
                               onChange={(e) => setFormData({ ...formData, bump_desc: e.target.value })}
                               placeholder="e.g. Pre-configured cinematic animations & sound effects..."
                               className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white focus:border-amber-400 focus:outline-none text-[11px]"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-semibold text-slate-300 block mb-1">
+                              Bump Google Drive Download URL (Delivered on purchase)
+                            </label>
+                            <input
+                              type="url"
+                              value={formData.bump_drive_url || ''}
+                              onChange={(e) => setFormData({ ...formData, bump_drive_url: e.target.value })}
+                              placeholder="https://drive.google.com/drive/folders/..."
+                              className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-emerald-400 font-mono focus:border-emerald-400 focus:outline-none text-[11px]"
                             />
                           </div>
                         </div>
@@ -1826,6 +1939,215 @@ export default function AdminPage({
                         </div>
                       </div>
                     )}
+
+                    {/* Specifications & Vault Details Editor (For All Products) */}
+                    <div className="p-3.5 rounded-2xl bg-indigo-950/20 border border-indigo-500/25 space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <Cpu className="w-4 h-4 text-indigo-400" />
+                        <span className="text-xs font-black text-indigo-300 uppercase tracking-wider">
+                          📐 Specifications & Vault Details
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-400">
+                        Product detail page par specifications box me ye live dikhega:
+                      </p>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            Resolution / Duration
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.resolution || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), resolution: e.target.value }
+                            })}
+                            placeholder="e.g. 3840 × 2160 (4K UHD)"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white focus:border-indigo-400 focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            Format / File Types
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.software_support || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), software_support: e.target.value }
+                            })}
+                            placeholder="e.g. .MP4, .PRPROJ, CapCut XML"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white focus:border-indigo-400 focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            Total Files / Size
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.total_count || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), total_count: e.target.value }
+                            })}
+                            placeholder="e.g. 10,000+ Files (~42 GB)"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white focus:border-indigo-400 focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-300 block mb-1">
+                            License / Rights
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.reels_details?.rights || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), rights: e.target.value }
+                            })}
+                            placeholder="e.g. 100% Commercial Monetization"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white focus:border-indigo-400 focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Google Drive Vault Folders Breakdown */}
+                      <div className="pt-2 border-t border-indigo-500/20 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[11px] font-bold text-slate-300 flex items-center space-x-1">
+                            <FolderDown className="w-3.5 h-3.5 text-indigo-400" />
+                            <span>📁 Google Drive Vault Folders (Breakdown)</span>
+                          </label>
+                          <span className="text-[10px] text-indigo-400 font-mono">
+                            {(formData.reels_details?.folder_categories || []).length} folders
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                          {(formData.reels_details?.folder_categories || []).map((folder, fIdx) => (
+                            <div key={fIdx} className="flex items-center space-x-2">
+                              <span className="text-[10px] text-indigo-400 font-mono w-4">#{fIdx + 1}</span>
+                              <input
+                                type="text"
+                                value={folder}
+                                onChange={(e) => {
+                                  const updated = [...(formData.reels_details?.folder_categories || [])];
+                                  updated[fIdx] = e.target.value;
+                                  setFormData({
+                                    ...formData,
+                                    reels_details: { ...(formData.reels_details || {}), folder_categories: updated }
+                                  });
+                                }}
+                                placeholder="e.g. 1. Luxury Lifestyle B-Roll"
+                                className="flex-1 px-2.5 py-1 rounded bg-white/[0.04] border border-white/10 text-white text-xs focus:border-indigo-400 focus:outline-none"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...(formData.reels_details?.folder_categories || [])];
+                                  updated.splice(fIdx, 1);
+                                  setFormData({
+                                    ...formData,
+                                    reels_details: { ...(formData.reels_details || {}), folder_categories: updated }
+                                  });
+                                }}
+                                className="p-1 text-slate-500 hover:text-rose-400 cursor-pointer"
+                                title="Delete folder"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...(formData.reels_details?.folder_categories || [])];
+                            updated.push(`${updated.length + 1}. New Category Folder`);
+                            setFormData({
+                              ...formData,
+                              reels_details: { ...(formData.reels_details || {}), folder_categories: updated }
+                            });
+                          }}
+                          className="w-full py-1.5 rounded-xl border border-dashed border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/10 font-bold text-[11px] flex items-center justify-center space-x-1 transition-all cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>+ Add Vault Folder Category</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* What's Included Feature Checklist Editor */}
+                    <div className="p-3.5 rounded-2xl bg-emerald-950/20 border border-emerald-500/25 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Package className="w-4 h-4 text-emerald-400" />
+                          <span className="text-xs font-black text-emerald-300 uppercase tracking-wider">
+                            📦 "What's Included" Checklist Editor
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-emerald-400 font-mono">
+                          {(formData.features || []).length} items
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-400">
+                        Customer ko product detail page par green tick marks ke sath ye checklist dikhegi:
+                      </p>
+
+                      <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        {(formData.features || []).map((featureItem, featIdx) => (
+                          <div key={featIdx} className="flex items-center space-x-2">
+                            <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                              <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
+                            </div>
+                            <input
+                              type="text"
+                              value={featureItem}
+                              onChange={(e) => {
+                                const updated = [...(formData.features || [])];
+                                updated[featIdx] = e.target.value;
+                                setFormData({ ...formData, features: updated });
+                              }}
+                              placeholder="e.g. 10,000+ 4K Reels or No Watermark..."
+                              className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs focus:border-emerald-400 focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...(formData.features || [])];
+                                updated.splice(featIdx, 1);
+                                setFormData({ ...formData, features: updated });
+                              }}
+                              className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer shrink-0"
+                              title="Delete feature"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...(formData.features || [])];
+                          updated.push('New Included Benefit / Bonus');
+                          setFormData({ ...formData, features: updated });
+                        }}
+                        className="w-full py-1.5 rounded-xl border border-dashed border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-bold text-[11px] flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>+ Add What's Included Item</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 

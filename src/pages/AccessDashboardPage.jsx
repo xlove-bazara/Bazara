@@ -79,17 +79,25 @@ export default function AccessDashboardPage({
 
 
           {order.upsellIncluded && (
-            <div className="pt-2 border-t border-white/10 space-y-2">
-              <span className="text-xs font-bold text-white block">
-                Bonus: CapCut XML Presets & SFX Audio Vault
-              </span>
+            <div className="pt-2.5 border-t border-white/10 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-amber-300 flex items-center space-x-1">
+                  <span>⚡ Special Add-on Access:</span>
+                </span>
+                <span className="text-[10px] text-emerald-400 font-bold">Unlocked</span>
+              </div>
+              <h4 className="text-xs font-semibold text-white">
+                {order.upsellTitle || 'Bonus Vault & Presets'}
+              </h4>
               <a
-                href={driveUrl + "/bonus-capcut-presets"}
+                href={order.upsellDriveUrl || driveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-2.5 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/15 text-white border border-white/10 flex items-center justify-center space-x-2 transition-all"
+                className="w-full py-3 rounded-2xl font-black text-xs uppercase tracking-wider text-slate-950 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all flex items-center justify-center space-x-2 cursor-pointer"
               >
-                <span>Download Bonus CapCut Presets →</span>
+                <FolderDown className="w-4 h-4 fill-slate-950" />
+                <span>OPEN ADD-ON IN GOOGLE DRIVE 📁</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-950" />
               </a>
             </div>
           )}

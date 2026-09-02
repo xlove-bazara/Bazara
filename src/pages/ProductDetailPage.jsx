@@ -258,11 +258,10 @@ export default function ProductDetailPage({
                 {product.product_type === 'course' ? 'DURATION' : product.product_type === 'ebook' ? 'LENGTH' : 'RESOLUTION'}
               </span>
               <span className="text-sm font-extrabold text-white block">
-                {product.product_type === 'course' 
-                  ? (product.course_details?.duration || '6.5 Hours')
-                  : product.product_type === 'ebook'
-                    ? (product.ebook_details?.pages_count || '145 Pages')
-                    : '3840 × 2160 (4K UHD)'}
+                {product.course_details?.duration || 
+                 product.ebook_details?.pages_count || 
+                 product.reels_details?.resolution || 
+                 '3840 × 2160 (4K UHD)'}
               </span>
             </div>
 
@@ -273,11 +272,10 @@ export default function ProductDetailPage({
               <span className="text-sm font-extrabold text-white block">
                 {product.product_type === 'course' 
                   ? 'HD Video Stream, MP4'
-                  : product.product_type === 'ebook'
-                    ? '.PDF, .EPUB'
-                    : product.product_type === 'software'
-                      ? 'Installer (.EXE, .DMG)'
-                      : '.MP4, .PRPROJ'}
+                  : product.ebook_details?.format || 
+                    product.software_details?.platforms || 
+                    product.reels_details?.software_support || 
+                    '.MP4, .PRPROJ'}
               </span>
             </div>
 
@@ -288,7 +286,7 @@ export default function ProductDetailPage({
               <span className="text-sm font-extrabold text-white block">
                 {product.product_type === 'software'
                   ? (product.software_details?.platforms || 'Windows & macOS')
-                  : '~42 GB Total'}
+                  : (product.reels_details?.total_count || '~42 GB Total')}
               </span>
             </div>
 
@@ -299,19 +297,19 @@ export default function ProductDetailPage({
               <span className="text-sm font-extrabold text-white block">
                 {product.product_type === 'software'
                   ? (product.software_details?.license_type || 'Lifetime License')
-                  : 'Commercial Use'}
+                  : (product.reels_details?.rights || 'Commercial Use')}
               </span>
             </div>
           </div>
 
-          {/* Optional Folders breakdown for Reels */}
-          {product.product_type === 'reels' && product.reels_details?.folder_categories && (
+          {/* Dynamic Google Drive Vault Folders breakdown */}
+          {product.reels_details?.folder_categories && product.reels_details.folder_categories.length > 0 && (
             <div className="pt-3 border-t border-white/[0.06] space-y-2">
               <span className="text-[11px] font-bold text-slate-300">📁 Google Drive Vault Folders:</span>
               <div className="space-y-1.5 text-xs text-slate-400">
                 {product.reels_details.folder_categories.map((folder, idx) => (
                   <div key={idx} className="flex items-center space-x-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
                     <span>{folder}</span>
                   </div>
                 ))}
