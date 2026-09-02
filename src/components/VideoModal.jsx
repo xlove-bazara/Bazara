@@ -60,7 +60,7 @@ export default function VideoModal({ isOpen, reel, videoUrl, title, onClose, onB
         <div className={`relative w-full ${isShorts ? 'aspect-[9/16]' : 'aspect-video'} bg-slate-950 flex items-center justify-center`}>
           {ytId ? (
             <iframe
-              src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+              src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
               title={activeTitle}
               className="w-full h-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -115,6 +115,21 @@ export default function VideoModal({ isOpen, reel, videoUrl, title, onClose, onB
             </div>
           )}
         </div>
+
+        {/* YouTube direct fallback link */}
+        {ytId && (
+          <div className="px-4 py-2 bg-black/70 border-t border-white/10 flex items-center justify-between text-[11px]">
+            <span className="text-slate-300 font-medium truncate max-w-[210px]">{activeTitle}</span>
+            <a
+              href={`https://www.youtube.com/watch?v=${ytId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-400 font-bold hover:underline flex items-center space-x-1 shrink-0"
+            >
+              <span>Watch on YouTube ↗</span>
+            </a>
+          </div>
+        )}
 
         {/* Action Button with Shine Animation */}
         <div className="p-3 bg-[#0d101a] border-t border-white/10">

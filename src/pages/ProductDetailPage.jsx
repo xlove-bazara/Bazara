@@ -40,15 +40,23 @@ export default function ProductDetailPage({
     ? product.gallery_images 
     : [product.cover_image];
 
-  // 4 sample reels for the 2x2 grid
-  const reels = product.sample_reels && product.sample_reels.length >= 4 
-    ? product.sample_reels 
-    : [
-        { id: "r1", title: "4K Viral Sample", views: "1.2M Views", type: "Sample Reel", thumbnail: product.cover_image },
-        { id: "r2", title: "Luxury Aesthetic", views: "850K Views", type: "Sample Reel", thumbnail: product.cover_image },
-        { id: "r3", title: "Customer Video Review", views: "★ 5.0 Verified", type: "Customer Proof", thumbnail: product.cover_image },
-        { id: "r4", title: "High Retention Hook", views: "2.1M Views", type: "Sample Reel", thumbnail: product.cover_image }
-      ];
+  const getYouTubeThumbnail = (url) => {
+    if (!url) return null;
+    const regExp = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/;
+    const match = url.match(regExp);
+    return match && match[1] ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : null;
+  };
+
+  // Only use actual sample reels configured for this product (with video_url or title)
+  const rawReels = Array.isArray(product.sample_reels) ? product.sample_reels : [];
+  const reels = rawReels
+    .filter(r => (r.video_url && r.video_url.trim()) || (r.title && r.title.trim()))
+    .map((r, idx) => ({
+      ...r,
+      id: r.id || `reel-${idx}`,
+      thumbnail: (r.video_url && getYouTubeThumbnail(r.video_url)) || r.thumbnail || product.cover_image,
+      type: r.type || 'Sample Reel'
+    }));
 
   const handleShare = () => {
     if (navigator.share) {
@@ -184,61 +192,67 @@ export default function ProductDetailPage({
           </div>
         </section>
 
-        {/* 3. ⭐ KHAAS FEATURE: 2x2 Reels Showcase Grid (4 Vertical 9:16 Cards in 2 Rows x 2 Columns) */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <h2 className="text-sm font-black uppercase tracking-wider text-white">
-                Live Video Samples & Proof
-              </h2>
+        {/* 3. Sample Video / Reels Showcase Grid (Dynamic: 1, 2, 3, 4, etc.) */}
+        {reels.length > 0 && (
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <h2 className="text-sm font-black uppercase tracking-wider text-white">
+                  Live Video Samples & Proof ({reels.length})
+                </h2>
+              </div>
+              <span className="text-[11px] text-slate-400">Tap to play</span>
             </div>
-            <span className="text-[11px] text-slate-400">Tap to play</span>
-          </div>
 
-          {/* 2x2 Grid (Exact 2 columns and 2 rows) */}
-          <div className="grid grid-cols-2 gap-2.5">
-            {reels.slice(0, 4).map((reel, index) => (
-              <div
-                key={reel.id || index}
-                onClick={() => setActiveReelModal(reel)}
-                className="group relative aspect-reel rounded-2xl overflow-hidden glass-panel border border-white/15 bg-slate-950 cursor-pointer shadow-lg active:scale-95 transition-all"
-              >
-                {/* 9:16 Vertical Thumbnail */}
-                <img
-                  src={reel.thumbnail}
-                  alt={reel.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+            {/* Dynamic Grid: 1 column if 1 video, 2 columns if 2 or more videos */}
+            <div className={`grid gap-2.5 ${reels.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' : 'grid-cols-2'}`}>
+              {reels.map((reel, index) => (
+                <div
+                  key={reel.id || index}
+                  onClick={() => setActiveReelModal(reel)}
+                  className="group relative aspect-reel rounded-2xl overflow-hidden glass-panel border border-white/15 bg-slate-950 cursor-pointer shadow-lg active:scale-95 transition-all"
+                >
+                  {/* 9:16 Vertical Thumbnail */}
+                  <img
+                    src={reel.thumbnail}
+                    alt={reel.title || `Sample Video ${index + 1}`}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = product.cover_image;
+                    }}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
 
-                {/* Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                  {/* Dark Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                {/* Play Button in Center */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all shadow-md">
-                    <Play className="w-5 h-5 fill-current translate-x-0.5" />
+                  {/* Play Button in Center */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-11 h-11 rounded-full bg-white/25 backdrop-blur-md border border-white/30 flex items-center justify-center text-white group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all shadow-xl">
+                      <Play className="w-5 h-5 fill-current translate-x-0.5" />
+                    </div>
+                  </div>
+
+                  {/* Top Badge */}
+                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[9px] font-bold text-slate-200 border border-white/10">
+                    {reel.type || 'Preview'}
+                  </div>
+
+                  {/* Bottom Overlay Label */}
+                  <div className="absolute bottom-2 left-2 right-2 space-y-0.5 pointer-events-none">
+                    <p className="text-[11px] font-bold text-white leading-tight line-clamp-1">
+                      {reel.title || `Sample Video ${index + 1}`}
+                    </p>
+                    <p className="text-[10px] font-semibold text-emerald-400">
+                      {reel.views || 'Tap to play'}
+                    </p>
                   </div>
                 </div>
-
-                {/* Top Badge */}
-                <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-bold text-slate-200 border border-white/10">
-                  {reel.type || 'Preview'}
-                </div>
-
-                {/* Bottom Overlay Label */}
-                <div className="absolute bottom-2 left-2 right-2 space-y-0.5 pointer-events-none">
-                  <p className="text-[11px] font-bold text-white leading-tight line-clamp-1">
-                    {reel.title}
-                  </p>
-                  <p className="text-[10px] font-semibold text-emerald-400">
-                    {reel.views}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* 4. Specifications Card (Now on Top) */}
         <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">

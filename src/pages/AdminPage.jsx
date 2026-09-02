@@ -312,6 +312,9 @@ export default function AdminPage({
     if (!Array.isArray(cloned.reels_details.folder_categories)) {
       cloned.reels_details.folder_categories = [];
     }
+    if (!Array.isArray(cloned.sample_reels)) {
+      cloned.sample_reels = [];
+    }
     setFormData(cloned);
     setEditingProduct(product);
     setIsCreatingNew(false);
@@ -1906,39 +1909,105 @@ export default function AdminPage({
                     {/* Reels / Digital Product Video Grid */}
                     {formData.category !== 'course' && (
                       <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
-                        <span className="font-bold text-white block">YouTube / Video Preview Links</span>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-white text-xs flex items-center space-x-1.5">
+                            <Film className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>YouTube / Video Preview Links</span>
+                          </span>
+                          <span className="text-[10px] text-emerald-400 font-mono">
+                            {(formData.sample_reels || []).length} videos
+                          </span>
+                        </div>
                         <p className="text-[10px] text-slate-400">
-                          💡 Yahan aap YouTube Shorts link ya video link daal sakte hain:
+                          💡 Yahan aap 1, 2, 3 ya 4 jitne chahein YouTube Shorts ya Video link daal sakte hain. Product page par utne hi videos live dikhenge aur play honge!
                         </p>
-                        <div className="space-y-2">
-                          {formData.sample_reels?.slice(0, 2).map((reel, rIdx) => (
-                            <div key={rIdx} className="p-2 rounded-xl bg-white/[0.04] space-y-1">
-                              <span className="text-[10px] text-emerald-400 font-bold block">Video #{rIdx + 1} Title</span>
-                              <input
-                                type="text"
-                                value={reel.title}
-                                onChange={(e) => {
-                                  const updated = [...formData.sample_reels];
-                                  updated[rIdx].title = e.target.value;
-                                  setFormData({ ...formData, sample_reels: updated });
-                                }}
-                                className="w-full px-2 py-1 rounded bg-white/[0.05] text-xs text-white"
-                              />
-                              <span className="text-[10px] text-slate-300 block">YouTube Link / Video URL</span>
-                              <input
-                                type="url"
-                                value={reel.video_url || ''}
-                                onChange={(e) => {
-                                  const updated = [...formData.sample_reels];
-                                  updated[rIdx].video_url = e.target.value;
-                                  setFormData({ ...formData, sample_reels: updated });
-                                }}
-                                placeholder="https://youtube.com/shorts/... or https://youtu.be/..."
-                                className="w-full px-2 py-1 rounded bg-white/[0.05] text-[11px] text-emerald-400 font-mono"
-                              />
+
+                        <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                          {(formData.sample_reels || []).map((reel, rIdx) => (
+                            <div key={rIdx} className="p-2.5 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] text-emerald-400 font-bold">Video #{rIdx + 1}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = [...(formData.sample_reels || [])];
+                                    updated.splice(rIdx, 1);
+                                    setFormData({ ...formData, sample_reels: updated });
+                                  }}
+                                  className="p-1 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                                  title="Delete video"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="text-[10px] text-slate-400 block mb-0.5">Video Title</label>
+                                  <input
+                                    type="text"
+                                    value={reel.title || ''}
+                                    onChange={(e) => {
+                                      const updated = [...(formData.sample_reels || [])];
+                                      updated[rIdx] = { ...updated[rIdx], title: e.target.value };
+                                      setFormData({ ...formData, sample_reels: updated });
+                                    }}
+                                    placeholder="e.g. 4K Viral Sample"
+                                    className="w-full px-2 py-1 rounded-lg bg-white/[0.05] text-xs text-white border border-white/10 focus:border-emerald-400 focus:outline-none"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="text-[10px] text-slate-400 block mb-0.5">Views / Tag</label>
+                                  <input
+                                    type="text"
+                                    value={reel.views || ''}
+                                    onChange={(e) => {
+                                      const updated = [...(formData.sample_reels || [])];
+                                      updated[rIdx] = { ...updated[rIdx], views: e.target.value };
+                                      setFormData({ ...formData, sample_reels: updated });
+                                    }}
+                                    placeholder="e.g. 1.2M Views"
+                                    className="w-full px-2 py-1 rounded-lg bg-white/[0.05] text-xs text-emerald-400 border border-white/10 focus:border-emerald-400 focus:outline-none"
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="text-[10px] text-slate-300 block mb-0.5">YouTube Link / Shorts URL</label>
+                                <input
+                                  type="url"
+                                  value={reel.video_url || ''}
+                                  onChange={(e) => {
+                                    const updated = [...(formData.sample_reels || [])];
+                                    updated[rIdx] = { ...updated[rIdx], video_url: e.target.value };
+                                    setFormData({ ...formData, sample_reels: updated });
+                                  }}
+                                  placeholder="https://youtube.com/shorts/... or https://youtu.be/..."
+                                  className="w-full px-2 py-1 rounded-lg bg-white/[0.05] text-[11px] text-emerald-400 font-mono border border-white/10 focus:border-emerald-400 focus:outline-none"
+                                />
+                              </div>
                             </div>
                           ))}
                         </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...(formData.sample_reels || [])];
+                            updated.push({
+                              id: 'r' + (updated.length + 1),
+                              title: `Sample Video ${updated.length + 1}`,
+                              video_url: '',
+                              views: '1.2M Views',
+                              type: 'Sample Reel'
+                            });
+                            setFormData({ ...formData, sample_reels: updated });
+                          }}
+                          className="w-full py-2 rounded-xl border border-dashed border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-bold text-xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>+ Add 1 More Sample Video</span>
+                        </button>
                       </div>
                     )}
 
