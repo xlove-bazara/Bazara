@@ -118,7 +118,7 @@ export default function CheckoutPage({
 
     // High-converting Razorpay Simulation mode (for seamless testing without live keys yet)
     setIsProcessing(true);
-    setProcessingStatus('Connecting to Razorpay Secure UPI Gateway...');
+    setProcessingStatus('Connecting to Secure UPI Gateway...');
 
     setTimeout(() => {
       setProcessingStatus('Verifying 1-Tap UPI / GPay / PhonePe / Card...');
@@ -146,10 +146,10 @@ export default function CheckoutPage({
     <div className="min-h-screen pb-20 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
       {/* Top Header */}
       <header className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
-        <div className="max-w-md mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
           <button
             onClick={onBack}
-            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all"
+            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -162,9 +162,13 @@ export default function CheckoutPage({
       </header>
 
 
-      <main className="max-w-md mx-auto px-4 pt-3 space-y-4">
-        {/* ================= 1. ORDER SUMMARY (NOW ON TOP) ================= */}
-        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* Left Column: Order Summary, Upsell Bump & Delivery Details */}
+          <div className="lg:col-span-7 space-y-4">
+            {/* ================= 1. ORDER SUMMARY ================= */}
+            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
               <Package className="w-4 h-4" />
@@ -367,91 +371,99 @@ export default function CheckoutPage({
           </div>
         </section>
 
-        {/* ================= 4. RAZORPAY PAYMENT GATEWAY & BILL (NOW LAST) ================= */}
-        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                <Lock className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="flex items-center space-x-1.5">
-                  <h3 className="text-sm font-extrabold text-white tracking-tight">Payment Gateway</h3>
-                  <span className="px-2 py-0.2 rounded-full text-[9px] font-black tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                    RAZORPAY SECURE
-                  </span>
+          </div>
+
+          {/* Right Column: Sticky Payment Gateway & Order Breakdown on Desktop */}
+          <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
+            {/* ================= 4. SECURE PAYMENT GATEWAY & BILL ================= */}
+            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="flex items-center space-x-1.5">
+                      <h3 className="text-sm font-extrabold text-white tracking-tight">Payment Gateway</h3>
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        100% SECURE CHECKOUT
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-400">100% RBI Authorized & 256-Bit Encrypted</span>
+                  </div>
                 </div>
-                <span className="text-[10px] text-slate-400">100% RBI Authorized & 256-Bit Encrypted</span>
               </div>
+
+              {/* Supported Methods Badge Strip */}
+              <div className="p-3 rounded-2xl bg-[#0a0d16] border border-white/[0.06] space-y-2">
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>All Indian Payment Modes Supported:</span>
+                  <span className="text-emerald-400">Zero Extra Fee</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 text-[10px] font-bold text-slate-300">
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Google Pay</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">PhonePe</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Paytm UPI</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Any UPI ID</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Debit/Credit Cards</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">NetBanking</span>
+                </div>
+              </div>
+
+              <div className="border-b border-white/[0.08]" />
+
+              {/* Price Breakdown */}
+              <div className="space-y-2 text-xs text-slate-300">
+                <div className="flex justify-between text-slate-400">
+                  <span>Main Asset</span>
+                  <span className="text-white font-semibold">₹{basePrice}</span>
+                </div>
+                {hasBumpOffer && addUpsell && (
+                  <div className="flex justify-between text-emerald-400">
+                    <span className="truncate max-w-[200px]">{upsellTitle}</span>
+                    <span className="font-bold shrink-0">+₹{upsellPrice}</span>
+                  </div>
+                )}
+
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-rose-400">
+                    <span>Discount Coupon</span>
+                    <span className="font-bold">-₹{discountAmount}</span>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-white/[0.06] flex justify-between items-baseline text-sm font-black text-white">
+                  <span>Total Payable:</span>
+                  <span className="text-emerald-400 text-2xl font-black">₹{total}</span>
+                </div>
+              </div>
+            </section>
+
+            {/* Big Action Pay Button */}
+            <button
+              onClick={handlePayNow}
+              disabled={isProcessing}
+              className="relative w-full overflow-hidden py-4 rounded-full font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-2xl shadow-emerald-500/40 active:scale-[0.98] transition-all flex items-center justify-center space-x-2 disabled:opacity-70 cursor-pointer"
+            >
+              <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent animate-shimmer-sweep pointer-events-none" />
+              <span className="relative z-10 flex items-center space-x-2">
+                <Lock className="w-4 h-4" />
+                <span>
+                  {isProcessing 
+                    ? (processingStatus || 'Processing Secure Payment...') 
+                    : `PAY ₹${total} & GET INSTANT ACCESS 🚀`}
+                </span>
+              </span>
+            </button>
+
+            <div className="flex items-center justify-center space-x-1.5 text-xs text-slate-400 text-center">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Instant Download Link & WhatsApp Confirmation Guaranteed</span>
             </div>
           </div>
 
-          {/* Supported Methods Badge Strip */}
-          <div className="p-3 rounded-2xl bg-[#0a0d16] border border-white/[0.06] space-y-2">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-              <span>All Indian Payment Modes Supported:</span>
-              <span className="text-emerald-400">Zero Extra Fee</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5 text-[10px] font-bold text-slate-300">
-              <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Google Pay</span>
-              <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">PhonePe</span>
-              <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Paytm UPI</span>
-              <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Any UPI ID</span>
-              <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Debit/Credit Cards</span>
-              <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">NetBanking</span>
-            </div>
-          </div>
-
-          <div className="border-b border-white/[0.08]" />
-
-          {/* Price Breakdown */}
-          <div className="space-y-2 text-xs text-slate-300">
-            <div className="flex justify-between text-slate-400">
-              <span>Main Asset</span>
-              <span className="text-white font-semibold">₹{basePrice}</span>
-            </div>
-            {hasBumpOffer && addUpsell && (
-              <div className="flex justify-between text-emerald-400">
-                <span className="truncate max-w-[200px]">{upsellTitle}</span>
-                <span className="font-bold shrink-0">+₹{upsellPrice}</span>
-              </div>
-            )}
-
-            {discountAmount > 0 && (
-              <div className="flex justify-between text-rose-400">
-                <span>Discount Coupon</span>
-                <span className="font-bold">-₹{discountAmount}</span>
-              </div>
-            )}
-            <div className="pt-2 border-t border-white/[0.06] flex justify-between items-baseline text-sm font-black text-white">
-              <span>Total Payable:</span>
-              <span className="text-emerald-400 text-2xl font-black">₹{total}</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Big Action Razorpay Pay Button */}
-        <button
-          onClick={handlePayNow}
-          disabled={isProcessing}
-          className="relative w-full overflow-hidden py-4 rounded-full font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-2xl shadow-emerald-500/40 active:scale-[0.98] transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
-        >
-          <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent animate-shimmer-sweep pointer-events-none" />
-          <span className="relative z-10 flex items-center space-x-2">
-            <Lock className="w-4 h-4" />
-            <span>
-              {isProcessing 
-                ? (processingStatus || 'Processing Secure Payment...') 
-                : `PAY ₹${total} VIA RAZORPAY 🔒`}
-            </span>
-          </span>
-        </button>
-
-        <div className="flex items-center justify-center space-x-1.5 text-xs text-slate-400 text-center">
-          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>Instant Download Link & WhatsApp Confirmation Guaranteed</span>
         </div>
       </main>
+
     </div>
   );
 }
