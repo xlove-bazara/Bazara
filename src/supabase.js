@@ -28,13 +28,19 @@ const getStoredProducts = () => {
     // Filter out system records from stored products
     prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
 
-    // Guarantee that prod-course-ai defaults to Website Development with AI course while preserving user edits
+    // Guarantee that prod-course-ai defaults to App & Website Development with AI course while preserving user edits
     const latestWebDev = initialProducts.find(p => p.id === 'prod-course-ai');
     if (latestWebDev) {
       const idx = prods.findIndex(p => p.id === 'prod-course-ai');
       if (idx >= 0) {
-        const isStaleVideo = prods[idx].title && (prods[idx].title.includes('Video Editing') || prods[idx].title.includes('Shorts Monetization'));
-        prods[idx] = isStaleVideo ? { ...latestWebDev } : { ...latestWebDev, ...prods[idx] };
+        const isStale = !prods[idx].title || 
+          prods[idx].title.includes('Video Editing') || 
+          prods[idx].title.includes('Shorts Monetization') ||
+          prods[idx].title === 'Website Development with AI Masterclass' ||
+          !prods[idx].title.includes('App');
+        prods[idx] = isStale 
+          ? { ...latestWebDev, ...prods[idx], title: latestWebDev.title, short_desc: latestWebDev.short_desc } 
+          : { ...latestWebDev, ...prods[idx] };
       } else {
         prods.unshift(latestWebDev);
       }
@@ -82,8 +88,14 @@ export async function getProducts() {
 
         const mapped = prods.map(p => {
           if (p.id === 'prod-course-ai' && latestWebDev) {
-            const isStaleVideo = p.title && (p.title.includes('Video Editing') || p.title.includes('Shorts Monetization'));
-            return isStaleVideo ? { ...latestWebDev } : { ...latestWebDev, ...p };
+            const isStale = !p.title || 
+              p.title.includes('Video Editing') || 
+              p.title.includes('Shorts Monetization') || 
+              p.title === 'Website Development with AI Masterclass' ||
+              !p.title.includes('App');
+            return isStale 
+              ? { ...latestWebDev, ...p, title: latestWebDev.title, short_desc: latestWebDev.short_desc } 
+              : { ...latestWebDev, ...p };
           }
           return p;
         });
