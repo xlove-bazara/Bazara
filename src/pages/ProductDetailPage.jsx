@@ -76,13 +76,32 @@ export default function ProductDetailPage({
   };
 
   return (
-    <div className="min-h-screen pb-32 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30 relative overflow-hidden">
-      {/* Luxury Ambient Orbs & Cyber Texture Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-10 left-1/4 w-[450px] h-[450px] bg-emerald-500/[0.08] rounded-full blur-[150px]" />
-        <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-indigo-600/[0.08] rounded-full blur-[170px]" />
-        <div className="absolute bottom-20 left-10 w-[400px] h-[400px] bg-violet-600/[0.06] rounded-full blur-[140px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:28px_28px] opacity-60" />
+    <div className="min-h-screen pb-32 bg-gradient-to-b from-[#0e1326] via-[#090c17] to-[#05070d] text-slate-100 selection:bg-emerald-500/30 relative overflow-hidden">
+      {/* Luxury Studio Ambient Glows & Cyber Tech Mesh */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Top Centered Emerald Glow Orb */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[480px] bg-gradient-to-b from-emerald-500/30 via-teal-500/18 to-transparent rounded-full blur-[130px]" />
+
+        {/* Right Indigo / Electric Cyber Bloom */}
+        <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-indigo-600/30 rounded-full blur-[150px]" />
+
+        {/* Left Violet Depth Flare */}
+        <div className="absolute top-1/2 -left-20 w-[520px] h-[520px] bg-purple-600/25 rounded-full blur-[140px]" />
+
+        {/* Bottom Emerald Anchor Glow */}
+        <div className="absolute bottom-10 right-1/4 w-[480px] h-[380px] bg-teal-500/18 rounded-full blur-[130px]" />
+
+        {/* High-definition Micro Dot Matrix Grid */}
+        <div 
+          className="absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_90%)]" 
+          style={{
+            backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.18) 1.2px, transparent 1.2px)',
+            backgroundSize: '24px 24px'
+          }} 
+        />
+
+        {/* Subtle horizontal luxury light divider line */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
       </div>
 
       {/* Top Primary Header (Same as bazara.in/home) */}
@@ -94,31 +113,31 @@ export default function ProductDetailPage({
       />
 
       {/* Secondary Navigation & Breadcrumb Strip */}
-      <div className="sticky top-[60px] md:top-[68px] z-20 px-4 md:px-8 py-2.5 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
+      <div className="sticky top-[60px] md:top-[68px] z-20 px-4 md:px-8 py-2.5 backdrop-blur-2xl bg-[#0b0f1e]/90 border-b border-white/[0.08] shadow-lg shadow-black/50">
         <div className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto flex items-center justify-between">
           <button
             onClick={onBack}
-            className="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 flex items-center space-x-1.5 text-xs font-bold active:scale-95 transition-all cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/12 text-slate-200 hover:text-white border border-white/15 flex items-center space-x-1.5 text-xs font-bold active:scale-95 transition-all cursor-pointer shadow-sm"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Store</span>
           </button>
 
-          <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+          <span className="text-xs font-black uppercase tracking-wider text-emerald-400 bg-emerald-500/15 px-3.5 py-1 rounded-full border border-emerald-500/30 shadow-sm shadow-emerald-500/15">
             {product.category} details
           </span>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={handleShare}
-              className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
+              className="p-2 rounded-xl bg-white/[0.06] hover:bg-white/12 text-slate-200 hover:text-white border border-white/15 active:scale-95 transition-all cursor-pointer shadow-sm"
               title="Share Product"
             >
               <Share2 className="w-4 h-4" />
             </button>
             <button
               onClick={() => setIsWishlisted(!isWishlisted)}
-              className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-rose-500 border border-white/10 active:scale-95 transition-all cursor-pointer"
+              className="p-2 rounded-xl bg-white/[0.06] hover:bg-white/12 text-slate-200 hover:text-rose-500 border border-white/15 active:scale-95 transition-all cursor-pointer shadow-sm"
               title="Save to Wishlist"
             >
               <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
@@ -131,11 +150,11 @@ export default function ProductDetailPage({
         {/* 1. Main Media Showcase + Thumbnail Slider Below It */}
         <section className="space-y-2.5">
           {/* Main Big Image Preview (4:3 Ratio) */}
-          <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden glass-panel border border-white/15 bg-slate-950 shadow-2xl">
+          <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden border border-white/20 bg-[#0d101e] shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_35px_rgba(16,185,129,0.15)] ring-1 ring-white/10 group">
             <img
               src={gallery[activeImageIndex]}
               alt={product.title}
-              className="w-full h-full object-cover transition-all duration-300"
+              className="w-full h-full object-cover transition-all duration-300 group-hover:scale-[1.02]"
             />
             {/* G-Drive Badge */}
             <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-xs font-bold text-slate-200 flex items-center space-x-1.5 shadow-md">
@@ -145,7 +164,7 @@ export default function ProductDetailPage({
 
             {/* Discount Badge */}
             {product.discount_percentage && (
-              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-emerald-500 text-xs font-black text-slate-950 shadow-lg">
+              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-emerald-500 text-xs font-black text-slate-950 shadow-lg shadow-emerald-500/30">
                 SAVE {product.discount_percentage}%
               </div>
             )}
@@ -157,10 +176,10 @@ export default function ProductDetailPage({
               <button
                 key={idx}
                 onClick={() => setActiveImageIndex(idx)}
-                className={`relative w-20 aspect-[4/3] rounded-xl overflow-hidden shrink-0 border-2 transition-all ${
+                className={`relative w-20 aspect-[4/3] rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
                   activeImageIndex === idx
-                    ? 'border-emerald-400 ring-2 ring-emerald-400/40 scale-105'
-                    : 'border-white/10 opacity-70 hover:opacity-100'
+                    ? 'border-emerald-400 ring-2 ring-emerald-400/40 scale-105 shadow-md shadow-emerald-500/20'
+                    : 'border-white/15 opacity-70 hover:opacity-100'
                 }`}
               >
                 <img src={imgUrl} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
@@ -170,8 +189,10 @@ export default function ProductDetailPage({
         </section>
 
         {/* 2. Product Title & Pricing Box */}
-        <section className="p-4 rounded-3xl glass-panel border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent space-y-3">
-          <div className="flex items-center space-x-2">
+        <section className="p-5 sm:p-6 rounded-3xl border border-white/15 bg-gradient-to-b from-[#141b32]/95 via-[#101426]/90 to-[#0b0e1d]/90 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(99,102,241,0.12)] space-y-4 relative overflow-hidden">
+          <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="flex items-center space-x-2 relative z-10">
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
               {product.tag || 'VERIFIED ASSET'}
             </span>
@@ -182,13 +203,13 @@ export default function ProductDetailPage({
             </div>
           </div>
 
-          <h1 className="text-lg font-black text-white leading-snug">
+          <h1 className="text-lg sm:text-xl font-black text-white leading-snug relative z-10">
             {product.title}
           </h1>
 
           {/* Pricing Row */}
-          <div className="flex items-baseline space-x-3 pt-1">
-            <span className="text-2xl font-black text-emerald-400">
+          <div className="flex items-baseline space-x-3 pt-1 relative z-10">
+            <span className="text-2xl sm:text-3xl font-black text-emerald-400">
               ₹{product.price}
             </span>
             {product.original_price && (
@@ -202,7 +223,7 @@ export default function ProductDetailPage({
           </div>
 
           {/* Quick Trust Chips */}
-          <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-slate-300 font-medium">
+          <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-slate-300 font-medium relative z-10 flex-wrap gap-2">
             <span className="flex items-center">
               <Zap className="w-3.5 h-3.5 mr-1 text-emerald-400" /> 1-Tap G-Drive
             </span>
@@ -278,9 +299,9 @@ export default function ProductDetailPage({
         )}
 
         {/* 4. Specifications Card (Now on Top) */}
-        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+        <section className="p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-[#13192f]/95 to-[#0e1322]/90 border border-white/12 space-y-4 shadow-2xl shadow-black/60 backdrop-blur-xl">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <div className="w-8 h-8 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
               <Cpu className="w-4 h-4" />
             </div>
             <h3 className="text-lg font-extrabold text-white tracking-tight">Specifications</h3>
@@ -371,9 +392,9 @@ export default function ProductDetailPage({
         </section>
 
         {/* 5. What's Included Card (Now below Specifications) */}
-        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+        <section className="p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-[#13192f]/95 to-[#0e1322]/90 border border-white/12 space-y-4 shadow-2xl shadow-black/60 backdrop-blur-xl">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <Package className="w-4 h-4" />
             </div>
             <h3 className="text-lg font-extrabold text-white tracking-tight">What's Included</h3>
@@ -429,16 +450,16 @@ export default function ProductDetailPage({
         </section>
 
         {/* 6. FAQ Accordion */}
-        <section className="p-4 rounded-3xl glass-panel border border-white/10 space-y-2.5">
+        <section className="p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-[#13192f]/95 to-[#0e1322]/90 border border-white/12 space-y-3.5 shadow-2xl shadow-black/60 backdrop-blur-xl">
           <h3 className="text-xs font-bold uppercase tracking-widest text-slate-300">
             Frequently Asked Questions
           </h3>
           <div className="space-y-2 text-xs text-slate-400">
-            <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] space-y-1">
+            <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1">
               <p className="font-bold text-white">Q: Payment ke baad link kahan milegi?</p>
               <p>A: Payment hote hi agle page par 1-tap Google Drive button aayega, aur tumhare WhatsApp & Email par bhi link instantly deliver hogi.</p>
             </div>
-            <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] space-y-1">
+            <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1">
               <p className="font-bold text-white">Q: Kya phone me reels save kar sakte hain?</p>
               <p>A: Haan! Chahe iPhone ho ya Android, direct download karke bina watermark ke Instagram/YouTube par upload kar sakte ho.</p>
             </div>
@@ -447,7 +468,7 @@ export default function ProductDetailPage({
       </main>
 
       {/* 7. ⭐ BOTTOM FLOATING STICKY BAR WITH ANIMATED SHINING BUY BUTTON */}
-      <div className="fixed bottom-0 left-0 right-0 w-full z-50 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-2xl bg-[#090b12]/95 border-t border-white/10 shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 w-full z-50 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-2xl bg-[#090d1a]/95 border-t border-white/15 shadow-[0_-10px_40px_rgba(0,0,0,0.85)]">
         <div className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto flex items-center justify-between space-x-4">
           {/* Left Price Info */}
           <div className="pl-1">
