@@ -69,7 +69,11 @@ export async function getProducts() {
         .select('*')
         .order('created_at', { ascending: false });
       if (!error && data && data.length > 0) {
-        const mapped = data.map(p => {
+        // Guarantee the course masterclass is available for landing page and admin management
+        const hasCourse = data.some(p => p.id === 'prod-course-ai' || p.category === 'course');
+        const prods = hasCourse ? data : [...data, latestWebDev].filter(Boolean);
+
+        const mapped = prods.map(p => {
           if (p.id === 'prod-course-ai' && latestWebDev) {
             const isStaleVideo = p.title && (p.title.includes('Video Editing') || p.title.includes('Shorts Monetization'));
             return isStaleVideo ? { ...latestWebDev } : { ...latestWebDev, ...p };
@@ -156,23 +160,94 @@ export async function uploadImageFile(file) {
   });
 }
 
+function updateStoredProductLocally(productData) {
+  try {
+    const products = getStoredProducts();
+    const demoIds = ['prod-reels-10k', 'prod-course-ai-edit', 'prod-ebook-100k', 'prod-software-autoreel', 'prod-mega-combo'];
+    
+    let updatedProducts;
+    let savedItem = { ...productData };
+
+    const existingIndex = products.findIndex(p => p.id === productData.id);
+    if (existingIndex >= 0) {
+      updatedProducts = [...products];
+      updatedProducts[existingIndex] = { ...updatedProducts[existingIndex], ...productData };
+      savedItem = updatedProducts[existingIndex];
+    } else {
+      savedItem.id = savedItem.id || 'prod-' + Date.now();
+      savedItem.slug = savedItem.slug || (savedItem.title ? savedItem.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'product-' + Date.now());
+      
+      const onlyDemosLeft = products.every(p => demoIds.includes(p.id) || p.is_demo);
+      if (onlyDemosLeft) {
+        updatedProducts = [savedItem];
+      } else {
+        updatedProducts = [savedItem, ...products.filter(p => !demoIds.includes(p.id))];
+      }
+    }
+
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updatedProducts));
+    return savedItem;
+  } catch (e) {
+    console.warn('LocalStorage save error:', e);
+    return productData;
+  }
+}
+
 export async function saveProduct(productData) {
+  const cleanProduct = {
+    ...productData,
+    price: Number(productData.price) || 0,
+    original_price: Number(productData.original_price) || 0,
+    discount_percentage: (Number(productData.original_price) > Number(productData.price) && Number(productData.price) > 0)
+      ? Math.round(((Number(productData.original_price) - Number(productData.price)) / Number(productData.original_price)) * 100)
+      : (Number(productData.discount_percentage) || 0)
+  };
 
   if (isSupabaseConfigured && supabase) {
     try {
-      if (productData.id && !productData.id.startsWith('prod-')) {
-        const { data, error } = await supabase
+      if (cleanProduct.id) {
+        // Check if product already exists in Supabase
+        const { data: existing } = await supabase
           .from('products')
-          .update(productData)
-          .eq('id', productData.id)
-          .select();
-        if (!error && data) return data[0];
+          .select('id')
+          .eq('id', cleanProduct.id)
+          .maybeSingle();
+
+        if (existing) {
+          // UPDATE existing record
+          const { data, error } = await supabase
+            .from('products')
+            .update(cleanProduct)
+            .eq('id', cleanProduct.id)
+            .select();
+          if (!error && data && data.length > 0) {
+            updateStoredProductLocally(data[0]);
+            return data[0];
+          }
+          if (error) console.error('Supabase update product failed:', error);
+        } else {
+          // INSERT new record
+          const { data, error } = await supabase
+            .from('products')
+            .insert([cleanProduct])
+            .select();
+          if (!error && data && data.length > 0) {
+            updateStoredProductLocally(data[0]);
+            return data[0];
+          }
+          if (error) console.error('Supabase insert product failed:', error);
+        }
       } else {
+        cleanProduct.id = 'prod-' + Date.now();
         const { data, error } = await supabase
           .from('products')
-          .insert([productData])
+          .insert([cleanProduct])
           .select();
-        if (!error && data) return data[0];
+        if (!error && data && data.length > 0) {
+          updateStoredProductLocally(data[0]);
+          return data[0];
+        }
+        if (error) console.error('Supabase insert product failed:', error);
       }
     } catch (e) {
       console.warn('Supabase save error, writing locally:', e);
@@ -180,32 +255,7 @@ export async function saveProduct(productData) {
   }
 
   // Local storage persistence fallback
-  const products = getStoredProducts();
-  const demoIds = ['prod-reels-10k', 'prod-course-ai-edit', 'prod-ebook-100k', 'prod-software-autoreel', 'prod-mega-combo'];
-  
-  let updatedProducts;
-  let savedItem = { ...productData };
-
-  const existingIndex = products.findIndex(p => p.id === productData.id);
-  if (existingIndex >= 0) {
-    updatedProducts = [...products];
-    updatedProducts[existingIndex] = { ...updatedProducts[existingIndex], ...productData };
-    savedItem = updatedProducts[existingIndex];
-  } else {
-    savedItem.id = savedItem.id || 'prod-' + Date.now();
-    savedItem.slug = savedItem.slug || savedItem.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    
-    // If only demo products exist, automatically purge demo products when first real product is created!
-    const onlyDemosLeft = products.every(p => demoIds.includes(p.id) || p.is_demo);
-    if (onlyDemosLeft) {
-      updatedProducts = [savedItem]; // Replace demo products with real product!
-    } else {
-      updatedProducts = [savedItem, ...products.filter(p => !demoIds.includes(p.id))];
-    }
-  }
-
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updatedProducts));
-  return savedItem;
+  return updateStoredProductLocally(cleanProduct);
 }
 
 export async function clearDemoProducts() {

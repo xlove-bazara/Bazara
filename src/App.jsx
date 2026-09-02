@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage';
 import LoginModal from './components/LoginModal';
 import PolicyModal from './components/PolicyModal';
 import { getProducts, getSettings, createOrder, getCurrentUser, signOutUser, supabase } from './supabase';
+import { initialProducts } from './data/initialProducts';
 import { sendOrderDeliveryEmail } from './services/emailService';
 import { sendWhatsAppOrderDelivery } from './services/whatsappService';
 
@@ -155,10 +156,11 @@ export default function App() {
 
   // Find featured course for the root landing page
   const featuredCourseId = settings?.featured_course_id || 'prod-course-ai';
+  const defaultMasterclassCourse = initialProducts.find(p => p.id === 'prod-course-ai') || initialProducts[1];
   const featuredCourse = 
     products.find(p => p.id === featuredCourseId) ||
     products.find(p => p.category === 'course' || p.product_type === 'course') ||
-    products[0];
+    defaultMasterclassCourse;
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);

@@ -54,19 +54,12 @@ export default function CourseLandingPage({
     return () => clearInterval(timer);
   }, []);
 
-  // Guarantee the course displayed is ALWAYS Website Development with AI Masterclass
-  const isOldVideoEditing = !course || 
-    course.title?.toLowerCase().includes('video') || 
-    course.title?.toLowerCase().includes('shorts') || 
-    course.title?.toLowerCase().includes('reels') || 
-    !course.title?.toLowerCase().includes('website');
-
   const defaultWebDevCourse = {
     id: 'prod-course-ai',
     title: 'Website Development with AI Masterclass',
-    price: course?.price || 499,
-    original_price: course?.original_price || 3999,
-    discount_percentage: course?.discount_percentage || 88,
+    price: 499,
+    original_price: 3999,
+    discount_percentage: 88,
     badge: '🎓 Complete Video Course',
     rating: 4.96,
     reviews_count: 1680,
@@ -82,8 +75,16 @@ export default function CourseLandingPage({
     }
   };
 
+  // Only take custom course data if it is genuinely a course product
+  const isCourseProduct = course && (
+    course.id === 'prod-course-ai' || 
+    course.category === 'course' || 
+    course.product_type === 'course'
+  );
+
   const activeCourse = {
-    ...(isOldVideoEditing ? defaultWebDevCourse : course),
+    ...defaultWebDevCourse,
+    ...(isCourseProduct ? course : {}),
     cover_image: '/course-banner.jpg'
   };
 
