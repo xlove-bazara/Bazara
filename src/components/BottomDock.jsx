@@ -21,18 +21,18 @@ export default function BottomDock({ activeTab, onTabChange }) {
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ${
+              className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all duration-200 active:scale-90 cursor-pointer ${
                 isActive 
-                  ? 'text-emerald-400 bg-white/[0.05]' 
+                  ? 'text-emerald-400 bg-white/[0.08] shadow-sm scale-105' 
                   : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]'
               }`}
             >
-              <Icon className={`w-5 h-5 mb-0.5 ${isActive ? 'text-emerald-400 stroke-[2.5]' : 'text-slate-400'}`} />
-              <span className={`text-[10px] font-bold tracking-tight ${isActive ? 'text-emerald-400' : 'text-slate-400'}`}>
+              <Icon className={`w-5 h-5 mb-0.5 transition-transform duration-200 ${isActive ? 'text-emerald-400 stroke-[2.5] scale-110' : 'text-slate-400'}`} />
+              <span className={`text-[10px] font-bold tracking-tight transition-colors duration-200 ${isActive ? 'text-emerald-400' : 'text-slate-400'}`}>
                 {tab.label}
               </span>
               {isActive && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-0.5 shadow-sm shadow-emerald-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-0.5 shadow-sm shadow-emerald-400 animate-pulse" />
               )}
             </button>
           );

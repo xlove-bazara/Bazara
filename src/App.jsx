@@ -219,80 +219,93 @@ export default function App() {
     <div className="min-h-screen bg-[#08090E] text-slate-100">
       {/* 1. ROOT LANDING PAGE (bazara.in /): Single Course Landing Page with About bazara & FAQs */}
       {currentPage === 'landing' && (
-        <CourseLandingPage
-          course={featuredCourse}
-          onEnroll={(courseToBuy) => handleInstantBuy(courseToBuy || featuredCourse)}
-          onNavigateToStore={() => navigateTo('home', '/home')}
-          settings={settings}
-        />
+        <div key="landing" className="animate-page-enter">
+          <CourseLandingPage
+            course={featuredCourse}
+            onEnroll={(courseToBuy) => handleInstantBuy(courseToBuy || featuredCourse)}
+            onNavigateToStore={() => navigateTo('home', '/home')}
+            settings={settings}
+          />
+        </div>
       )}
 
       {/* 2. STORE MARKETPLACE (bazara.in/home): All digital bundles, search & categories */}
       {currentPage === 'home' && (
-        <HomePage
-          products={products}
-          settings={settings}
-          onSelectProduct={handleSelectProduct}
-          onInstantBuy={handleInstantBuy}
-          onNavigate={handleNavigate}
-          user={user}
-          setUser={setUser}
-        />
+        <div key="home" className="animate-page-enter">
+          <HomePage
+            products={products}
+            settings={settings}
+            onSelectProduct={handleSelectProduct}
+            onInstantBuy={handleInstantBuy}
+            onNavigate={handleNavigate}
+            user={user}
+            setUser={setUser}
+          />
+        </div>
       )}
 
       {/* 3. PRODUCT DETAIL PAGE */}
       {currentPage === 'product' && selectedProduct && (
-        <ProductDetailPage
-          product={selectedProduct}
-          onBack={() => navigateTo('home', '/home')}
-          onBuyNow={handleInstantBuy}
-        />
+        <div key={`product-${selectedProduct.id}`} className="animate-page-enter">
+          <ProductDetailPage
+            product={selectedProduct}
+            onBack={() => navigateTo('home', '/home')}
+            onBuyNow={handleInstantBuy}
+          />
+        </div>
       )}
 
       {/* 4. CHECKOUT PAGE */}
       {currentPage === 'checkout' && selectedProduct && (
-        <CheckoutPage
-          product={selectedProduct}
-          user={user}
-          onBack={() => navigateTo(selectedProduct.category === 'course' ? 'landing' : 'home', selectedProduct.category === 'course' ? '/' : '/home')}
-          onPaymentComplete={handlePaymentComplete}
-        />
+        <div key={`checkout-${selectedProduct.id}`} className="animate-page-enter">
+          <CheckoutPage
+            product={selectedProduct}
+            user={user}
+            onBack={() => navigateTo(selectedProduct.category === 'course' ? 'landing' : 'home', selectedProduct.category === 'course' ? '/' : '/home')}
+            onPaymentComplete={handlePaymentComplete}
+          />
+        </div>
       )}
 
       {/* 5. ACCESS DASHBOARD PAGE */}
       {currentPage === 'access' && (
-        <AccessDashboardPage
-          order={completedOrder || {
-            id: 'ORD-DEMO',
-            productTitle: selectedProduct?.title || featuredCourse?.title || 'AI Video Editing Masterclass',
-            customerPhone: '9876543210',
-            driveUrl: selectedProduct?.drive_download_url || featuredCourse?.drive_download_url || 'https://drive.google.com'
-          }}
-          onBackToHome={() => navigateTo('landing', '/')}
-        />
+        <div key="access" className="animate-page-enter">
+          <AccessDashboardPage
+            order={completedOrder || {
+              id: 'ORD-DEMO',
+              productTitle: selectedProduct?.title || featuredCourse?.title || 'AI Video Editing Masterclass',
+              customerPhone: '9876543210',
+              driveUrl: selectedProduct?.drive_download_url || featuredCourse?.drive_download_url || 'https://drive.google.com'
+            }}
+            onBackToHome={() => navigateTo('landing', '/')}
+          />
+        </div>
       )}
 
       {/* 6. PROFILE / VAULT PAGE */}
       {currentPage === 'profile' && (
-        <ProfilePage
-          user={user}
-          setUser={setUser}
-          completedOrder={completedOrder}
-          onBackToHome={() => navigateTo('home', '/home')}
-          onLoginClick={() => setIsLoginModalOpen(true)}
-          onLogout={handleUserLogout}
-        />
+        <div key="profile" className="animate-page-enter">
+          <ProfilePage
+            user={user}
+            setUser={setUser}
+            completedOrder={completedOrder}
+            onBackToHome={() => navigateTo('home', '/home')}
+            onLoginClick={() => setIsLoginModalOpen(true)}
+            onLogout={handleUserLogout}
+          />
+        </div>
       )}
-
 
       {/* 7. ADMIN CONTROL PANEL */}
       {currentPage === 'admin' && (
-        <AdminPage
-          products={products}
-          settings={settings}
-          onRefresh={refreshData}
-          onBack={() => navigateTo('home', '/home')}
-        />
+        <div key="admin" className="animate-page-enter">
+          <AdminPage
+            products={products}
+            settings={settings}
+            onRefresh={refreshData}
+            onBack={() => navigateTo('home', '/home')}
+          />
+        </div>
       )}
 
       {/* Global Login Modal */}

@@ -168,7 +168,7 @@ export default function CheckoutPage({
           {/* Left Column: Order Summary, Upsell Bump & Delivery Details */}
           <div className="lg:col-span-7 space-y-4">
             {/* ================= 1. ORDER SUMMARY ================= */}
-            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
               <Package className="w-4 h-4" />
@@ -182,7 +182,7 @@ export default function CheckoutPage({
             <img
               src={product.cover_image}
               alt={product.title}
-              className="w-20 aspect-video rounded-xl object-cover border border-white/10 shrink-0 shadow-md"
+              className="w-20 aspect-video rounded-xl object-cover border border-white/10 shrink-0 shadow-md transition-transform duration-300 hover:scale-105"
             />
             <div className="space-y-1 flex-1">
               <h4 className="text-xs font-bold text-white line-clamp-2 leading-snug">
@@ -193,7 +193,7 @@ export default function CheckoutPage({
                 {product.original_price && (
                   <span className="text-slate-400 line-through text-xs">₹{product.original_price}</span>
                 )}
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 animate-pulse">
                   SAVE {product.discount_percentage || 85}%
                 </span>
               </div>
@@ -209,18 +209,18 @@ export default function CheckoutPage({
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
                 placeholder='Coupon code ("BAZARA10")'
-                className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-[#0a0d16] border border-white/10 text-xs text-white uppercase placeholder:normal-case placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-[#0a0d16] border border-white/10 text-xs text-white uppercase placeholder:normal-case placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors duration-200"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2.5 rounded-2xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 active:scale-95 transition-all"
+              className="px-4 py-2.5 rounded-2xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 active:scale-95 transition-all duration-200 cursor-pointer"
             >
               Apply
             </button>
           </form>
           {couponApplied && (
-            <p className="text-[11px] text-emerald-400 font-bold">✓ Coupon applied! You saved ₹{discountAmount}</p>
+            <p className="text-[11px] text-emerald-400 font-bold animate-scale-in">✓ Coupon applied! You saved ₹{discountAmount}</p>
           )}
         </section>
 
@@ -229,10 +229,10 @@ export default function CheckoutPage({
         {hasBumpOffer && (
           <section 
             onClick={() => setAddUpsell(!addUpsell)}
-            className={`relative overflow-hidden p-4 rounded-3xl transition-all duration-300 cursor-pointer shadow-2xl select-none ${
+            className={`relative overflow-hidden p-4 rounded-3xl transition-all duration-300 cursor-pointer shadow-2xl select-none animate-fade-in-up [animation-delay:80ms] ${
               addUpsell 
-                ? 'bg-gradient-to-br from-emerald-950/40 via-[#131724] to-[#0d101d] border-2 border-emerald-500 shadow-emerald-500/15 ring-1 ring-emerald-500/30' 
-                : 'bg-[#131724]/80 border border-white/10 hover:border-white/20'
+                ? 'bg-gradient-to-br from-emerald-950/40 via-[#131724] to-[#0d101d] border-2 border-emerald-500 shadow-emerald-500/15 ring-2 ring-emerald-500/20 scale-[1.01]' 
+                : 'bg-[#131724]/80 border border-white/10 hover:border-white/20 hover:scale-[1.005]'
             }`}
           >
             {/* Subtle Ambient Radial Glow when selected */}
@@ -319,7 +319,7 @@ export default function CheckoutPage({
 
         {/* ================= 3. DELIVERY DETAILS (NOW THIRD) ================= */}
 
-        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up [animation-delay:120ms]">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -327,7 +327,7 @@ export default function CheckoutPage({
               </div>
               <h3 className="text-lg font-extrabold text-white tracking-tight">Delivery Details</h3>
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-pulse">
               Instant G-Drive
             </span>
           </div>
@@ -349,7 +349,7 @@ export default function CheckoutPage({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                   placeholder="Enter 10-digit number"
-                  className="w-full px-4 py-3 rounded-2xl bg-[#0a0d16] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                  className="w-full px-4 py-3 rounded-2xl bg-[#0a0d16] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors duration-200"
                   required
                 />
               </div>
@@ -365,7 +365,7 @@ export default function CheckoutPage({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="yourname@gmail.com"
-                className="w-full px-4 py-3 rounded-2xl bg-[#0a0d16] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                className="w-full px-4 py-3 rounded-2xl bg-[#0a0d16] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors duration-200"
               />
             </div>
           </div>
@@ -376,10 +376,10 @@ export default function CheckoutPage({
           {/* Right Column: Sticky Payment Gateway & Order Breakdown on Desktop */}
           <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
             {/* ================= 4. SECURE PAYMENT GATEWAY & BILL ================= */}
-            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50">
+            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up [animation-delay:160ms]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-md shadow-emerald-500/10">
                     <Lock className="w-4 h-4" />
                   </div>
                   <div>
@@ -401,12 +401,12 @@ export default function CheckoutPage({
                   <span className="text-emerald-400">Zero Extra Fee</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5 text-[10px] font-bold text-slate-300">
-                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Google Pay</span>
-                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">PhonePe</span>
-                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Paytm UPI</span>
-                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Any UPI ID</span>
-                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">Debit/Credit Cards</span>
-                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06]">NetBanking</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06] hover:border-emerald-500/30 transition-colors">Google Pay</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06] hover:border-emerald-500/30 transition-colors">PhonePe</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06] hover:border-emerald-500/30 transition-colors">Paytm UPI</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06] hover:border-emerald-500/30 transition-colors">Any UPI ID</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06] hover:border-emerald-500/30 transition-colors">Debit/Credit Cards</span>
+                  <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.06] hover:border-emerald-500/30 transition-colors">NetBanking</span>
                 </div>
               </div>
 
@@ -419,14 +419,14 @@ export default function CheckoutPage({
                   <span className="text-white font-semibold">₹{basePrice}</span>
                 </div>
                 {hasBumpOffer && addUpsell && (
-                  <div className="flex justify-between text-emerald-400">
+                  <div className="flex justify-between text-emerald-400 animate-scale-in">
                     <span className="truncate max-w-[200px]">{upsellTitle}</span>
                     <span className="font-bold shrink-0">+₹{upsellPrice}</span>
                   </div>
                 )}
 
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-rose-400">
+                  <div className="flex justify-between text-rose-400 animate-scale-in">
                     <span>Discount Coupon</span>
                     <span className="font-bold">-₹{discountAmount}</span>
                   </div>
@@ -442,16 +442,24 @@ export default function CheckoutPage({
             <button
               onClick={handlePayNow}
               disabled={isProcessing}
-              className="relative w-full overflow-hidden py-4 rounded-full font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-2xl shadow-emerald-500/40 active:scale-[0.98] transition-all flex items-center justify-center space-x-2 disabled:opacity-70 cursor-pointer"
+              className="relative w-full overflow-hidden py-4 rounded-full font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-2xl shadow-emerald-500/40 hover:shadow-emerald-500/60 active:scale-[0.98] transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-80 cursor-pointer interactive-tap animate-pulse-glow"
             >
               <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent animate-shimmer-sweep pointer-events-none" />
               <span className="relative z-10 flex items-center space-x-2">
-                <Lock className="w-4 h-4" />
-                <span>
-                  {isProcessing 
-                    ? (processingStatus || 'Processing Secure Payment...') 
-                    : `PAY ₹${total} & GET INSTANT ACCESS 🚀`}
-                </span>
+                {isProcessing ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-slate-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span className="animate-pulse">{processingStatus || 'Processing Secure Payment...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    <span>PAY ₹{total} & GET INSTANT ACCESS 🚀</span>
+                  </>
+                )}
               </span>
             </button>
 
