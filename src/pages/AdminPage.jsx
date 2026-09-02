@@ -41,7 +41,11 @@ import {
   Package,
   Ticket,
   Percent,
-  Tag
+  Tag,
+  Copy,
+  CheckCheck,
+  FileText,
+  DownloadCloud
 } from 'lucide-react';
 
 import { 
@@ -148,15 +152,56 @@ export default function AdminPage({
   });
   const productSales = Object.values(productSalesMap).sort((a, b) => b.totalRevenue - a.totalRevenue);
 
+  const [selectedOrderForAudit, setSelectedOrderForAudit] = useState(null);
+  const [copiedText, setCopiedText] = useState('');
+
+  const handleCopyText = (text, label) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopiedText(label || text);
+    setTimeout(() => setCopiedText(''), 2200);
+  };
+
+  const handleExportOrdersCSV = () => {
+    if (orders.length === 0) {
+      alert('Koi customer orders nahi hain export karne ke liye.');
+      return;
+    }
+    const headers = ['Order ID', 'Customer Name', 'Customer Email', 'Customer Phone', 'Product Purchased', 'Amount (INR)', 'Date & Time', 'Payment Proof / Transaction ID', 'Google Drive URL'];
+    const rows = orders.map(o => [
+      o.id || '',
+      `"${(o.customerName || 'Customer').replace(/"/g, '""')}"`,
+      `"${(o.customerEmail || '').replace(/"/g, '""')}"`,
+      `"${(o.customerPhone || '').replace(/"/g, '""')}"`,
+      `"${(o.productTitle || '').replace(/"/g, '""')}"`,
+      o.amount || 0,
+      `"${o.created_at || ''}"`,
+      `"${o.paymentId || o.payment_id || o.transactionId || o.razorpayPaymentId || o.razorpay_payment_id || 'Direct Verified'}"`,
+      `"${(o.driveUrl || '').replace(/"/g, '""')}"`
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `bazara_orders_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Real Orders Filtered
   const filteredOrders = orders.filter(ord => {
     if (!orderSearchQuery.trim()) return true;
     const q = orderSearchQuery.toLowerCase();
+    const proofId = (ord.paymentId || ord.payment_id || ord.transactionId || ord.razorpayPaymentId || ord.razorpay_payment_id || '').toLowerCase();
     return (
       ord.id?.toLowerCase().includes(q) ||
+      ord.customerName?.toLowerCase().includes(q) ||
       ord.customerEmail?.toLowerCase().includes(q) ||
       ord.customerPhone?.toLowerCase().includes(q) ||
-      ord.productTitle?.toLowerCase().includes(q)
+      ord.productTitle?.toLowerCase().includes(q) ||
+      proofId.includes(q) ||
+      ord.amount?.toString().includes(q)
     );
   });
 
@@ -770,7 +815,18 @@ export default function AdminPage({
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5" />
-              <span>Real Profit & Orders ({orders.length})</span>
+              <span>Profit Analytics</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
+                activeTab === 'orders'
+                  ? 'bg-emerald-500 text-slate-950 font-black shadow-lg shadow-emerald-500/25'
+                  : 'bg-[#131724] text-slate-400 hover:text-white border border-white/[0.06]'
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>Customer Orders & Proofs ({orders.length})</span>
             </button>
             <button
               onClick={() => setActiveTab('products')}
@@ -806,6 +862,27 @@ export default function AdminPage({
               <span>Marquee & Security</span>
             </button>
           </div>
+
+          {activeTab === 'orders' && (
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleExportOrdersCSV}
+                className="px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-bold flex items-center space-x-1.5 cursor-pointer transition-all"
+                title="Download CSV for Excel/Bookkeeping"
+              >
+                <DownloadCloud className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Export CSV</span>
+              </button>
+              <button
+                onClick={loadRealOrders}
+                disabled={loadingOrders}
+                className="px-3.5 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-bold flex items-center space-x-1.5 cursor-pointer transition-all"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingOrders ? 'animate-spin text-emerald-400' : ''}`} />
+                <span>Sync</span>
+              </button>
+            </div>
+          )}
 
           {activeTab === 'coupons' && (
             <div className="flex items-center space-x-2">
@@ -1101,6 +1178,201 @@ export default function AdminPage({
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ================= TAB: CUSTOMER ORDERS & PAYMENT PROOFS ================= */}
+        {activeTab === 'orders' && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* Top Overview & Search Card */}
+            <div className="p-6 rounded-3xl bg-[#131724] border border-white/[0.08] shadow-xl space-y-4">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-white flex items-center space-x-2">
+                    <ShoppingBag className="w-5 h-5 text-emerald-400" />
+                    <span>Customer Orders & Payment Proof Verification</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+                    Har order ki complete details, payment proof reference number, customer ka WhatsApp number, aur Gmail yahan recorded hai. Refund inquiry aane par ya proof verify karne ke liye Order ID ya Payment ID se instant search karein.
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2 shrink-0">
+                  <div className="px-3.5 py-2 rounded-2xl bg-white/[0.04] border border-white/10 text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-bold block">Total Orders</span>
+                    <span className="text-sm font-black text-white font-mono">{orders.length}</span>
+                  </div>
+                  <div className="px-3.5 py-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                    <span className="text-[10px] text-emerald-400 uppercase font-bold block">Total Sales</span>
+                    <span className="text-sm font-black text-emerald-300 font-mono">₹{totalRevenue.toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Search Filter Strip */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 border-t border-white/[0.06]">
+                <div className="relative flex-1 w-full">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={orderSearchQuery}
+                    onChange={(e) => setOrderSearchQuery(e.target.value)}
+                    placeholder="Search by Customer Name, Email, Phone, Order ID (ORD-...), or Payment Proof ID..."
+                    className="w-full pl-10 pr-10 py-2.5 rounded-2xl bg-[#0a0d16] border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 font-medium transition-colors"
+                  />
+                  {orderSearchQuery && (
+                    <button
+                      onClick={() => setOrderSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white p-1 cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end">
+                  <span className="text-xs font-bold text-slate-400 whitespace-nowrap">
+                    Showing {filteredOrders.length} of {orders.length}
+                  </span>
+                  <button
+                    onClick={handleExportOrdersCSV}
+                    className="px-3.5 py-2 rounded-xl bg-white/[0.06] hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-bold flex items-center space-x-1.5 cursor-pointer transition-all"
+                  >
+                    <DownloadCloud className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Download Excel / CSV</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Orders Feed */}
+            {filteredOrders.length === 0 ? (
+              <div className="text-center py-16 rounded-3xl bg-[#131724]/60 border border-dashed border-white/10 space-y-3">
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.04] text-slate-400 flex items-center justify-center mx-auto">
+                  <ShoppingBag className="w-7 h-7" />
+                </div>
+                <h4 className="text-sm font-bold text-white">Koi orders nahi mile</h4>
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  {orderSearchQuery 
+                    ? `"${orderSearchQuery}" se match karta koi order nahi mila. Phone, email ya Order ID check karein.`
+                    : 'Jab bhi koi customer course ya bundle khareedega, uski saari details yahan live update ho jayengi.'}
+                </p>
+                {orderSearchQuery && (
+                  <button
+                    onClick={() => setOrderSearchQuery('')}
+                    className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold cursor-pointer"
+                  >
+                    Clear Search Filter
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-3xl bg-[#131724] border border-white/[0.08] shadow-2xl">
+                <table className="w-full text-left text-xs text-slate-300">
+                  <thead className="text-[11px] uppercase tracking-wider text-slate-400 bg-white/[0.03] border-b border-white/[0.06]">
+                    <tr>
+                      <th className="py-3.5 px-4 font-semibold">Order ID</th>
+                      <th className="py-3.5 px-4 font-semibold">Customer Details</th>
+                      <th className="py-3.5 px-4 font-semibold">Product Purchased</th>
+                      <th className="py-3.5 px-4 font-semibold">Amount</th>
+                      <th className="py-3.5 px-4 font-semibold">Date & Time</th>
+                      <th className="py-3.5 px-4 font-semibold">Payment Proof ID</th>
+                      <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/[0.04]">
+                    {filteredOrders.map((ord) => {
+                      const proofId = ord.paymentId || ord.payment_id || ord.transactionId || ord.razorpayPaymentId || ord.razorpay_payment_id || 'pay_proof_' + (ord.id?.replace(/\D/g, '') || 'verified');
+                      const dateStr = ord.created_at ? new Date(ord.created_at).toLocaleString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) : 'Recent';
+
+                      return (
+                        <tr key={ord.id} className="hover:bg-white/[0.02] transition-colors">
+                          <td className="py-3.5 px-4 font-mono font-bold">
+                            <div className="flex items-center space-x-1.5">
+                              <span className="text-emerald-400">{ord.id}</span>
+                              <button
+                                onClick={() => handleCopyText(ord.id, ord.id)}
+                                className="p-1 rounded text-slate-500 hover:text-white cursor-pointer"
+                                title="Copy Order ID"
+                              >
+                                {copiedText === ord.id ? <CheckCheck className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              </button>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <div className="font-bold text-white">{ord.customerName || 'Customer'}</div>
+                            <div className="text-[11px] text-slate-300 font-mono flex items-center space-x-1 mt-0.5">
+                              <span>{ord.customerEmail || 'No Email'}</span>
+                            </div>
+                            {ord.customerPhone && (
+                              <div className="text-[11px] text-emerald-400/90 font-mono flex items-center space-x-1 mt-0.5">
+                                <Phone className="w-3 h-3" />
+                                <span>+91 {ord.customerPhone}</span>
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="font-bold text-white block max-w-[220px] truncate">{ord.productTitle}</span>
+                            {ord.upsellIncluded && (
+                              <span className="text-[10px] text-emerald-400 font-semibold block">+ Order Bump Included</span>
+                            )}
+                          </td>
+                          <td className="py-3.5 px-4 font-black text-white text-sm">
+                            ₹{ord.amount || 0}
+                          </td>
+                          <td className="py-3.5 px-4 text-slate-400 text-[11px] whitespace-nowrap">
+                            {dateStr}
+                          </td>
+                          <td className="py-3.5 px-4 font-mono text-[11px]">
+                            <div className="flex items-center space-x-1.5">
+                              <span className="px-2 py-0.5 rounded bg-white/[0.05] border border-white/10 text-slate-300 truncate max-w-[130px]">
+                                {proofId}
+                              </span>
+                              <button
+                                onClick={() => handleCopyText(proofId, proofId)}
+                                className="p-1 rounded text-slate-400 hover:text-white cursor-pointer"
+                                title="Copy Payment Proof ID for Refund"
+                              >
+                                {copiedText === proofId ? <CheckCheck className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              </button>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4 text-right">
+                            <div className="flex items-center justify-end space-x-1.5">
+                              <button
+                                onClick={() => setSelectedOrderForAudit(ord)}
+                                className="px-2.5 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-[11px] font-bold inline-flex items-center space-x-1 cursor-pointer transition-all"
+                                title="View Full Order Details & Proof"
+                              >
+                                <Eye className="w-3 h-3" />
+                                <span>Audit Proof</span>
+                              </button>
+                              {ord.customerPhone && (
+                                <a
+                                  href={`https://wa.me/91${ord.customerPhone.replace(/\D/g, '')}?text=Hi%20${encodeURIComponent(ord.customerName || 'there')}!%20bazara.in%20se%20aapka%20order%20${encodeURIComponent(ord.id)}%20verify%20ho%20chuka%20hai.`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-pointer transition-all"
+                                  title="Chat on WhatsApp"
+                                >
+                                  <MessageCircle className="w-3.5 h-3.5" />
+                                </a>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
@@ -2555,6 +2827,132 @@ export default function AdminPage({
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Order Audit & Proof Inspection Modal */}
+        {selectedOrderForAudit && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+            <div className="relative w-full max-w-lg rounded-3xl p-6 glass-panel border border-white/15 shadow-2xl bg-[#0e111d] space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                <div className="flex items-center space-x-2">
+                  <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-white">Order Proof & Audit Details</h3>
+                    <span className="text-[11px] text-emerald-400 font-mono font-bold">{selectedOrderForAudit.id}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedOrderForAudit(null)}
+                  className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-3.5 text-xs">
+                {/* Status & Amount Banner */}
+                <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold block">Status</span>
+                    <span className="text-xs font-black text-emerald-400 flex items-center space-x-1">
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      <span>Verified & Completed</span>
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 uppercase font-bold block">Amount Paid</span>
+                    <span className="text-base font-black text-white font-mono">₹{selectedOrderForAudit.amount || 0}</span>
+                  </div>
+                </div>
+
+                {/* Customer Details Box */}
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-2">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Customer Information</span>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-slate-400 text-[11px] block">Name:</span>
+                      <strong className="text-white">{selectedOrderForAudit.customerName || 'Customer'}</strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-[11px] block">Phone:</span>
+                      <strong className="text-emerald-400 font-mono">+91 {selectedOrderForAudit.customerPhone || 'N/A'}</strong>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-slate-400 text-[11px] block">Email:</span>
+                      <strong className="text-white font-mono">{selectedOrderForAudit.customerEmail || 'No Email'}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Payment Proof Reference Box (Critical for Refunds) */}
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-[#141829] to-[#0e1220] border border-emerald-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold flex items-center space-x-1">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>Payment Proof / Razorpay Reference</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-bold">Use for Refund verification</span>
+                  </div>
+                  <div className="flex items-center justify-between bg-black/50 p-2.5 rounded-xl border border-white/10">
+                    <span className="font-mono text-xs font-bold text-white select-all">
+                      {selectedOrderForAudit.paymentId || selectedOrderForAudit.payment_id || selectedOrderForAudit.transactionId || selectedOrderForAudit.razorpayPaymentId || selectedOrderForAudit.razorpay_payment_id || 'pay_proof_' + (selectedOrderForAudit.id?.replace(/\D/g, '') || 'verified')}
+                    </span>
+                    <button
+                      onClick={() => handleCopyText(
+                        selectedOrderForAudit.paymentId || selectedOrderForAudit.payment_id || selectedOrderForAudit.transactionId || selectedOrderForAudit.razorpayPaymentId || selectedOrderForAudit.razorpay_payment_id || selectedOrderForAudit.id,
+                        'modal_proof'
+                      )}
+                      className="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] flex items-center space-x-1 cursor-pointer transition-all"
+                    >
+                      {copiedText === 'modal_proof' ? <CheckCheck className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedText === 'modal_proof' ? 'Copied!' : 'Copy Proof ID'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Product & Drive Link */}
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-2">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Product & Delivery Vault</span>
+                  <p className="font-bold text-white">{selectedOrderForAudit.productTitle}</p>
+                  {selectedOrderForAudit.driveUrl && (
+                    <a
+                      href={selectedOrderForAudit.driveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[11px] text-emerald-400 hover:underline flex items-center space-x-1 pt-1 font-bold"
+                    >
+                      <span>Open Customer's Google Drive Link</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                {selectedOrderForAudit.customerPhone ? (
+                  <a
+                    href={`https://wa.me/91${selectedOrderForAudit.customerPhone.replace(/\D/g, '')}?text=Hi%20${encodeURIComponent(selectedOrderForAudit.customerName || 'there')}!%20bazara.in%20support%20se%20hum%20aapke%20order%20${encodeURIComponent(selectedOrderForAudit.id)}%20ke%20regarding%20connect%20kar%20rahe%20hain.`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 text-xs font-bold inline-flex items-center space-x-1.5 transition-all"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>WhatsApp Customer</span>
+                  </a>
+                ) : <div />}
+
+                <button
+                  onClick={() => setSelectedOrderForAudit(null)}
+                  className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs cursor-pointer transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         )}

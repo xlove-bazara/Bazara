@@ -623,7 +623,22 @@ export async function saveAdminPassword(newPassword) {
 
 export function checkAdminSession() {
   try {
-    return sessionStorage.getItem(ADMIN_SESSION_KEY) === 'authenticated';
+    const sessionAuth = sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (sessionAuth === 'authenticated') return true;
+
+    const localAuth = localStorage.getItem(ADMIN_SESSION_KEY);
+    if (localAuth) {
+      try {
+        const parsed = JSON.parse(localAuth);
+        // Valid for 7 days
+        if (parsed?.authenticated && parsed?.timestamp && (Date.now() - parsed.timestamp < 7 * 24 * 60 * 60 * 1000)) {
+          return true;
+        }
+      } catch (e) {
+        if (localAuth === 'authenticated') return true;
+      }
+    }
+    return false;
   } catch (e) {
     return false;
   }
@@ -633,8 +648,13 @@ export function setAdminSession(auth) {
   try {
     if (auth) {
       sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
+      localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
+        authenticated: true,
+        timestamp: Date.now()
+      }));
     } else {
       sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      localStorage.removeItem(ADMIN_SESSION_KEY);
     }
   } catch (e) {}
 }

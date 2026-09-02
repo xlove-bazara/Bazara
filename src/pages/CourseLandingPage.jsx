@@ -767,7 +767,7 @@ export default function CourseLandingPage({
 
         <div className="pt-2 text-[11px] text-slate-500 space-y-1">
           <p>© 2026 bazara.in • All Rights Reserved</p>
-          <p>Support: support@bazara.in • WhatsApp: +91 98765 43210</p>
+          <p>Support: xlovevipu@gmail.com • WhatsApp: +91 98373 71137</p>
         </div>
       </footer>
 

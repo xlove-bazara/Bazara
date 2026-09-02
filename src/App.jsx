@@ -281,6 +281,9 @@ export default function App() {
           {selectedProduct ? (
             <ProductDetailPage
               product={selectedProduct}
+              user={user}
+              onNavigate={handleNavigate}
+              onOpenLogin={() => setIsLoginModalOpen(true)}
               onBack={() => navigateTo('home', '/home')}
               onBuyNow={handleInstantBuy}
             />

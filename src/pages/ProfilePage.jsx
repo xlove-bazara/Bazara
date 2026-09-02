@@ -369,7 +369,7 @@ export default function ProfilePage({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <a
-                  href="https://wa.me/919876543210"
+                  href="https://wa.me/919837371137"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-4 rounded-2xl bg-[#090c15] border border-white/10 hover:border-emerald-500/40 flex items-center justify-between group transition-all"

@@ -40,7 +40,7 @@ export async function sendOrderDeliveryEmail({
 
   // Attempt 2: Direct Brevo API client fallback (if VITE_BREVO_API_KEY is defined)
   const brevoApiKey = import.meta.env.VITE_BREVO_API_KEY;
-  const senderEmail = import.meta.env.VITE_EMAIL_SENDER || 'support@bazara.in';
+  const senderEmail = import.meta.env.VITE_EMAIL_SENDER || 'xlovevipu@gmail.com';
 
   if (!brevoApiKey) {
     return { success: false, error: 'Brevo API key not configured' };

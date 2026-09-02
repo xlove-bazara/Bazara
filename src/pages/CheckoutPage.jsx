@@ -25,6 +25,7 @@ export default function CheckoutPage({
   onBack, 
   onPaymentComplete 
 }) {
+  const [fullName, setFullName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const hasBumpOffer = Boolean(
@@ -129,17 +130,20 @@ export default function CheckoutPage({
             color: '#10B981'
           },
           handler: function (response) {
+            const proofId = response.razorpay_payment_id || ('pay_' + Math.random().toString(36).substring(2, 10).toUpperCase());
             const orderData = {
               productId: product.id,
               productTitle: product.title,
               amount: total,
+              customerName: fullName || user?.name || 'Customer',
               customerPhone: phone,
               customerEmail: email || `user_${phone.slice(-4)}@bazara.in`,
               upsellIncluded: hasBumpOffer && addUpsell,
               upsellTitle: (hasBumpOffer && addUpsell) ? upsellTitle : null,
               upsellDriveUrl: (hasBumpOffer && addUpsell) ? (product.bump_drive_url || null) : null,
               driveUrl: product.drive_download_url,
-              razorpayPaymentId: response.razorpay_payment_id
+              paymentId: proofId,
+              razorpayPaymentId: proofId
             };
             onPaymentComplete(orderData);
           }
@@ -163,17 +167,20 @@ export default function CheckoutPage({
     setTimeout(() => {
       setIsProcessing(false);
       setProcessingStatus('');
+      const simProofId = 'pay_' + Math.random().toString(36).substring(2, 10).toUpperCase();
       const orderData = {
         productId: product.id,
         productTitle: product.title,
         amount: total,
+        customerName: fullName || user?.name || 'Customer',
         customerPhone: phone,
         customerEmail: email || `user_${phone.slice(-4)}@bazara.in`,
         upsellIncluded: hasBumpOffer && addUpsell,
         upsellTitle: (hasBumpOffer && addUpsell) ? upsellTitle : null,
         upsellDriveUrl: (hasBumpOffer && addUpsell) ? (product.bump_drive_url || null) : null,
         driveUrl: product.drive_download_url,
-        razorpayPaymentId: 'rzp_pay_' + Date.now()
+        paymentId: simProofId,
+        razorpayPaymentId: simProofId
       };
       onPaymentComplete(orderData);
     }, 1600);
@@ -383,6 +390,19 @@ export default function CheckoutPage({
           <div className="border-b border-white/[0.08]" />
 
           <div className="space-y-3">
+            <div>
+              <label className="text-xs font-bold text-slate-300 block mb-1.5">
+                Full Name (Optional)
+              </label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter your name"
+                className="w-full px-4 py-3 rounded-2xl bg-[#0a0d16] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors duration-200"
+              />
+            </div>
+
             <div>
               <label className="text-xs font-bold text-slate-300 block mb-1.5">
                 WhatsApp Mobile Number <span className="text-rose-400">*</span>

@@ -23,9 +23,13 @@ import {
   Check
 } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
+import Header from '../components/Header';
 
 export default function ProductDetailPage({ 
   product, 
+  user,
+  onNavigate,
+  onOpenLogin,
   onBack, 
   onBuyNow 
 }) {
@@ -72,39 +76,58 @@ export default function ProductDetailPage({
   };
 
   return (
-    <div className="min-h-screen pb-32 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
-      {/* Top Floating Glass Navigation */}
-      <header className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl bg-[#08090E]/80 border-b border-white/[0.06]">
+    <div className="min-h-screen pb-32 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30 relative overflow-hidden">
+      {/* Luxury Ambient Orbs & Cyber Texture Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-10 left-1/4 w-[450px] h-[450px] bg-emerald-500/[0.08] rounded-full blur-[150px]" />
+        <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-indigo-600/[0.08] rounded-full blur-[170px]" />
+        <div className="absolute bottom-20 left-10 w-[400px] h-[400px] bg-violet-600/[0.06] rounded-full blur-[140px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:28px_28px] opacity-60" />
+      </div>
+
+      {/* Top Primary Header (Same as bazara.in/home) */}
+      <Header 
+        user={user} 
+        onNavigate={onNavigate || onBack} 
+        onOpenLogin={onOpenLogin} 
+        activeTab="home" 
+      />
+
+      {/* Secondary Navigation & Breadcrumb Strip */}
+      <div className="sticky top-[60px] md:top-[68px] z-20 px-4 md:px-8 py-2.5 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
         <div className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto flex items-center justify-between">
           <button
             onClick={onBack}
-            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all"
+            className="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 flex items-center space-x-1.5 text-xs font-bold active:scale-95 transition-all cursor-pointer"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Store</span>
           </button>
 
-          <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
             {product.category} details
           </span>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={handleShare}
-              className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all"
+              className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
+              title="Share Product"
             >
               <Share2 className="w-4 h-4" />
             </button>
             <button
               onClick={() => setIsWishlisted(!isWishlisted)}
-              className="p-2 rounded-full glass-panel text-slate-300 hover:text-rose-500 border border-white/10 active:scale-95 transition-all"
+              className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-rose-500 border border-white/10 active:scale-95 transition-all cursor-pointer"
+              title="Save to Wishlist"
             >
               <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="max-w-md md:max-w-4xl lg:max-w-5xl mx-auto px-4 md:px-8 pt-4 space-y-6">
+      <main className="relative z-10 max-w-md md:max-w-4xl lg:max-w-5xl mx-auto px-4 md:px-8 pt-4 space-y-6">
         {/* 1. Main Media Showcase + Thumbnail Slider Below It */}
         <section className="space-y-2.5">
           {/* Main Big Image Preview (4:3 Ratio) */}
