@@ -78,7 +78,9 @@ export default function ProfilePage({
   };
 
   const displayEmail = user?.email && user.email !== 'creator@bazara.in' ? user.email : null;
-  const displayName = user?.name || nameInput || (displayEmail ? displayEmail.split('@')[0] : 'Guest Creator');
+  const displayPhone = user?.phone ? user.phone.toString().replace(/\D/g, '').slice(-10) : null;
+  const isLoggedIn = Boolean(user && (displayEmail || displayPhone || (user.id && !user.id.startsWith('guest_'))));
+  const displayName = user?.name || nameInput || (displayEmail ? displayEmail.split('@')[0] : (displayPhone ? `Creator ${displayPhone.slice(-4)}` : 'Guest Creator'));
 
 
   return (
@@ -156,29 +158,34 @@ export default function ProfilePage({
                   </div>
 
                   {/* Real Verified Email / Phone */}
-                  {displayEmail ? (
+                  {displayEmail && (
                     <p className="text-xs text-emerald-400 font-mono truncate flex items-center space-x-1 font-semibold">
                       <Mail className="w-3 h-3 text-emerald-400 shrink-0" />
                       <span className="truncate">{displayEmail}</span>
                     </p>
-                  ) : (
+                  )}
+
+                  {displayPhone && (
+                    <p className="text-xs text-emerald-400 font-mono flex items-center space-x-1 font-semibold">
+                      <Phone className="w-3 h-3 text-emerald-400 shrink-0" />
+                      <span>+91 {displayPhone}</span>
+                    </p>
+                  )}
+
+                  {!isLoggedIn && (
                     <p className="text-xs text-amber-400/90 font-medium flex items-center space-x-1">
                       <span>Guest User (Login to sync)</span>
                     </p>
                   )}
 
-                  {user?.phone && (
-                    <p className="text-xs text-slate-400 font-mono flex items-center space-x-1">
-                      <Phone className="w-3 h-3 text-slate-500 shrink-0" />
-                      <span>+91 {user.phone}</span>
-                    </p>
-                  )}
-
-
                   <div className="pt-1 flex items-center space-x-2">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1" />
-                      {displayEmail ? 'VERIFIED CREATOR' : 'GUEST PASS'}
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black border ${
+                      isLoggedIn 
+                        ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' 
+                        : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full mr-1 ${isLoggedIn ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                      {isLoggedIn ? 'VERIFIED CREATOR' : 'GUEST PASS'}
                     </span>
                   </div>
                 </div>
@@ -250,7 +257,7 @@ export default function ProfilePage({
                 </div>
               </div>
 
-              {!displayEmail && (
+              {!isLoggedIn && (
                 <div className="pt-2">
                   <button
                     onClick={onLoginClick}
@@ -419,7 +426,7 @@ export default function ProfilePage({
         </div>
 
         {/* ================= SABSE NICHE: LOGOUT BUTTON ================= */}
-        {displayEmail && (
+        {isLoggedIn && (
           <div className="pt-6 pb-2 border-t border-white/[0.08] flex justify-center">
             <button
               onClick={onLogout}
