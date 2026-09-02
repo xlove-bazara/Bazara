@@ -27,6 +27,18 @@ CREATE TABLE IF NOT EXISTS public.products (
     reviews_count INT DEFAULT 1200,
     downloads_count INT DEFAULT 15000,
     drive_download_url TEXT NOT NULL,
+    short_desc TEXT,
+    video_url TEXT,
+    reels_details JSONB DEFAULT '{}'::jsonb,
+    course_details JSONB DEFAULT '{}'::jsonb,
+    ebook_details JSONB DEFAULT '{}'::jsonb,
+    software_details JSONB DEFAULT '{}'::jsonb,
+    enable_bump_offer BOOLEAN DEFAULT false,
+    bump_product_id TEXT,
+    bump_title TEXT,
+    bump_price NUMERIC,
+    bump_desc TEXT,
+    bump_drive_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -60,6 +72,9 @@ CREATE TABLE IF NOT EXISTS public.orders (
     customerPhone TEXT NOT NULL,
     customerEmail TEXT,
     upsellIncluded BOOLEAN DEFAULT false,
+    upsellProductId TEXT,
+    upsellTitle TEXT,
+    upsellDriveUrl TEXT,
     driveUrl TEXT NOT NULL,
     razorpayPaymentId TEXT,
     status TEXT DEFAULT 'completed',
