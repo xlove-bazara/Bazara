@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShieldCheck, ArrowRight, Smartphone, Mail, Sparkles, CheckCircle } from 'lucide-react';
 import { signInWithGoogle, sendOtp, verifyOtp } from '../supabase';
+import { sendWhatsAppOtp } from '../services/whatsappService';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [authMode, setAuthMode] = useState('phone'); // 'phone' | 'email'
@@ -49,7 +50,23 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
     setLoading(true);
     try {
-      await sendOtp(cleanId);
+      if (authMode === 'phone') {
+        const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        sessionStorage.setItem('bazara_pending_otp', JSON.stringify({
+          phone: cleanId,
+          code: generatedOtp,
+          expiresAt: Date.now() + 10 * 60 * 1000
+        }));
+        const res = await sendWhatsAppOtp({
+          customerPhone: cleanId,
+          otpCode: generatedOtp
+        });
+        if (!res.success) {
+          throw new Error(res.error || 'Failed to send WhatsApp OTP. Please try again.');
+        }
+      } else {
+        await sendOtp(cleanId);
+      }
       setLoading(false);
       setStep('otp');
       setCountdown(30);
@@ -63,13 +80,38 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     e.preventDefault();
     setErrorMsg('');
     if (!otp || otp.length < 6) {
-      setErrorMsg('Please enter the 6-digit OTP sent to your email');
+      setErrorMsg(`Please enter the 6-digit OTP sent to your ${authMode === 'phone' ? 'WhatsApp' : 'email'}`);
       return;
     }
 
-
     setLoading(true);
     try {
+      if (authMode === 'phone') {
+        const storedData = sessionStorage.getItem('bazara_pending_otp');
+        if (!storedData) {
+          throw new Error('OTP expired or not found. Please request a new OTP.');
+        }
+        const parsed = JSON.parse(storedData);
+        if (Date.now() > parsed.expiresAt) {
+          sessionStorage.removeItem('bazara_pending_otp');
+          throw new Error('OTP has expired. Please click Resend OTP.');
+        }
+        if (otp.trim() !== parsed.code.trim()) {
+          throw new Error('Invalid OTP code. Please check WhatsApp and enter the correct code.');
+        }
+        sessionStorage.removeItem('bazara_pending_otp');
+        const user = {
+          name: `Creator ${cleanId.slice(-4)}`,
+          phone: cleanId,
+          email: null
+        };
+        localStorage.setItem('bazara_current_user', JSON.stringify(user));
+        setLoading(false);
+        onLoginSuccess(user);
+        onClose();
+        return;
+      }
+
       const res = await verifyOtp(identifier.trim(), otp);
       setLoading(false);
       const user = res?.user || {
@@ -194,7 +236,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               disabled={loading}
               className="w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer btn-shine-effect"
             >
-              {loading ? 'Sending OTP...' : `Send ${authMode === 'phone' ? 'Mobile' : 'Email'} OTP →`}
+              {loading ? 'Sending OTP...' : `Send ${authMode === 'phone' ? 'WhatsApp' : 'Email'} OTP →`}
             </button>
           </form>
         ) : (
@@ -203,7 +245,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               <div className="flex justify-between items-center text-xs">
                 <label className="text-[11px] font-semibold text-slate-300">Enter 6-Digit OTP Code</label>
                 <span className="text-[10px] text-emerald-400 font-mono">
-                  Sent to {authMode === 'phone' ? `+91 ${identifier}` : identifier}
+                  Sent to {authMode === 'phone' ? `WhatsApp: +91 ${identifier}` : identifier}
                 </span>
               </div>
               <input

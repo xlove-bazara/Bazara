@@ -10,6 +10,7 @@ import LoginModal from './components/LoginModal';
 import PolicyModal from './components/PolicyModal';
 import { getProducts, getSettings, createOrder, getCurrentUser, signOutUser, supabase } from './supabase';
 import { sendOrderDeliveryEmail } from './services/emailService';
+import { sendWhatsAppOrderDelivery } from './services/whatsappService';
 
 
 
@@ -157,6 +158,16 @@ export default function App() {
         orderId: order.id,
         amount: orderPayload.amount
       }).catch(err => console.warn('Automated delivery email failed:', err));
+    }
+
+    // Automatically send official Google Drive delivery WhatsApp message
+    if (orderPayload.customerPhone) {
+      sendWhatsAppOrderDelivery({
+        customerPhone: orderPayload.customerPhone,
+        customerName: orderPayload.customerName || user?.name,
+        productTitle: orderPayload.productTitle,
+        driveUrl: orderPayload.driveUrl
+      }).catch(err => console.warn('Automated WhatsApp delivery failed:', err));
     }
 
     navigateTo('access', '/access');
