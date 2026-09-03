@@ -173,7 +173,7 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
               <div className="space-y-1">
                 <strong className="text-white block">3. How to Request a Refund</strong>
                 <p>
-                  To initiate a refund request, please email us at <span className="text-emerald-400 font-semibold">support@bazara.in</span> or message our WhatsApp support with your Order ID, registered email/phone number, and payment proof.
+                  To initiate a refund request, please email us at <span className="text-emerald-400 font-semibold">supporthubindia@gmail.com</span> or message our WhatsApp support with your Order ID, registered email/phone number, and payment proof.
                 </p>
               </div>
 
@@ -218,7 +218,7 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
               <div className="space-y-1">
                 <strong className="text-white block">4. Non-Receipt of Digital Access</strong>
                 <p>
-                  In rare cases of email spam filters or incorrect phone numbers, if you do not receive access within 10 minutes, please contact our helpline via WhatsApp (+91 98373 71137) or email xlovevipu@gmail.com with your payment ID for immediate manual resolution.
+                  In rare cases of email spam filters or incorrect phone numbers, if you do not receive access within 10 minutes, please contact our helpline via WhatsApp (+91 98373 71137) or email supporthubindia@gmail.com with your payment ID for immediate manual resolution.
                 </p>
               </div>
             </div>
@@ -236,8 +236,8 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
                     <Mail className="w-4 h-4" />
                     <span className="font-bold text-white">Official Support Email</span>
                   </div>
-                  <a href="mailto:xlovevipu@gmail.com" className="text-xs text-slate-300 hover:text-emerald-400 font-mono block">
-                    xlovevipu@gmail.com
+                  <a href="mailto:supporthubindia@gmail.com" className="text-xs text-slate-300 hover:text-emerald-400 font-mono block">
+                    supporthubindia@gmail.com
                   </a>
                   <p className="text-[10px] text-slate-500">Response time: Within 24 hours</p>
                 </div>

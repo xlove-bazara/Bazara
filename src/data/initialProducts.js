@@ -423,7 +423,8 @@ export const defaultSiteSettings = {
     "🎓 VERIFIED CERTIFICATE OF COMPLETION INCLUDED",
     "🚀 100% PRACTICAL NO-FLUFF VIDEO CURRICULUM"
   ],
-  support_whatsapp: "+91 98765 43210",
+  support_whatsapp: "+91 98373 71137",
+  support_email: "supporthubindia@gmail.com",
   flash_sale_end_hours: 3
 };
 
