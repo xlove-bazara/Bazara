@@ -150,9 +150,9 @@ export default function CheckoutPage({
           key: razorpayKey,
           amount: Math.round(total * 100), // in paise
           currency: 'INR',
-          name: 'bazara.in',
+          name: 'Bazara',
           description: product.title + (hasBumpOffer && addUpsell ? ` + ${upsellTitle}` : ''),
-          image: product.cover_image,
+          image: typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/logo.png` : 'https://bazara.in/logo.png',
           order_id: serverOrderId || undefined,
           prefill: {
             contact: '+91' + phone,
