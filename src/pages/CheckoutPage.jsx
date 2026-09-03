@@ -160,7 +160,7 @@ export default function CheckoutPage({
             name: fullName || user?.name || ''
           },
           theme: {
-            color: '#10B981'
+            color: '#6E66DB'
           },
           modal: {
             ondismiss: function () {
