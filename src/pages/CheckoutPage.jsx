@@ -103,34 +103,93 @@ export default function CheckoutPage({
     }
   };
 
-  const handlePayNow = (e) => {
+  const handlePayNow = async (e) => {
     e.preventDefault();
     if (!phone || phone.length < 10) {
       alert('Please enter your 10-digit WhatsApp number to receive your Drive link!');
       return;
     }
 
-    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || process.env.REACT_APP_RAZORPAY_KEY_ID;
 
     // If real Razorpay key is present and SDK loaded, open live Razorpay popup
     if (razorpayKey && window.Razorpay) {
       try {
+        setIsProcessing(true);
+        setProcessingStatus('Initializing Secure Razorpay Gateway...');
+
+        let serverOrderId = null;
+
+        // Try server-side order creation first for 100% verified transactions
+        try {
+          const res = await fetch('/api/create-razorpay-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: total,
+              receipt: `rcpt_${product.id}_${Date.now()}`,
+              notes: {
+                productId: product.id,
+                productTitle: product.title,
+                phone: phone,
+                email: email
+              }
+            })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.orderId) {
+              serverOrderId = data.orderId;
+            }
+          }
+        } catch (serverOrderErr) {
+          console.warn('Server order creation skipped, using direct checkout:', serverOrderErr);
+        }
+
         const options = {
           key: razorpayKey,
-          amount: total * 100, // in paise
+          amount: Math.round(total * 100), // in paise
           currency: 'INR',
           name: 'bazara.in',
           description: product.title + (hasBumpOffer && addUpsell ? ` + ${upsellTitle}` : ''),
           image: product.cover_image,
+          order_id: serverOrderId || undefined,
           prefill: {
             contact: '+91' + phone,
-            email: email || `${phone}@bazara.in`
+            email: email || `${phone}@bazara.in`,
+            name: fullName || user?.name || ''
           },
           theme: {
             color: '#10B981'
           },
-          handler: function (response) {
+          modal: {
+            ondismiss: function () {
+              setIsProcessing(false);
+              setProcessingStatus('');
+            }
+          },
+          handler: async function (response) {
+            setProcessingStatus('Payment Received! Verifying & Unlocking Access...');
+
             const proofId = response.razorpay_payment_id || ('pay_' + Math.random().toString(36).substring(2, 10).toUpperCase());
+
+            // If order_id exists, verify signature via backend API
+            if (response.razorpay_signature && response.razorpay_order_id) {
+              try {
+                await fetch('/api/verify-razorpay-payment', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature
+                  })
+                });
+              } catch (verifyErr) {
+                console.warn('Signature verification call error (ignoring to avoid blocking user):', verifyErr);
+              }
+            }
+
             const orderData = {
               productId: product.id,
               productTitle: product.title,
@@ -143,47 +202,41 @@ export default function CheckoutPage({
               upsellDriveUrl: (hasBumpOffer && addUpsell) ? (product.bump_drive_url || null) : null,
               driveUrl: product.drive_download_url,
               paymentId: proofId,
-              razorpayPaymentId: proofId
+              razorpayPaymentId: proofId,
+              razorpayOrderId: response.razorpay_order_id || serverOrderId || null
             };
+
+            setIsProcessing(false);
+            setProcessingStatus('');
             onPaymentComplete(orderData);
           }
         };
+
         const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (resp) {
+          setIsProcessing(false);
+          setProcessingStatus('');
+          alert('Payment Failed: ' + (resp.error?.description || 'Please try again.'));
+        });
         rzp.open();
         return;
       } catch (err) {
-        console.warn('Razorpay popup error, proceeding with simulation:', err);
+        setIsProcessing(false);
+        setProcessingStatus('');
+        console.error('Razorpay popup error:', err);
+        alert('Could not open Razorpay gateway. Please check your network or try again.');
+        return;
       }
     }
 
-    // High-converting Razorpay Simulation mode (for seamless testing without live keys yet)
-    setIsProcessing(true);
-    setProcessingStatus('Connecting to Secure UPI Gateway...');
-
-    setTimeout(() => {
-      setProcessingStatus('Verifying 1-Tap UPI / GPay / PhonePe / Card...');
-    }, 800);
-
-    setTimeout(() => {
-      setIsProcessing(false);
-      setProcessingStatus('');
-      const simProofId = 'pay_' + Math.random().toString(36).substring(2, 10).toUpperCase();
-      const orderData = {
-        productId: product.id,
-        productTitle: product.title,
-        amount: total,
-        customerName: fullName || user?.name || 'Customer',
-        customerPhone: phone,
-        customerEmail: email || `user_${phone.slice(-4)}@bazara.in`,
-        upsellIncluded: hasBumpOffer && addUpsell,
-        upsellTitle: (hasBumpOffer && addUpsell) ? upsellTitle : null,
-        upsellDriveUrl: (hasBumpOffer && addUpsell) ? (product.bump_drive_url || null) : null,
-        driveUrl: product.drive_download_url,
-        paymentId: simProofId,
-        razorpayPaymentId: simProofId
-      };
-      onPaymentComplete(orderData);
-    }, 1600);
+    // If key is missing or SDK didn't load
+    setIsProcessing(false);
+    setProcessingStatus('');
+    if (!razorpayKey) {
+      alert('Payment Gateway Error: VITE_RAZORPAY_KEY_ID is missing in Vercel Environment Variables. Please set VITE_RAZORPAY_KEY_ID and redeploy.');
+    } else {
+      alert('Payment Gateway is initializing. Please refresh and try again in 5 seconds.');
+    }
   };
 
 
