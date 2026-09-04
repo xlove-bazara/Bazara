@@ -234,7 +234,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center space-y-4">
         <div className="relative">
-          <img src="/logo.png" alt="bazara.in" className="w-14 h-14 rounded-2xl object-contain shadow-2xl shadow-indigo-500/30 animate-pulse" />
+          <img src="/logo.png?v=2" alt="bazara.in" className="w-14 h-14 rounded-2xl object-contain shadow-2xl shadow-indigo-500/30 animate-pulse" />
         </div>
         <div className="flex items-center space-x-1.5">
           <span className="text-sm font-black text-white uppercase tracking-wider">bazara</span>

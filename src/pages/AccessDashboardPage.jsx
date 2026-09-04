@@ -33,7 +33,7 @@ export default function AccessDashboardPage({
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
             Instant Access Vault
           </span>
-          <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
+          <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
         </div>
       </header>
 
@@ -113,13 +113,13 @@ export default function AccessDashboardPage({
             Join 12,000+ creators in our private Telegram/WhatsApp VIP channel for daily viral hooks and updates.
           </p>
           <a
-            href="https://t.me/bazara_creators"
+            href="https://t.me/bazaraofficial"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-2.5 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center space-x-2 transition-all"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>Join VIP Telegram Mastermind</span>
+            <span>Join Exclusive Telegram Community</span>
           </a>
         </div>
 

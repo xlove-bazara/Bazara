@@ -376,19 +376,19 @@ export default function HomePage({
         <section className="px-4 py-2">
           <div className="p-4 rounded-3xl bg-indigo-950/30 border border-indigo-500/20 space-y-2.5 text-center">
             <h4 className="text-xs font-extrabold text-white uppercase tracking-wider">
-              Join 12,000+ Creators on Telegram
+              Join Exclusive Telegram Community
             </h4>
             <p className="text-[11px] text-slate-300 max-w-xs mx-auto">
               Get free viral audio hooks, CapCut templates, and algorithm updates every single week.
             </p>
             <a
-              href="https://t.me/bazara_creators"
+              href="https://t.me/bazaraofficial"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-full text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all"
             >
               <MessageCircle className="w-3.5 h-3.5" />
-              <span>Join Free VIP Mastermind →</span>
+              <span>Join Exclusive Community →</span>
             </a>
           </div>
         </section>
@@ -397,7 +397,7 @@ export default function HomePage({
         {/* 8. Footer Info */}
         <footer className="px-4 pt-6 pb-4 border-t border-white/[0.08] text-center space-y-3">
           <div className="flex items-center justify-center space-x-2">
-            <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-md" />
+            <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-md" />
             <div className="flex items-baseline space-x-1">
               <span className="text-base font-black text-white">bazara</span>
               <span className="text-xs font-bold text-emerald-400">.in</span>

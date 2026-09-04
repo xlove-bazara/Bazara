@@ -152,7 +152,7 @@ export default function CheckoutPage({
           currency: 'INR',
           name: 'Bazara',
           description: product.title + (hasBumpOffer && addUpsell ? ` + ${upsellTitle}` : ''),
-          image: typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/logo.png` : 'https://bazara.in/logo.png',
+          image: typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/logo.png?v=2` : 'https://bazara.in/logo.png?v=2',
           order_id: serverOrderId || undefined,
           prefill: {
             contact: '+91' + phone,
@@ -255,7 +255,7 @@ export default function CheckoutPage({
             <Lock className="w-3.5 h-3.5 text-emerald-400" />
             <span>256-Bit Encrypted Checkout</span>
           </div>
-          <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
+          <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
         </div>
       </header>
 

@@ -97,7 +97,7 @@ export default function ProfilePage({
           </button>
 
           <div className="flex items-center space-x-2">
-            <img src="/logo.png" alt="bazara.in" className="w-7 h-7 rounded-xl object-contain shadow-md" />
+            <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-xl object-contain shadow-md" />
             <div className="flex items-baseline space-x-1">
               <span className="font-black text-base text-white">bazara</span>
               <span className="text-xs font-bold text-emerald-400">.in</span>
@@ -389,7 +389,7 @@ export default function ProfilePage({
                 </a>
 
                 <a
-                  href="https://t.me/bazara_creators"
+                  href="https://t.me/bazaraofficial"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-4 rounded-2xl bg-[#090c15] border border-white/10 hover:border-indigo-500/40 flex items-center justify-between group transition-all"
@@ -400,7 +400,7 @@ export default function ProfilePage({
                     </div>
                     <div>
                       <span className="text-xs font-bold text-white block group-hover:text-indigo-400 transition-colors">
-                        Telegram Mastermind
+                        Exclusive Telegram Community
                       </span>
                       <span className="text-[10px] text-slate-400 font-medium">12K+ Creators Community</span>
                     </div>

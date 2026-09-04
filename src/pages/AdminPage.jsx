@@ -597,7 +597,7 @@ export default function AdminPage({
       <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center p-4 selection:bg-emerald-500/30">
         <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-[#0e111d] border border-white/15 shadow-2xl space-y-6 text-center">
           <div className="space-y-3">
-            <img src="/logo.png" alt="bazara.in" className="w-16 h-16 mx-auto rounded-2xl object-contain shadow-xl shadow-indigo-500/30" />
+            <img src="/logo.png?v=2" alt="bazara.in" className="w-16 h-16 mx-auto rounded-2xl object-contain shadow-xl shadow-indigo-500/30" />
             <div>
               <h1 className="text-xl font-black text-white tracking-tight">bazara.in Control Panel</h1>
               <p className="text-xs text-slate-400 mt-1">Restricted Area • Store Owner Authentication Required</p>
@@ -672,7 +672,7 @@ export default function AdminPage({
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div className="flex items-center space-x-2.5">
-              <img src="/logo.png" alt="bazara.in" className="w-8 h-8 rounded-lg object-contain shadow-sm" />
+              <img src="/logo.png?v=2" alt="bazara.in" className="w-8 h-8 rounded-lg object-contain shadow-sm" />
               <div>
                 <div className="flex items-center space-x-2">
                   <span className="font-extrabold text-sm sm:text-base text-white tracking-tight">bazara.in Admin Console</span>

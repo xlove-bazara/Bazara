@@ -152,7 +152,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
         {/* Title with Brand Logo */}
         <div className="text-center space-y-1.5">
-          <img src="/logo.png" alt="bazara.in" className="w-11 h-11 mx-auto rounded-xl object-contain shadow-lg shadow-indigo-500/25" />
+          <img src="/logo.png?v=2" alt="bazara.in" className="w-11 h-11 mx-auto rounded-xl object-contain shadow-lg shadow-indigo-500/25" />
           <h3 className="text-lg font-black text-white">Login to bazara.in</h3>
           <p className="text-xs text-slate-400">Access your purchased courses, videos & instant drive links</p>
         </div>

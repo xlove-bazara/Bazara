@@ -227,7 +227,7 @@ export default function CourseLandingPage({
           {/* Brand Logo */}
           <div className="flex items-center space-x-2.5">
             <img
-              src="/logo.png"
+              src="/logo.png?v=2"
               alt="bazara.in Logo"
               className="w-8 h-8 rounded-xl object-contain shadow-lg shadow-indigo-500/25"
             />
@@ -716,7 +716,7 @@ export default function CourseLandingPage({
       {/* 13. COMPLIANT FOOTER (Payment Gateway Compliant, Store link removed) */}
       <footer className="px-4 py-8 border-t border-white/[0.08] text-center space-y-4 max-w-5xl mx-auto">
         <div className="flex items-center justify-center space-x-2">
-          <img src="/logo.png" alt="bazara.in" className="w-8 h-8 rounded-lg object-contain shadow-md" />
+          <img src="/logo.png?v=2" alt="bazara.in" className="w-8 h-8 rounded-lg object-contain shadow-md" />
           <div className="flex items-baseline space-x-1">
             <span className="text-lg font-black text-white">bazara</span>
             <span className="text-sm font-bold text-emerald-400">.in</span>

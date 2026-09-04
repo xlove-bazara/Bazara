@@ -30,7 +30,7 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
             className="flex items-center space-x-2.5 cursor-pointer group shrink-0"
           >
             <img
-              src="/logo.png"
+              src="/logo.png?v=2"
               alt="bazara.in Logo"
               className="w-8 h-8 rounded-xl object-contain shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform"
             />
@@ -122,7 +122,7 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
               className="flex items-center space-x-2 cursor-pointer group"
             >
               <img
-                src="/logo.png"
+                src="/logo.png?v=2"
                 alt="bazara.in Logo"
                 className="w-7 h-7 rounded-lg object-contain shadow-md shadow-indigo-500/20"
               />
