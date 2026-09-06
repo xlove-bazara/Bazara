@@ -69,7 +69,8 @@ export default function AdminPage({
   products, 
   settings, 
   onRefresh, 
-  onBack 
+  onBack,
+  onOpenCrm
 }) {
   // Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(checkAdminSession);
@@ -860,6 +861,17 @@ export default function AdminPage({
             >
               <Settings className="w-3.5 h-3.5" />
               <span>Marquee & Security</span>
+            </button>
+            <button
+              onClick={() => {
+                if (onOpenCrm) onOpenCrm();
+                else window.location.href = '/crm';
+              }}
+              className="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 bg-emerald-950/80 text-emerald-400 hover:bg-emerald-900 border border-emerald-500/30 shadow-lg shadow-emerald-950/50"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>WhatsApp CRM</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-1"></span>
             </button>
           </div>
 

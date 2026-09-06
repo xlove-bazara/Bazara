@@ -6,6 +6,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
+import WhatsAppCrmPage from './pages/WhatsAppCrmPage';
 import LoginModal from './components/LoginModal';
 import PolicyModal from './components/PolicyModal';
 import { getProducts, getSettings, createOrder, getCurrentUser, signOutUser, supabase } from './supabase';
@@ -34,6 +35,7 @@ export default function App() {
     if (path === '/checkout') return 'checkout';
     if (path === '/access') return 'access';
     if (path === '/admin') return 'admin';
+    if (path === '/crm' || path === '/whatsapp-crm' || path === '/inbox') return 'crm';
     if (path === '/profile') return 'profile';
     if (path === '/product') return 'product';
     return 'landing'; // Default root '/' is the single course landing page
@@ -352,7 +354,15 @@ export default function App() {
             settings={settings}
             onRefresh={refreshData}
             onBack={() => navigateTo('home', '/home')}
+            onOpenCrm={() => navigateTo('crm', '/crm')}
           />
+        </div>
+      )}
+
+      {/* 8. WHATSAPP CRM & INBOX */}
+      {currentPage === 'crm' && (
+        <div key="crm" className="animate-page-enter">
+          <WhatsAppCrmPage />
         </div>
       )}
 

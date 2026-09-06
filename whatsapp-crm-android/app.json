@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Bazara WhatsApp CRM",
+    "slug": "bazara-whatsapp-crm",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#090A0F"
+    },
+    "android": {
+      "package": "in.bazara.whatsappcrm",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#090A0F"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECORD_AUDIO",
+        "INTERNET",
+        "VIBRATE",
+        "RECEIVE_BOOT_COMPLETED"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Bazara CRM to record voice notes to send on WhatsApp."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Bazara CRM to access photos to send to customers."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bazara-whatsapp-crm-2026"
+      }
+    }
+  }
+}
