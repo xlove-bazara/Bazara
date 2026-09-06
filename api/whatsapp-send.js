@@ -3,12 +3,14 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+const FALLBACK_SUPABASE_URL = 'https://zhwdaimprkmqljjwrbpk.supabase.co';
+const FALLBACK_SUPABASE_KEY = 'sb_publishable_eDWmwO-eoswzD8cdjudEJQ_ie4y7w9v';
+const FALLBACK_TOKEN = 'EAAVjnkkrc1ABSQyfZBeS1t06ZC7jYP3HeUflY30mRuXrZBLxN6V4Rja9Y3dUByAGmlWvZAb2zSSBZCIRgVDvikxTtqZCDYUOgx1vZAK19sc1lEZA2r7WZCt9OKN38rfaDJVJd3ZAMtYZBCj959F5P9W0Ds7qIdiJ3Q3n75UChb7fAPZAsVV4tp77fEVuSDfM6TgmSgZDZD';
+const FALLBACK_PHONE_ID = '1360291297158291';
+
 function getSupabaseAdmin() {
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Supabase URL or Key is missing in environment');
-  }
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || FALLBACK_SUPABASE_KEY;
   return createClient(supabaseUrl, supabaseKey, {
     auth: { persistSession: false }
   });
@@ -35,8 +37,8 @@ export default async function handler(req, res) {
     const {
       customerId,
       conversationId,
-      to, // WhatsApp phone number e.g. "919876543210"
-      messageType = 'text', // 'text', 'image', 'document', 'audio', 'video', 'template'
+      to,
+      messageType = 'text',
       textContent,
       mediaUrl,
       mediaId,
@@ -50,12 +52,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Recipient phone (to) is required' });
     }
 
-    const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || process.env.META_ACCESS_TOKEN;
-    const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.VITE_WHATSAPP_PHONE_NUMBER_ID || process.env.META_PHONE_NUMBER_ID || '1360291297158291';
-
-    if (!token) {
-      return res.status(500).json({ error: 'Server configuration error: WHATSAPP_TOKEN / META_ACCESS_TOKEN is missing' });
-    }
+    const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || process.env.META_ACCESS_TOKEN || FALLBACK_TOKEN;
+    const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.VITE_WHATSAPP_PHONE_NUMBER_ID || process.env.META_PHONE_NUMBER_ID || FALLBACK_PHONE_ID;
 
     // Build payload according to Meta WhatsApp Cloud API specs
     const metaPayload = {
@@ -132,7 +130,6 @@ export default async function handler(req, res) {
     // Store the outbound message in Supabase
     const supabase = getSupabaseAdmin();
 
-    // Determine target customer & conversation IDs if not passed
     let finalCustId = customerId;
     let finalConvId = conversationId;
 
@@ -180,7 +177,6 @@ export default async function handler(req, res) {
         insertedMessage = msgRow;
       }
 
-      // Update conversation last message
       await supabase
         .from('whatsapp_conversations')
         .update({
@@ -191,7 +187,6 @@ export default async function handler(req, res) {
         })
         .eq('id', finalConvId);
 
-      // Update customer last contact
       await supabase
         .from('whatsapp_customers')
         .update({
