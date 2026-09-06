@@ -1,4 +1,4 @@
-// Diagnostic API to verify Supabase table connectivity and test data insertion
+// Diagnostic API to verify Supabase connectivity and Meta WABA webhook subscription
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -12,6 +12,27 @@ export default async function handler(req, res) {
     });
 
     const { action } = req.query;
+
+    // 1. SUBSCRIBE WABA TO APP WEBHOOK VIA META GRAPH API
+    if (action === 'subscribe_waba') {
+      const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || 'EAAVjnkkrc1ABSQyfZBeS1t06ZC7jYP3HeUflY30mRuXrZBLxN6V4Rja9Y3dUByAGmlWvZAb2zSSBZCIRgVDvikxTtqZCDYUOgx1vZAK19sc1lEZA2r7WZCt9OKN38rfaDJVJd3ZAMtYZBCj959F5P9W0Ds7qIdiJ3Q3n75UChb7fAPZAsVV4tp77fEVuSDfM6TgmSgZDZD';
+      const wabaId = process.env.WHATSAPP_WABA_ID || process.env.VITE_WHATSAPP_WABA_ID || '1061585893433054';
+
+      const response = await fetch(`https://graph.facebook.com/v20.0/${wabaId}/subscribed_apps`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const metaData = await response.json();
+      return res.status(response.status).json({
+        waba_id: wabaId,
+        meta_response: metaData,
+        status: response.ok ? 'Subscribed Successfully' : 'Subscription Failed'
+      });
+    }
 
     if (action === 'insert_demo') {
       // Create demo customer
@@ -71,11 +92,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       supabase_url: SUPABASE_URL,
       customers: custRes.data || [],
-      customers_error: custRes.error?.message || null,
       conversations: convRes.data || [],
-      conversations_error: convRes.error?.message || null,
-      messages: msgRes.data || [],
-      messages_error: msgRes.error?.message || null
+      messages: msgRes.data || []
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });
