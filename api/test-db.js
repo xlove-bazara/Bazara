@@ -1,4 +1,4 @@
-// Diagnostic API to verify Supabase connectivity and Meta WABA webhook subscription
+// Diagnostic API to verify Supabase connectivity and Meta Phone Number Webhook routing
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -13,11 +13,30 @@ export default async function handler(req, res) {
 
     const { action } = req.query;
 
-    // 1. SUBSCRIBE WABA TO APP WEBHOOK VIA META GRAPH API
-    if (action === 'subscribe_waba') {
-      const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || 'EAAVjnkkrc1ABSQyfZBeS1t06ZC7jYP3HeUflY30mRuXrZBLxN6V4Rja9Y3dUByAGmlWvZAb2zSSBZCIRgVDvikxTtqZCDYUOgx1vZAK19sc1lEZA2r7WZCt9OKN38rfaDJVJd3ZAMtYZBCj959F5P9W0Ds7qIdiJ3Q3n75UChb7fAPZAsVV4tp77fEVuSDfM6TgmSgZDZD';
-      const wabaId = process.env.WHATSAPP_WABA_ID || process.env.VITE_WHATSAPP_WABA_ID || '1061585893433054';
+    const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || 'EAAVjnkkrc1ABSQyfZBeS1t06ZC7jYP3HeUflY30mRuXrZBLxN6V4Rja9Y3dUByAGmlWvZAb2zSSBZCIRgVDvikxTtqZCDYUOgx1vZAK19sc1lEZA2r7WZCt9OKN38rfaDJVJd3ZAMtYZBCj959F5P9W0Ds7qIdiJ3Q3n75UChb7fAPZAsVV4tp77fEVuSDfM6TgmSgZDZD';
+    const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.VITE_WHATSAPP_PHONE_NUMBER_ID || '1360291297158291';
+    const wabaId = process.env.WHATSAPP_WABA_ID || process.env.VITE_WHATSAPP_WABA_ID || '1061585893433054';
 
+    // 1. SUBSCRIBE SPECIFIC PHONE NUMBER ID TO BAZARA APP
+    if (action === 'subscribe_phone') {
+      const response = await fetch(`https://graph.facebook.com/v20.0/${phoneId}/subscribed_apps`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const metaData = await response.json();
+      return res.status(response.status).json({
+        phone_id: phoneId,
+        meta_response: metaData,
+        status: response.ok ? 'Phone Number Webhook Subscribed Successfully' : 'Subscription Failed'
+      });
+    }
+
+    // 2. SUBSCRIBE WABA
+    if (action === 'subscribe_waba') {
       const response = await fetch(`https://graph.facebook.com/v20.0/${wabaId}/subscribed_apps`, {
         method: 'POST',
         headers: {
@@ -35,7 +54,6 @@ export default async function handler(req, res) {
     }
 
     if (action === 'insert_demo') {
-      // Create demo customer
       const { data: cust, error: custErr } = await supabase
         .from('whatsapp_customers')
         .insert({
@@ -49,7 +67,6 @@ export default async function handler(req, res) {
 
       if (custErr) return res.status(500).json({ error: custErr.message, step: 'customer' });
 
-      // Create conversation
       const { data: conv, error: convErr } = await supabase
         .from('whatsapp_conversations')
         .insert({
@@ -63,7 +80,6 @@ export default async function handler(req, res) {
 
       if (convErr) return res.status(500).json({ error: convErr.message, step: 'conv' });
 
-      // Create message
       const { data: msg, error: msgErr } = await supabase
         .from('whatsapp_messages')
         .insert({
