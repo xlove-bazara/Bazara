@@ -362,7 +362,7 @@ export default function App() {
       {/* 8. WHATSAPP CRM & INBOX */}
       {currentPage === 'crm' && (
         <div key="crm" className="animate-page-enter">
-          <WhatsAppCrmPage />
+          <WhatsAppCrmPage onBack={() => navigateTo('admin', '/admin')} />
         </div>
       )}
 

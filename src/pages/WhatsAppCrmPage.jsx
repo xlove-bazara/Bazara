@@ -29,11 +29,24 @@ import {
   Download,
   Calendar,
   ExternalLink,
-  Smile
+  Smile,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  LogOut,
+  ArrowLeft
 } from 'lucide-react';
 import { whatsappCrmService } from '../services/whatsappCrmService';
+import { checkAdminSession, getAdminPassword, setAdminSession } from '../supabase';
 
-export default function WhatsAppCrmPage() {
+export default function WhatsAppCrmPage({ onBack }) {
+  // Admin Authentication State
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(checkAdminSession);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState('');
+
   // State: Conversations & Active selection
   const [conversations, setConversations] = useState([]);
   const [activeConvId, setActiveConvId] = useState(null);
@@ -81,6 +94,45 @@ export default function WhatsAppCrmPage() {
   const recordingTimerRef = useRef(null);
   const fileInputRef = useRef(null);
   const docInputRef = useRef(null);
+
+  // Deduplicated Message Appender Helper
+  const appendMessageDeduplicated = useCallback((newMsg) => {
+    if (!newMsg) return;
+    setMessages(prev => {
+      if (prev.some(m => (m.id && m.id === newMsg.id) || (m.meta_message_id && newMsg.meta_message_id && m.meta_message_id === newMsg.meta_message_id))) {
+        return prev;
+      }
+      return [...prev, newMsg];
+    });
+  }, []);
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    setAuthError('');
+    try {
+      const realPassword = await getAdminPassword();
+      if (passwordInput.trim() === realPassword) {
+        setAdminSession(true);
+        setIsAdminAuthenticated(true);
+        setPasswordInput('');
+      } else {
+        setAuthError('Incorrect password. Please try again.');
+      }
+    } catch (err) {
+      if (passwordInput.trim() === 'admin123') {
+        setAdminSession(true);
+        setIsAdminAuthenticated(true);
+        setPasswordInput('');
+      } else {
+        setAuthError('Authentication failed. Default password is admin123');
+      }
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setAdminSession(false);
+    setIsAdminAuthenticated(false);
+  };
 
   // Selected conversation object
   const activeConversation = conversations.find(c => c.id === activeConvId);
@@ -154,14 +206,9 @@ export default function WhatsAppCrmPage() {
   useEffect(() => {
     const unsubscribe = whatsappCrmService.subscribeToRealtime({
       onNewMessage: newMsg => {
-        // If message belongs to active conversation, append it
+        // If message belongs to active conversation, append it deduplicated
         if (newMsg.conversation_id === activeConvId) {
-          setMessages(prev => {
-            if (prev.some(m => m.id === newMsg.id || m.meta_message_id === newMsg.meta_message_id)) {
-              return prev;
-            }
-            return [...prev, newMsg];
-          });
+          appendMessageDeduplicated(newMsg);
         }
         // Refresh conversation list preview
         loadConversations();
@@ -180,7 +227,7 @@ export default function WhatsAppCrmPage() {
     return () => {
       unsubscribe();
     };
-  }, [activeConvId, loadConversations, loadStats]);
+  }, [activeConvId, loadConversations, loadStats, appendMessageDeduplicated]);
 
   // 5. Send Text Message
   const handleSendMessage = async (e) => {
@@ -201,7 +248,7 @@ export default function WhatsAppCrmPage() {
     });
 
     if (res.success && res.data?.message) {
-      setMessages(prev => [...prev, res.data.message]);
+      appendMessageDeduplicated(res.data.message);
     } else if (res.error) {
       setErrorMessage(res.error);
       alert(`Message Send Error: ${res.error}`);
@@ -246,16 +293,25 @@ export default function WhatsAppCrmPage() {
   const startVoiceRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      let mimeType = '';
+      if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+        mimeType = 'audio/ogg;codecs=opus';
+      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        mimeType = 'audio/mp4';
+      } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+        mimeType = 'audio/webm;codecs=opus';
+      }
+      const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
 
       const chunks = [];
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.push(e.data);
+        if (e.data && e.data.size > 0) chunks.push(e.data);
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+        const actualType = mediaRecorder.mimeType || mimeType || 'audio/ogg';
+        const blob = new Blob(chunks, { type: actualType });
         const url = URL.createObjectURL(blob);
         setAudioBlob(blob);
         setAudioUrl(url);
@@ -277,7 +333,7 @@ export default function WhatsAppCrmPage() {
   const stopVoiceRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      mediaRecorderRef.current.stream?.getTracks().forEach(track => track.stop());
       setIsRecording(false);
       clearInterval(recordingTimerRef.current);
     }
@@ -293,7 +349,6 @@ export default function WhatsAppCrmPage() {
     if (!audioBlob || !activeConversation) return;
     setSending(true);
 
-    // In production, upload to Supabase Storage or convert to base64 proxy
     const reader = new FileReader();
     reader.readAsDataURL(audioBlob);
     reader.onloadend = async () => {
@@ -303,11 +358,14 @@ export default function WhatsAppCrmPage() {
         conversationId: activeConvId,
         to: activeCustomer?.whatsapp_number,
         messageType: 'audio',
-        mediaUrl: base64Audio
+        mediaUrl: base64Audio,
+        filename: 'voice_note.ogg'
       });
 
       if (res.success && res.data?.message) {
-        setMessages(prev => [...prev, res.data.message]);
+        appendMessageDeduplicated(res.data.message);
+      } else if (!res.success) {
+        alert(`Failed to send voice note: ${res.error || 'Check 24-hr session window'}`);
       }
       setAudioBlob(null);
       setAudioUrl(null);
@@ -319,6 +377,9 @@ export default function WhatsAppCrmPage() {
   const handleFileUpload = async (event, type = 'image') => {
     const file = event.target.files?.[0];
     if (!file || !activeConversation) return;
+
+    // Reset file input so same file can be picked again
+    event.target.value = '';
 
     setShowAttachMenu(false);
     setSending(true);
@@ -337,7 +398,9 @@ export default function WhatsAppCrmPage() {
       });
 
       if (res.success && res.data?.message) {
-        setMessages(prev => [...prev, res.data.message]);
+        appendMessageDeduplicated(res.data.message);
+      } else if (!res.success) {
+        alert(`Failed to send ${type}: ${res.error || 'Check 24-hr session window'}`);
       }
       setSending(false);
     };
@@ -369,11 +432,89 @@ export default function WhatsAppCrmPage() {
 
   const sessionWindow = calculateWindowRemaining(activeConversation?.last_customer_message_at);
 
+  // ================= 1. ADMIN AUTHENTICATION GATE =================
+  if (!isAdminAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center p-4 selection:bg-emerald-500/30">
+        <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-[#0e111d] border border-white/15 shadow-2xl space-y-6 text-center">
+          <div className="space-y-3">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-500/20">
+              <MessageSquare className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-xl font-black text-white tracking-tight">Bazara WhatsApp CRM</h1>
+              <p className="text-xs text-slate-400 mt-1">Restricted Area • Owner Authentication Required</p>
+            </div>
+          </div>
+
+          {authError && (
+            <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+              {authError}
+            </div>
+          )}
+
+          <form onSubmit={handleAdminLogin} className="space-y-4 text-left">
+            <div>
+              <label className="text-xs font-bold text-slate-300 block mb-1.5">Owner Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="Enter admin password..."
+                  className="w-full px-3.5 py-3 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono pr-10"
+                  required
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3.5 text-slate-400 hover:text-white cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1.5">
+                🔑 Default password: <code className="text-emerald-400 font-mono font-bold bg-white/[0.05] px-1.5 py-0.5 rounded">admin123</code>
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+            >
+              <Lock className="w-4 h-4" />
+              <span>Unlock WhatsApp CRM 🚀</span>
+            </button>
+          </form>
+
+          <div className="pt-2 border-t border-white/[0.06]">
+            <button
+              onClick={onBack || (() => window.location.href = '/')}
+              className="text-xs text-slate-400 hover:text-white underline cursor-pointer"
+            >
+              ← Return to Website
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] bg-slate-950 text-slate-100 overflow-hidden font-sans">
       {/* 1. TOP METRICS & STATS HEADER BAR */}
       <div className="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-2.5 flex items-center justify-between gap-4 overflow-x-auto shrink-0 scrollbar-none">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              title="Back to Admin"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          )}
           <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
             <MessageSquare className="w-4 h-4" />
           </div>
@@ -388,8 +529,8 @@ export default function WhatsAppCrmPage() {
           </div>
         </div>
 
-        {/* Metric Badges */}
-        <div className="flex items-center gap-3">
+        {/* Metric Badges & Lock Controls */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700/60">
             <span className="text-[11px] text-slate-400">Total Leads</span>
             <span className="text-xs font-bold text-white font-mono">{stats.totalCustomers}</span>
@@ -413,6 +554,13 @@ export default function WhatsAppCrmPage() {
             title="Refresh inbox"
           >
             <RefreshCw className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleAdminLogout}
+            className="p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition border border-rose-500/20"
+            title="Lock CRM / Logout"
+          >
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>

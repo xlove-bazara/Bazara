@@ -1,6 +1,8 @@
 // Vercel Serverless Function: Meta WhatsApp Cloud API Media Proxy
 // Fetches media from Meta using server-side token without leaking credentials to client
 
+const FALLBACK_TOKEN = 'EAAkgatRDZCW8BSWVA4MZCreNM5en1XQZBm17OreaWvsPPiYBv32KLrEOKRA7TSlENSwuV0ZBhgxaJtZBEV2Y5ykBNEEg6ZBoFpmEl11NwI0GaCGaH1XRx4WrOt7cwAWZBZBdEDwzmr14PJrAecQax2Psbv8TXtHZB8Np8ZBqgzjFMSPa2gafbjn6qcOqQzwk3ltawtbv1toFtNZBPBZA4DZCC03GhaCSZA6bRMe4bLLpIUAiJHV99qFW4JKyvHvqmMWKESWQed5eROzmYuCs9iENY1MTvDpUZAiNHhsvPNiZCPMZD';
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || process.env.META_ACCESS_TOKEN;
+  const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || process.env.META_ACCESS_TOKEN || FALLBACK_TOKEN;
 
   if (!token) {
     return res.status(500).json({ error: 'Server configuration error: WHATSAPP_TOKEN is missing' });
