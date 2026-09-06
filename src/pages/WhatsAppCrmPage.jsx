@@ -78,6 +78,9 @@ export default function WhatsAppCrmPage({ onBack }) {
   const [newChatMessage, setNewChatMessage] = useState('Hello! Welcome to Bazara.');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // State: Media Lightbox Viewer
+  const [previewMedia, setPreviewMedia] = useState(null); // { url, type, filename }
+
   // State: Voice Recording (Web Audio)
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
@@ -804,8 +807,12 @@ export default function WhatsAppCrmPage({ onBack }) {
                             <img
                               src={msg.media_url || `/api/whatsapp-media?media_id=${msg.media_id}`}
                               alt="WhatsApp media"
-                              className="rounded-lg max-h-60 w-full object-cover cursor-pointer hover:opacity-95 transition"
-                              onClick={() => window.open(msg.media_url || `/api/whatsapp-media?media_id=${msg.media_id}`, '_blank')}
+                              className="rounded-lg max-h-60 w-full object-cover cursor-pointer hover:opacity-95 transition hover:brightness-105"
+                              onClick={() => setPreviewMedia({
+                                url: msg.media_url || `/api/whatsapp-media?media_id=${msg.media_id}`,
+                                type: 'image',
+                                filename: msg.filename || 'WhatsApp_Photo.jpg'
+                              })}
                             />
                           </div>
                         )}
@@ -844,7 +851,12 @@ export default function WhatsAppCrmPage({ onBack }) {
                             <video
                               controls
                               src={msg.media_url || `/api/whatsapp-media?media_id=${msg.media_id}`}
-                              className="rounded-lg max-h-60 w-full"
+                              className="rounded-lg max-h-60 w-full cursor-pointer"
+                              onClick={() => setPreviewMedia({
+                                url: msg.media_url || `/api/whatsapp-media?media_id=${msg.media_id}`,
+                                type: 'video',
+                                filename: msg.filename || 'WhatsApp_Video.mp4'
+                              })}
                             />
                           </div>
                         )}
@@ -1161,6 +1173,87 @@ export default function WhatsAppCrmPage({ onBack }) {
                 </button>
               </div>
             </motion.div>
+          </div>
+        )}
+
+        {/* FULLSCREEN MEDIA LIGHTBOX VIEWER WITH PROMINENT BACK BUTTON */}
+        {previewMedia && (
+          <div
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-3 sm:p-6 select-none"
+            onClick={() => setPreviewMedia(null)}
+          >
+            {/* Top Header Controls Bar */}
+            <div
+              className="w-full max-w-5xl flex items-center justify-between py-2.5 px-3 rounded-2xl bg-slate-900/90 border border-white/10 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setPreviewMedia(null)}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 text-xs font-bold transition border border-emerald-500/30 active:scale-95 cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>← Back to Chat</span>
+              </button>
+
+              <span className="text-xs text-slate-300 font-mono truncate max-w-[150px] sm:max-w-xs px-2">
+                {previewMedia.filename || 'Media Preview'}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href={previewMedia.url}
+                  download={previewMedia.filename || 'media'}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition border border-white/10"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Download</span>
+                </a>
+                <button
+                  onClick={() => setPreviewMedia(null)}
+                  className="p-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 transition border border-rose-500/30 cursor-pointer"
+                  title="Close Preview"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Main Image / Video Viewport */}
+            <div
+              className="flex-1 w-full max-w-5xl flex items-center justify-center p-2 sm:p-4 overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {previewMedia.type === 'image' ? (
+                <img
+                  src={previewMedia.url}
+                  alt="Preview"
+                  className="max-h-[78vh] max-w-full rounded-2xl object-contain shadow-2xl border border-white/10"
+                />
+              ) : (
+                <video
+                  src={previewMedia.url}
+                  controls
+                  autoPlay
+                  className="max-h-[78vh] max-w-full rounded-2xl shadow-2xl border border-white/10"
+                />
+              )}
+            </div>
+
+            {/* Bottom Back Button Bar for Mobile Ease */}
+            <div
+              className="w-full max-w-sm flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setPreviewMedia(null)}
+                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 shadow-xl flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Tap to Return to Chat</span>
+              </button>
+            </div>
           </div>
         )}
       </AnimatePresence>
