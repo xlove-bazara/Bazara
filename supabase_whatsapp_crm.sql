@@ -1,6 +1,6 @@
 -- =========================================================
--- BAZARA WHATSAPP CRM - SUPABASE DATABASE SCHEMA
--- Execute this entire script in Supabase -> SQL Editor -> Run
+-- BAZARA WHATSAPP CRM - SUPABASE DATABASE SCHEMA (IDEMPOTENT)
+-- Safe to run multiple times without errors
 -- =========================================================
 
 -- 1. EXTENSIONS
@@ -9,7 +9,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- 2. WHATSAPP CUSTOMERS TABLE
 CREATE TABLE IF NOT EXISTS public.whatsapp_customers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    whatsapp_number TEXT UNIQUE NOT NULL, -- E.164 formatted (e.g. 919876543210)
+    whatsapp_number TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     profile_photo_url TEXT,
     status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'pending', 'resolved')),
@@ -41,12 +41,12 @@ CREATE TABLE IF NOT EXISTS public.whatsapp_messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID NOT NULL REFERENCES public.whatsapp_conversations(id) ON DELETE CASCADE,
     customer_id UUID NOT NULL REFERENCES public.whatsapp_customers(id) ON DELETE CASCADE,
-    meta_message_id TEXT UNIQUE, -- Ensures Webhook Idempotency against duplicates
+    meta_message_id TEXT UNIQUE,
     direction TEXT NOT NULL CHECK (direction IN ('inbound', 'outbound')),
     message_type TEXT NOT NULL DEFAULT 'text' CHECK (message_type IN ('text', 'image', 'document', 'audio', 'video', 'template', 'sticker', 'reaction', 'other')),
     text_content TEXT,
-    media_id TEXT, -- Meta Media ID for proxying/downloading
-    media_url TEXT, -- Proxied or Storage URL for rendering
+    media_id TEXT,
+    media_url TEXT,
     filename TEXT,
     mime_type TEXT,
     file_size BIGINT,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS public.whatsapp_customer_tags (
     PRIMARY KEY (customer_id, tag_id)
 );
 
--- 7. WHATSAPP TEMPLATES TABLE (Approved Meta Templates)
+-- 7. WHATSAPP TEMPLATES TABLE
 CREATE TABLE IF NOT EXISTS public.whatsapp_templates (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT UNIQUE NOT NULL,
@@ -99,12 +99,11 @@ CREATE TABLE IF NOT EXISTS public.whatsapp_crm_settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Insert Default Settings row
+-- Default tags & settings
 INSERT INTO public.whatsapp_crm_settings (id, welcome_message_enabled, welcome_message_text)
 VALUES (1, false, 'Hello! Thanks for reaching out to us. How can we help you today?')
 ON CONFLICT (id) DO NOTHING;
 
--- Insert default sample tags
 INSERT INTO public.whatsapp_tags (name, color)
 VALUES 
     ('VIP Lead', '#F59E0B'),
@@ -113,9 +112,7 @@ VALUES
     ('General Query', '#3B82F6')
 ON CONFLICT (name) DO NOTHING;
 
--- =========================================================
--- INDEXES FOR MAXIMUM QUERY PERFORMANCE
--- =========================================================
+-- INDEXES
 CREATE INDEX IF NOT EXISTS idx_whatsapp_cust_phone ON public.whatsapp_customers(whatsapp_number);
 CREATE INDEX IF NOT EXISTS idx_whatsapp_cust_last_msg ON public.whatsapp_customers(last_message_at DESC);
 CREATE INDEX IF NOT EXISTS idx_whatsapp_cust_status ON public.whatsapp_customers(status);
@@ -127,9 +124,7 @@ CREATE INDEX IF NOT EXISTS idx_whatsapp_msg_meta_id ON public.whatsapp_messages(
 CREATE INDEX IF NOT EXISTS idx_whatsapp_msg_timestamp ON public.whatsapp_messages(timestamp ASC);
 CREATE INDEX IF NOT EXISTS idx_whatsapp_msg_delivery ON public.whatsapp_messages(delivery_status);
 
--- =========================================================
--- ROW LEVEL SECURITY (RLS) POLICIES
--- =========================================================
+-- RLS POLICIES (DROP IF EXISTS THEN CREATE)
 ALTER TABLE public.whatsapp_customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.whatsapp_conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.whatsapp_messages ENABLE ROW LEVEL SECURITY;
@@ -138,7 +133,14 @@ ALTER TABLE public.whatsapp_customer_tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.whatsapp_templates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.whatsapp_crm_settings ENABLE ROW LEVEL SECURITY;
 
--- Allow read/write for authenticated users & service role (and public with anon key for CRM dashboard)
+DROP POLICY IF EXISTS "Allow all on whatsapp_customers" ON public.whatsapp_customers;
+DROP POLICY IF EXISTS "Allow all on whatsapp_conversations" ON public.whatsapp_conversations;
+DROP POLICY IF EXISTS "Allow all on whatsapp_messages" ON public.whatsapp_messages;
+DROP POLICY IF EXISTS "Allow all on whatsapp_tags" ON public.whatsapp_tags;
+DROP POLICY IF EXISTS "Allow all on whatsapp_customer_tags" ON public.whatsapp_customer_tags;
+DROP POLICY IF EXISTS "Allow all on whatsapp_templates" ON public.whatsapp_templates;
+DROP POLICY IF EXISTS "Allow all on whatsapp_crm_settings" ON public.whatsapp_crm_settings;
+
 CREATE POLICY "Allow all on whatsapp_customers" ON public.whatsapp_customers FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on whatsapp_conversations" ON public.whatsapp_conversations FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on whatsapp_messages" ON public.whatsapp_messages FOR ALL USING (true) WITH CHECK (true);
@@ -147,9 +149,7 @@ CREATE POLICY "Allow all on whatsapp_customer_tags" ON public.whatsapp_customer_
 CREATE POLICY "Allow all on whatsapp_templates" ON public.whatsapp_templates FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on whatsapp_crm_settings" ON public.whatsapp_crm_settings FOR ALL USING (true) WITH CHECK (true);
 
--- =========================================================
--- ENABLE SUPABASE REALTIME REPLICATION
--- =========================================================
+-- REALTIME REPLICATION
 DO $$
 BEGIN
     BEGIN
