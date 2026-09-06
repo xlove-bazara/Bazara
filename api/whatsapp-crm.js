@@ -1,15 +1,13 @@
 // Vercel Serverless Function: WhatsApp CRM Operations API
-// Handles status updates, marking as read with Meta sync, notes, tags, and dashboard analytics
+// Robust server-side handler for Conversations, Messages, Status, Notes & Realtime fallback
 
 import { createClient } from '@supabase/supabase-js';
 
-const FALLBACK_SUPABASE_URL = 'https://zhwdaimprkmqljjwrbpk.supabase.co';
-const FALLBACK_SUPABASE_KEY = 'sb_publishable_eDWmwO-eoswzD8cdjudEJQ_ie4y7w9v';
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://zhwdaimprkmqljjwrbpk.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_eDWmwO-eoswzD8cdjudEJQ_ie4y7w9v';
 
 function getSupabaseAdmin() {
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || FALLBACK_SUPABASE_KEY;
-  return createClient(supabaseUrl, supabaseKey, {
+  return createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: { persistSession: false }
   });
 }
@@ -31,7 +29,86 @@ export default async function handler(req, res) {
   const { action } = req.query;
 
   try {
-    // 1. GET DASHBOARD STATS
+    // 1. GET ALL CONVERSATIONS (WITH CUSTOMER DETAILS)
+    if (req.method === 'GET' && (!action || action === 'conversations')) {
+      const { filter = 'all', search = '' } = req.query;
+
+      let query = supabase
+        .from('whatsapp_conversations')
+        .select(`
+          id,
+          customer_id,
+          status,
+          last_message_preview,
+          last_message_type,
+          last_message_at,
+          last_customer_message_at,
+          unread_count,
+          is_archived,
+          created_at,
+          updated_at,
+          whatsapp_customers (
+            id,
+            whatsapp_number,
+            name,
+            profile_photo_url,
+            status,
+            notes,
+            unread_count
+          )
+        `)
+        .order('last_message_at', { ascending: false });
+
+      if (filter === 'unread') {
+        query = query.gt('unread_count', 0);
+      } else if (['new', 'pending', 'resolved'].includes(filter)) {
+        query = query.eq('status', filter);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.error('[CRM API] Fetch conversations error:', error);
+        return res.status(200).json({ data: [], error: error.message, hint: 'Please verify supabase_whatsapp_crm.sql is executed in Supabase' });
+      }
+
+      let results = data || [];
+      if (search && search.trim()) {
+        const s = search.trim().toLowerCase();
+        results = results.filter(conv => {
+          const cust = conv.whatsapp_customers;
+          return (
+            cust?.name?.toLowerCase().includes(s) ||
+            cust?.whatsapp_number?.includes(s) ||
+            conv.last_message_preview?.toLowerCase().includes(s)
+          );
+        });
+      }
+
+      return res.status(200).json({ data: results });
+    }
+
+    // 2. GET MESSAGES FOR A CONVERSATION
+    if (req.method === 'GET' && action === 'messages') {
+      const { conversation_id } = req.query;
+      if (!conversation_id) {
+        return res.status(400).json({ error: 'conversation_id is required' });
+      }
+
+      const { data, error } = await supabase
+        .from('whatsapp_messages')
+        .select('*')
+        .eq('conversation_id', conversation_id)
+        .order('timestamp', { ascending: true });
+
+      if (error) {
+        console.error('[CRM API] Fetch messages error:', error);
+        return res.status(200).json({ data: [], error: error.message });
+      }
+
+      return res.status(200).json({ data: data || [] });
+    }
+
+    // 3. GET DASHBOARD STATS
     if (req.method === 'GET' && action === 'stats') {
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
@@ -62,13 +139,9 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2. MARK AS READ (Syncs CRM + Meta Read Receipt)
+    // 4. MARK AS READ
     if (req.method === 'POST' && action === 'mark_read') {
       const { conversationId, customerId, lastMetaMessageId } = req.body || {};
-
-      if (!conversationId && !customerId) {
-        return res.status(400).json({ error: 'conversationId or customerId is required' });
-      }
 
       if (conversationId) {
         await supabase
@@ -84,41 +157,12 @@ export default async function handler(req, res) {
           .eq('id', customerId);
       }
 
-      // Sync Meta Read Receipt if message ID provided
-      if (lastMetaMessageId) {
-        const token = process.env.WHATSAPP_TOKEN || process.env.VITE_WHATSAPP_TOKEN || process.env.META_ACCESS_TOKEN;
-        const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.VITE_WHATSAPP_PHONE_NUMBER_ID || process.env.META_PHONE_NUMBER_ID;
-
-        if (token && phoneId) {
-          try {
-            await fetch(`https://graph.facebook.com/v20.0/${phoneId}/messages`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                messaging_product: 'whatsapp',
-                status: 'read',
-                message_id: lastMetaMessageId
-              })
-            });
-          } catch (e) {
-            console.warn('[WhatsApp CRM] Meta mark-read dispatch ignored:', e.message);
-          }
-        }
-      }
-
       return res.status(200).json({ success: true });
     }
 
-    // 3. UPDATE STATUS (new, pending, resolved)
+    // 5. UPDATE STATUS
     if (req.method === 'POST' && action === 'update_status') {
       const { conversationId, customerId, status } = req.body || {};
-
-      if (!['new', 'pending', 'resolved'].includes(status)) {
-        return res.status(400).json({ error: 'Invalid status. Must be new, pending, or resolved.' });
-      }
 
       if (conversationId) {
         await supabase
@@ -137,14 +181,9 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, status });
     }
 
-    // 4. UPDATE CUSTOMER DETAILS & NOTES
+    // 6. UPDATE CUSTOMER DETAILS
     if (req.method === 'POST' && action === 'update_customer') {
       const { customerId, name, notes } = req.body || {};
-
-      if (!customerId) {
-        return res.status(400).json({ error: 'customerId is required' });
-      }
-
       const updates = { updated_at: new Date().toISOString() };
       if (name !== undefined) updates.name = name;
       if (notes !== undefined) updates.notes = notes;
@@ -162,7 +201,7 @@ export default async function handler(req, res) {
 
     return res.status(400).json({ error: 'Invalid or missing action parameter' });
   } catch (error) {
-    console.error('[WhatsApp CRM API] Error:', error);
+    console.error('[WhatsApp CRM API] Server error:', error);
     return res.status(500).json({ error: error.message || 'Internal server error' });
   }
 }

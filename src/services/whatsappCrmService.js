@@ -1,97 +1,98 @@
 // WhatsApp CRM Client Service
-// Handles Supabase DB queries, Realtime subscriptions, and API dispatches
+// Hybrid Supabase JS direct client + API Serverless fallback
 
 import { supabase } from '../supabase';
 
 export const whatsappCrmService = {
-  // 1. Fetch Conversations with optional search and filter
-  async getConversations({ filter = 'all', search = '', limit = 50 } = {}) {
+  // 1. Fetch Conversations with direct Supabase query + API fallback
+  async getConversations({ filter = 'all', search = '' } = {}) {
     try {
-      let query = supabase
-        .from('whatsapp_conversations')
-        .select(`
-          id,
-          customer_id,
-          status,
-          last_message_preview,
-          last_message_type,
-          last_message_at,
-          last_customer_message_at,
-          unread_count,
-          is_archived,
-          created_at,
-          updated_at,
-          whatsapp_customers (
+      if (supabase) {
+        let query = supabase
+          .from('whatsapp_conversations')
+          .select(`
             id,
-            whatsapp_number,
-            name,
-            profile_photo_url,
+            customer_id,
             status,
-            notes,
-            unread_count
-          )
-        `)
-        .order('last_message_at', { ascending: false })
-        .limit(limit);
+            last_message_preview,
+            last_message_type,
+            last_message_at,
+            last_customer_message_at,
+            unread_count,
+            is_archived,
+            created_at,
+            updated_at,
+            whatsapp_customers (
+              id,
+              whatsapp_number,
+              name,
+              profile_photo_url,
+              status,
+              notes,
+              unread_count
+            )
+          `)
+          .order('last_message_at', { ascending: false });
 
-      if (filter === 'unread') {
-        query = query.gt('unread_count', 0);
-      } else if (filter === 'new') {
-        query = query.eq('status', 'new');
-      } else if (filter === 'pending') {
-        query = query.eq('status', 'pending');
-      } else if (filter === 'resolved') {
-        query = query.eq('status', 'resolved');
+        if (filter === 'unread') {
+          query = query.gt('unread_count', 0);
+        } else if (['new', 'pending', 'resolved'].includes(filter)) {
+          query = query.eq('status', filter);
+        }
+
+        const { data, error } = await query;
+        if (!error && data) {
+          let list = data;
+          if (search && search.trim()) {
+            const s = search.trim().toLowerCase();
+            list = list.filter(conv => {
+              const cust = conv.whatsapp_customers;
+              return (
+                cust?.name?.toLowerCase().includes(s) ||
+                cust?.whatsapp_number?.includes(s) ||
+                conv.last_message_preview?.toLowerCase().includes(s)
+              );
+            });
+          }
+          return { data: list, error: null };
+        }
       }
 
-      const { data, error } = await query;
-      if (error) throw error;
-
-      let results = data || [];
-
-      // Client-side search for customer name, number, or last message
-      if (search && search.trim()) {
-        const lowerSearch = search.trim().toLowerCase();
-        results = results.filter(conv => {
-          const cust = conv.whatsapp_customers;
-          const nameMatch = cust?.name?.toLowerCase().includes(lowerSearch);
-          const phoneMatch = cust?.whatsapp_number?.includes(lowerSearch);
-          const previewMatch = conv.last_message_preview?.toLowerCase().includes(lowerSearch);
-          return nameMatch || phoneMatch || previewMatch;
-        });
-      }
-
-      return { data: results, error: null };
+      // Fallback to Serverless API if direct DB query returns error or empty
+      const res = await fetch(`/api/whatsapp-crm?action=conversations&filter=${filter}&search=${encodeURIComponent(search)}`);
+      const json = await res.json();
+      return { data: json.data || [], error: json.error || null };
     } catch (error) {
       console.error('Error fetching WhatsApp conversations:', error);
-      return { data: [], error };
+      return { data: [], error: error.message };
     }
   },
 
-  // 2. Fetch Messages for a specific conversation (paginated)
-  async getMessages(conversationId, { limit = 50, beforeTimestamp = null } = {}) {
+  // 2. Fetch Messages for a specific conversation
+  async getMessages(conversationId) {
     try {
-      let query = supabase
-        .from('whatsapp_messages')
-        .select('*')
-        .eq('conversation_id', conversationId)
-        .order('timestamp', { ascending: true })
-        .limit(limit);
+      if (supabase) {
+        const { data, error } = await supabase
+          .from('whatsapp_messages')
+          .select('*')
+          .eq('conversation_id', conversationId)
+          .order('timestamp', { ascending: true });
 
-      if (beforeTimestamp) {
-        query = query.lt('timestamp', beforeTimestamp);
+        if (!error && data) {
+          return { data, error: null };
+        }
       }
 
-      const { data, error } = await query;
-      if (error) throw error;
-      return { data: data || [], error: null };
+      const res = await fetch(`/api/whatsapp-crm?action=messages&conversation_id=${conversationId}`);
+      const json = await res.json();
+      return { data: json.data || [], error: json.error || null };
     } catch (error) {
       console.error('Error fetching WhatsApp messages:', error);
-      return { data: [], error };
+      return { data: [], error: error.message };
     }
   },
 
-  // 3. Send Outbound Message (Text, Media, Voice, Template)
+  // 3. Send Outbound Message
   async sendMessage({ customerId, conversationId, to, messageType = 'text', textContent, mediaUrl, mediaId, filename, templateName, templateComponents }) {
     try {
       const response = await fetch('/api/whatsapp-send', {
@@ -138,7 +139,7 @@ export const whatsappCrmService = {
     }
   },
 
-  // 5. Update Conversation / Customer Status
+  // 5. Update Status
   async updateStatus(conversationId, customerId, status) {
     try {
       const res = await fetch('/api/whatsapp-crm?action=update_status', {
@@ -175,7 +176,6 @@ export const whatsappCrmService = {
       if (!res.ok) throw new Error('Failed to fetch CRM stats');
       return await res.json();
     } catch (error) {
-      console.error('Error fetching CRM stats:', error);
       return {
         totalCustomers: 0,
         unreadConversations: 0,
@@ -189,8 +189,10 @@ export const whatsappCrmService = {
 
   // 8. Subscribe to Realtime Updates
   subscribeToRealtime({ onNewMessage, onStatusUpdate, onConversationUpdate }) {
+    if (!supabase) return () => {};
+
     const channel = supabase
-      .channel('whatsapp_crm_live')
+      .channel('whatsapp_crm_live_sync')
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'whatsapp_messages' },
