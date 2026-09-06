@@ -3,8 +3,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const FALLBACK_SUPABASE_URL = 'https://vkmjrqkptqgtyqfhzrqx.supabase.co';
-const FALLBACK_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbWpycWtwdHFndHlxZmh6cnF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzY4NTYsImV4cCI6MjA1NjgxMjg1Nn0.8aA54k9iLwz6l-844_ZzB9hF-e0P8f1gU4uR4pW3z-g';
+const FALLBACK_SUPABASE_URL = 'https://zhwdaimprkmqljjwrbpk.supabase.co';
+const FALLBACK_SUPABASE_KEY = 'sb_publishable_eDWmwO-eoswzD8cdjudEJQ_ie4y7w9v';
 
 function getSupabaseAdmin() {
   const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL;
