@@ -59,6 +59,11 @@ export default function WhatsAppCrmPage() {
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [newChatPhone, setNewChatPhone] = useState('');
+  const [newChatName, setNewChatName] = useState('');
+  const [newChatMessage, setNewChatMessage] = useState('Hello! Welcome to Bazara.');
+  const [errorMessage, setErrorMessage] = useState('');
 
   // State: Voice Recording (Web Audio)
   const [isRecording, setIsRecording] = useState(false);
@@ -185,6 +190,7 @@ export default function WhatsAppCrmPage() {
     const messageText = inputMessage.trim();
     setInputMessage('');
     setSending(true);
+    setErrorMessage('');
 
     const res = await whatsappCrmService.sendMessage({
       customerId: activeCustomer?.id,
@@ -196,6 +202,42 @@ export default function WhatsAppCrmPage() {
 
     if (res.success && res.data?.message) {
       setMessages(prev => [...prev, res.data.message]);
+    } else if (res.error) {
+      setErrorMessage(res.error);
+      alert(`Message Send Error: ${res.error}`);
+    }
+    setSending(false);
+  };
+
+  // 5b. Start New Chat with Any WhatsApp Phone Number
+  const handleStartNewChat = async (e) => {
+    if (e) e.preventDefault();
+    if (!newChatPhone.trim() || sending) return;
+
+    const cleanPhone = newChatPhone.replace(/\D/g, '');
+    if (cleanPhone.length < 10) {
+      alert('Please enter a valid WhatsApp phone number with country code (e.g. 919876543210)');
+      return;
+    }
+
+    setSending(true);
+    setErrorMessage('');
+
+    const res = await whatsappCrmService.sendMessage({
+      to: cleanPhone,
+      messageType: 'text',
+      textContent: newChatMessage.trim() || 'Hello! Welcome to Bazara.'
+    });
+
+    if (res.success) {
+      setShowNewChatModal(false);
+      setNewChatPhone('');
+      setNewChatName('');
+      await loadConversations();
+      loadStats();
+    } else {
+      setErrorMessage(res.error);
+      alert(`Failed to start chat: ${res.error}\n\nTip: If sending for the first time outside 24h, an approved Meta template may be required.`);
     }
     setSending(false);
   };
