@@ -34,6 +34,7 @@ import {
   Phone,
   Search,
   MessageCircle,
+  MessageSquare,
   Zap,
   Upload,
   Image as ImageIcon,
@@ -66,7 +67,7 @@ import {
 
 
 export default function AdminPage({ 
-  products, 
+  products = [], 
   settings, 
   onRefresh, 
   onBack,
@@ -116,9 +117,10 @@ export default function AdminPage({
     setLoadingOrders(true);
     try {
       const data = await getOrders();
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : []);
     } catch (e) {
       console.warn('Failed to load orders:', e);
+      setOrders([]);
     }
     setLoadingOrders(false);
   };
@@ -577,11 +579,12 @@ export default function AdminPage({
     }
   };
 
-  const allCourses = products.filter(p => p.category === 'course' || p.product_type === 'course');
+  const safeProducts = Array.isArray(products) ? products : [];
+  const allCourses = safeProducts.filter(p => p.category === 'course' || p.product_type === 'course');
   const featuredCourseId = settings?.featured_course_id || 'prod-course-ai';
-  const currentFeaturedCourse = products.find(p => p.id === featuredCourseId) || allCourses[0];
+  const currentFeaturedCourse = safeProducts.find(p => p.id === featuredCourseId) || allCourses[0];
 
-  const filteredProducts = products.filter((p) => {
+  const filteredProducts = safeProducts.filter((p) => {
     if (filterCategory === 'all') return true;
     if (filterCategory === 'course') return p.category === 'course' || p.product_type === 'course';
     if (filterCategory === 'reels') return p.category === 'reels' || p.product_type === 'reels';
