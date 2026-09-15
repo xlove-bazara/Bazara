@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Zap } from 'lucide-react';
 
 export default function MarqueeTicker({ announcements }) {
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 48, seconds: 11 });
@@ -19,30 +18,31 @@ export default function MarqueeTicker({ announcements }) {
   const items = announcements && announcements.length > 0
     ? announcements
     : [
-        "⚡ SPECIAL ADMISSIONS OPEN: FLAT 88% OFF ON ALL MASTERCLASSES",
-        "📁 1-SECOND INSTANT GOOGLE DRIVE VAULT ACCESS",
-        "⭐ 25,000+ CREATORS & LEARNERS ENROLLED ON BAZARA.IN",
-        "♾️ 100% COMMERCIAL RIGHTS & LIFETIME FREE UPDATES"
+        "LIMITED ADMISSIONS: FLAT 88% OFF ON ALL MASTERCLASSES",
+        "INSTANT 1-SECOND GOOGLE DRIVE VAULT ACCESS",
+        "25,000+ ACTIVE CREATORS & DEVELOPERS ACROSS INDIA",
+        "100% COMMERCIAL PLR RIGHTS & LIFETIME UPDATES"
       ];
 
   const displayItems = [...items, ...items, ...items];
   const timerString = `${String(timeLeft.hours).padStart(2, '0')}:${String(timeLeft.minutes).padStart(2, '0')}:${String(timeLeft.seconds).padStart(2, '0')}`;
 
   return (
-    <div className="relative w-full overflow-hidden bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 shadow-md py-1.5 sm:py-2 z-40 border-b border-white/10">
-      <div className="animate-marquee flex items-center space-x-8 text-[11px] sm:text-xs font-black uppercase tracking-wider text-white select-none">
+    <div className="relative w-full overflow-hidden bg-gradient-to-r from-[#07130F] via-[#0A1813] to-[#070D11] py-1.5 sm:py-2 z-40 border-b border-emerald-500/15">
+      <div className="animate-marquee flex items-center space-x-10 text-[11px] font-bold uppercase tracking-wider text-slate-200 select-none">
         {displayItems.map((text, idx) => (
-          <div key={idx} className="flex items-center space-x-2.5 whitespace-nowrap">
-            <span className="w-2 h-2 rounded-full bg-amber-300 animate-ping inline-block" />
-            <span className="text-white drop-shadow-sm">{text}</span>
-            <span className="text-emerald-200 text-[10px] font-bold">• Offer ends in</span>
-            <span className="px-1.5 py-0.5 rounded bg-black/40 text-amber-200 font-mono text-[11px] font-black border border-black/20 shadow-sm">
+          <div key={idx} className="flex items-center space-x-3 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)] inline-block" />
+            <span className="text-slate-100 font-extrabold tracking-wide">{text}</span>
+            <span className="text-slate-400 text-[10px] font-medium">• Offer closes in</span>
+            <span className="px-2 py-0.5 rounded-md bg-emerald-950/60 text-emerald-300 font-mono text-[11px] font-black border border-emerald-500/25 shadow-sm">
               {timerString}
             </span>
-            <span className="text-white/40 ml-2">•</span>
+            <span className="text-slate-600 ml-2">•</span>
           </div>
         ))}
       </div>
     </div>
   );
 }
+

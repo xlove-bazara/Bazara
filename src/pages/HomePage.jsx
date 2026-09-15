@@ -35,7 +35,9 @@ export default function HomePage({
   onInstantBuy, 
   onNavigate, 
   user, 
-  setUser 
+  setUser,
+  theme,
+  toggleTheme 
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -168,7 +170,7 @@ export default function HomePage({
   }, [reviewsList.length]);
 
   return (
-    <div className="min-h-screen pb-24 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-24 bg-base text-primary-theme selection:bg-emerald-500/30 transition-colors duration-200">
       {/* 1. Continuous Infinite Marquee Ticker */}
       <MarqueeTicker announcements={settings?.marquee_announcements} />
 
@@ -179,9 +181,11 @@ export default function HomePage({
         onOpenLogin={() => setIsLoginOpen(true)}
         user={user}
         activeTab="home"
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
-      <main className="max-w-md md:max-w-6xl lg:max-w-7xl mx-auto space-y-8 pt-3 pb-16 px-4 md:px-8">
+      <main className="max-w-md md:max-w-6xl lg:max-w-7xl mx-auto space-y-10 sm:space-y-14 pt-4 pb-20 px-4 md:px-8">
 
         {/* 3. Instagram-Style Story Categories Slider */}
         <StoryCategories
@@ -198,24 +202,23 @@ export default function HomePage({
               onViewCourse={() => onSelectProduct(featuredCourse)}
             />
 
-
             {/* Live Stats Strip */}
-            <div className="grid grid-cols-4 gap-2 md:gap-4 text-center">
-              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
-                <span className="text-sm md:text-xl font-black text-emerald-400 block">100K+</span>
-                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">Downloads</span>
+            <div className="grid grid-cols-4 gap-2.5 md:gap-5 text-center">
+              <div className="p-3.5 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm">
+                <span className="text-base sm:text-2xl font-black font-heading text-emerald-500 dark:text-emerald-400 block">100K+</span>
+                <span className="text-[10px] sm:text-xs font-bold text-muted-theme uppercase tracking-wider">Downloads</span>
               </div>
-              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
-                <span className="text-sm md:text-xl font-black text-amber-400 block">4.9 ★</span>
-                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">Rating</span>
+              <div className="p-3.5 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm">
+                <span className="text-base sm:text-2xl font-black font-heading text-amber-500 dark:text-amber-400 block">4.9 ★</span>
+                <span className="text-[10px] sm:text-xs font-bold text-muted-theme uppercase tracking-wider">Rating</span>
               </div>
-              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
-                <span className="text-sm md:text-xl font-black text-indigo-400 block">25K+</span>
-                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">Creators</span>
+              <div className="p-3.5 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm">
+                <span className="text-base sm:text-2xl font-black font-heading text-indigo-500 dark:text-indigo-400 block">25K+</span>
+                <span className="text-[10px] sm:text-xs font-bold text-muted-theme uppercase tracking-wider">Creators</span>
               </div>
-              <div className="p-3 md:p-4 rounded-2xl glass-panel shadow-md">
-                <span className="text-sm md:text-xl font-black text-teal-400 block">100%</span>
-                <span className="text-[9px] md:text-xs font-bold text-slate-400 uppercase">PLR Rights</span>
+              <div className="p-3.5 sm:p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm">
+                <span className="text-base sm:text-2xl font-black font-heading text-teal-500 dark:text-teal-400 block">100%</span>
+                <span className="text-[10px] sm:text-xs font-bold text-muted-theme uppercase tracking-wider">PLR Rights</span>
               </div>
             </div>
           </>
@@ -236,34 +239,34 @@ export default function HomePage({
         />
 
         {/* ⭐ CREATOR WALL OF LOVE (Horizontal Smooth Fade-In / Fade-Out Auto Loop) */}
-        <section className="py-3 space-y-2.5">
+        <section className="py-2 space-y-3.5">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center space-x-1.5">
+            <h3 className="text-xs font-black uppercase tracking-widest text-muted-theme flex items-center space-x-1.5 font-heading">
               <span>Creator Reviews & Proof</span>
             </h3>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20">
+            <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/25 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
               ★ 4.9 Verified Proof
             </span>
           </div>
 
           {/* Smooth Auto Fade-in / Fade-out Card */}
-          <div className="relative min-h-[145px] p-4 rounded-3xl bg-[#131724] border border-white/[0.08] shadow-2xl flex flex-col justify-between transition-all">
-            <div className={`transition-all duration-500 ease-in-out space-y-2 ${isFading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
+          <div className="relative min-h-[155px] p-5 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl flex flex-col justify-between transition-all">
+            <div className={`transition-all duration-500 ease-in-out space-y-2.5 ${isFading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-indigo-600 font-black text-white text-xs flex items-center justify-center shadow-md">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-600 to-indigo-600 font-extrabold text-white text-xs flex items-center justify-center shadow-md shadow-emerald-500/20 font-heading">
                     {reviewsList[activeReviewIdx].avatar}
                   </div>
                   <div>
                     <div className="flex items-center space-x-1.5">
-                      <span className="text-xs font-bold text-white leading-none">
+                      <span className="text-xs font-bold text-primary-theme leading-none font-heading">
                         {reviewsList[activeReviewIdx].name}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-normal">
+                      <span className="text-[10px] text-muted-theme font-medium">
                         ({reviewsList[activeReviewIdx].city})
                       </span>
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-medium block mt-0.5">
+                    <span className="text-[10px] text-emerald-500 dark:text-emerald-400 font-semibold block mt-0.5">
                       {reviewsList[activeReviewIdx].role}
                     </span>
                   </div>
@@ -271,13 +274,13 @@ export default function HomePage({
                 <div className="flex text-amber-400 text-xs tracking-tighter">★★★★★</div>
               </div>
 
-              <p className="text-xs text-slate-300 leading-relaxed italic">
+              <p className="text-xs text-secondary-theme leading-relaxed italic">
                 "{reviewsList[activeReviewIdx].text}"
               </p>
             </div>
 
             {/* Horizontal Pagination Dots */}
-            <div className="flex items-center justify-center space-x-1.5 pt-3 border-t border-white/[0.05]">
+            <div className="flex items-center justify-center space-x-1.5 pt-3.5 border-t border-[var(--border-subtle)]">
               {reviewsList.map((_, dotIdx) => (
                 <button
                   key={dotIdx}
@@ -288,8 +291,8 @@ export default function HomePage({
                       setIsFading(false);
                     }, 200);
                   }}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    activeReviewIdx === dotIdx ? 'w-5 bg-emerald-400' : 'w-1.5 bg-white/20 hover:bg-white/40'
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    activeReviewIdx === dotIdx ? 'w-5 bg-emerald-500' : 'w-1.5 bg-slate-500/30 hover:bg-slate-400'
                   }`}
                 />
               ))}
@@ -298,12 +301,12 @@ export default function HomePage({
         </section>
 
         {/* ⭐ 10. INTERACTIVE FAQ ACCORDION */}
-        <section className="px-4 py-3 space-y-3">
-          <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 text-center">
+        <section className="px-1 py-3 space-y-3.5">
+          <h3 className="text-xs font-black uppercase tracking-widest text-muted-theme text-center font-heading">
             Frequently Asked Questions
           </h3>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {[
               {
                 q: "Payment ke baad link kahan milegi?",
@@ -324,16 +327,16 @@ export default function HomePage({
             ].map((faq, fIdx) => {
               const isOpen = openFaq === fIdx;
               return (
-                <div key={fIdx} className="rounded-2xl bg-[#131724] border border-white/[0.08] overflow-hidden">
+                <div key={fIdx} className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden shadow-sm transition-colors">
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : fIdx)}
-                    className="w-full p-3.5 text-left flex items-center justify-between text-xs font-bold text-slate-200"
+                    className="w-full p-4 text-left flex items-center justify-between text-xs font-bold text-primary-theme cursor-pointer font-heading"
                   >
                     <span>{faq.q}</span>
-                    {isOpen ? <ChevronUp className="w-4 h-4 text-emerald-400 shrink-0 ml-2" /> : <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 ml-2" />}
+                    {isOpen ? <ChevronUp className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0 ml-2" /> : <ChevronDown className="w-4 h-4 text-muted-theme shrink-0 ml-2" />}
                   </button>
                   {isOpen && (
-                    <div className="px-3.5 pb-3.5 pt-1 text-[11px] text-slate-400 leading-relaxed border-t border-white/[0.05]">
+                    <div className="px-4 pb-4 pt-1 text-[11px] text-secondary-theme leading-relaxed border-t border-[var(--border-subtle)]">
                       {faq.a}
                     </div>
                   )}
@@ -344,48 +347,48 @@ export default function HomePage({
         </section>
 
         {/* 11. Why bazara.in? Trust Badges */}
-        <section className="px-4 py-3 space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 text-center">
+        <section className="px-1 py-3 space-y-3.5">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-muted-theme text-center font-heading">
             Why 25,000+ Creators Choose bazara.in
           </h3>
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.06] space-y-1 shadow-md">
-              <FolderDown className="w-5 h-5 text-emerald-400" />
-              <h4 className="text-xs font-bold text-white">Instant G-Drive</h4>
-              <p className="text-[10px] text-slate-400">Direct 1-tap download link sent immediately.</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1.5 shadow-sm">
+              <FolderDown className="w-5 h-5 text-emerald-500 dark:text-emerald-400" strokeWidth={1.75} />
+              <h4 className="text-xs font-bold text-primary-theme font-heading">Instant G-Drive</h4>
+              <p className="text-[10px] text-secondary-theme leading-relaxed">Direct 1-tap download link sent immediately.</p>
             </div>
-            <div className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.06] space-y-1 shadow-md">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              <h4 className="text-xs font-bold text-white">Commercial PLR</h4>
-              <p className="text-[10px] text-slate-400">100% legal rights to monetize and resell.</p>
+            <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1.5 shadow-sm">
+              <ShieldCheck className="w-5 h-5 text-emerald-500 dark:text-emerald-400" strokeWidth={1.75} />
+              <h4 className="text-xs font-bold text-primary-theme font-heading">Commercial PLR</h4>
+              <p className="text-[10px] text-secondary-theme leading-relaxed">100% legal rights to monetize and resell.</p>
             </div>
-            <div className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.06] space-y-1 shadow-md">
-              <Zap className="w-5 h-5 text-emerald-400" />
-              <h4 className="text-xs font-bold text-white">4K 60FPS Clean</h4>
-              <p className="text-[10px] text-slate-400">Zero logos, zero watermarks, ready to post.</p>
+            <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1.5 shadow-sm">
+              <Zap className="w-5 h-5 text-emerald-500 dark:text-emerald-400" strokeWidth={1.75} />
+              <h4 className="text-xs font-bold text-primary-theme font-heading">4K 60FPS Clean</h4>
+              <p className="text-[10px] text-secondary-theme leading-relaxed">Zero logos, zero watermarks, ready to post.</p>
             </div>
-            <div className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.06] space-y-1 shadow-md">
-              <Award className="w-5 h-5 text-emerald-400" />
-              <h4 className="text-xs font-bold text-white">Lifetime Updates</h4>
-              <p className="text-[10px] text-slate-400">New reels and modules added monthly for free.</p>
+            <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1.5 shadow-sm">
+              <Award className="w-5 h-5 text-emerald-500 dark:text-emerald-400" strokeWidth={1.75} />
+              <h4 className="text-xs font-bold text-primary-theme font-heading">Lifetime Updates</h4>
+              <p className="text-[10px] text-secondary-theme leading-relaxed">New reels and modules added monthly for free.</p>
             </div>
           </div>
         </section>
 
         {/* ⭐ 12. VIP COMMUNITY BANNER */}
-        <section className="px-4 py-2">
-          <div className="p-4 rounded-3xl bg-indigo-950/30 border border-indigo-500/20 space-y-2.5 text-center">
-            <h4 className="text-xs font-extrabold text-white uppercase tracking-wider">
+        <section className="px-1 py-2">
+          <div className="p-5 rounded-3xl bg-[var(--bg-card)] border border-indigo-500/20 space-y-3 text-center shadow-lg">
+            <h4 className="text-xs font-extrabold text-primary-theme uppercase tracking-wider font-heading">
               Join Exclusive Telegram Community
             </h4>
-            <p className="text-[11px] text-slate-300 max-w-xs mx-auto">
+            <p className="text-[11px] text-secondary-theme max-w-xs mx-auto leading-relaxed">
               Get free viral audio hooks, CapCut templates, and algorithm updates every single week.
             </p>
             <a
               href="https://t.me/bazaraofficial"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-full text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all"
+              className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-full text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 hover:scale-105 active:scale-95 transition-all"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>Join Exclusive Community →</span>
@@ -393,42 +396,41 @@ export default function HomePage({
           </div>
         </section>
 
-
         {/* 8. Footer Info */}
-        <footer className="px-4 pt-6 pb-4 border-t border-white/[0.08] text-center space-y-3">
+        <footer className="px-4 pt-8 pb-4 border-t border-[var(--border-subtle)] text-center space-y-3.5">
           <div className="flex items-center justify-center space-x-2">
             <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-md" />
             <div className="flex items-baseline space-x-1">
-              <span className="text-base font-black text-white">bazara</span>
-              <span className="text-xs font-bold text-emerald-400">.in</span>
+              <span className="text-base font-black text-primary-theme font-heading">bazara</span>
+              <span className="text-xs font-bold text-emerald-500 dark:text-emerald-400">.in</span>
             </div>
           </div>
 
-          <p className="text-xs text-slate-400 max-w-xs mx-auto">
+          <p className="text-xs text-secondary-theme max-w-xs mx-auto">
             India's Leading Digital Learning & Tech Skill Academy.
           </p>
-          <div className="text-[11px] text-slate-400 flex flex-wrap items-center justify-center gap-3">
-            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'terms' })} className="hover:text-emerald-400 underline cursor-pointer">
+          <div className="text-[11px] text-muted-theme flex flex-wrap items-center justify-center gap-3">
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'terms' })} className="hover:text-emerald-500 dark:hover:text-emerald-400 underline cursor-pointer">
               Terms & Conditions
             </button>
             <span>•</span>
-            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'privacy' })} className="hover:text-emerald-400 underline cursor-pointer">
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'privacy' })} className="hover:text-emerald-500 dark:hover:text-emerald-400 underline cursor-pointer">
               Privacy Policy
             </button>
             <span>•</span>
-            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'refund' })} className="hover:text-emerald-400 underline cursor-pointer">
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'refund' })} className="hover:text-emerald-500 dark:hover:text-emerald-400 underline cursor-pointer">
               Refund Policy
             </button>
             <span>•</span>
-            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'shipping' })} className="hover:text-emerald-400 underline cursor-pointer">
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'shipping' })} className="hover:text-emerald-500 dark:hover:text-emerald-400 underline cursor-pointer">
               Digital Delivery
             </button>
             <span>•</span>
-            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'contact' })} className="hover:text-emerald-400 underline cursor-pointer">
+            <button onClick={() => setPolicyModal({ isOpen: true, tab: 'contact' })} className="hover:text-emerald-500 dark:hover:text-emerald-400 underline cursor-pointer">
               Contact Us
             </button>
           </div>
-          <p className="text-[10px] text-slate-400">© 2026 bazara.in • All Rights Reserved</p>
+          <p className="text-[10px] text-muted-theme">© 2026 bazara.in • All Rights Reserved</p>
         </footer>
       </main>
 
@@ -460,23 +462,31 @@ export default function HomePage({
         initialTab={policyModal.tab}
       />
 
-      {/* Social Proof Purchase Toast (Solid Opaque, No Overlap, No Product Name) */}
+      {/* Social Proof Purchase Toast: Lifted to bottom-24, Glassmorphism blur, Dismiss Button */}
       {recentBuyer && (
-        <div className="fixed bottom-16 left-3.5 z-40 max-w-[270px] pointer-events-none animate-slideUp">
-          <div className="px-3 py-2 rounded-2xl bg-[#131724] border border-emerald-500/40 shadow-2xl shadow-black flex items-center space-x-2.5">
-            <div className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="fixed bottom-24 left-3.5 z-40 max-w-[285px] animate-slideUp">
+          <div className="relative px-3.5 py-2.5 rounded-2xl bg-[var(--bg-card)]/90 backdrop-blur-xl border border-[var(--border-subtle)] shadow-2xl shadow-black/40 flex items-center space-x-2.5 pr-8 transition-colors">
+            <div className="w-6 h-6 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" strokeWidth={2.5} />
             </div>
             <div className="text-xs min-w-0">
-              <div className="font-bold text-white truncate">
-                {recentBuyer.name} <span className="text-slate-400 font-normal text-[11px]">({recentBuyer.city})</span>
+              <div className="font-bold text-primary-theme truncate font-heading">
+                {recentBuyer.name} <span className="text-muted-theme font-normal text-[11px]">({recentBuyer.city})</span>
               </div>
-              <div className="text-[10px] text-emerald-400 font-semibold flex items-center space-x-1">
+              <div className="text-[10px] text-emerald-500 dark:text-emerald-400 font-semibold flex items-center space-x-1">
                 <span>Instant Access Unlocked</span>
-                <span className="text-slate-500">•</span>
-                <span className="text-slate-400">{recentBuyer.time}</span>
+                <span className="text-slate-400">•</span>
+                <span className="text-muted-theme">{recentBuyer.time}</span>
               </div>
             </div>
+            {/* Dismiss X button */}
+            <button
+              onClick={() => setRecentBuyer(null)}
+              aria-label="Dismiss notification"
+              className="absolute right-2 top-2 p-1 rounded-full text-muted-theme hover:text-primary-theme hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       )}

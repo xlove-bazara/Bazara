@@ -24,7 +24,9 @@ import {
   Laptop,
   GraduationCap,
   FileText,
-  Mail
+  Mail,
+  Sun,
+  Moon
 } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
 import PolicyModal from '../components/PolicyModal';
@@ -33,7 +35,9 @@ export default function CourseLandingPage({
   course, 
   onEnroll, 
   onNavigateToStore, 
-  settings 
+  settings,
+  theme = 'dark',
+  toggleTheme 
 }) {
   const [openModuleIdx, setOpenModuleIdx] = useState(0);
   const [openFaqIdx, setOpenFaqIdx] = useState(null);
@@ -210,62 +214,75 @@ export default function CourseLandingPage({
   ];
 
   return (
-    <div className="min-h-screen pb-20 md:pb-8 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-20 md:pb-8 bg-base text-primary-theme selection:bg-emerald-500/30 transition-colors duration-200">
       {/* 1. Urgency Countdown Top Bar */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 px-4 py-2 text-center text-xs font-bold text-white shadow-md flex items-center justify-center space-x-2">
-        <span className="inline-block w-2 h-2 rounded-full bg-amber-300 animate-ping" />
-        <span>⚡ SPECIAL ADMISSIONS OPEN: FLAT {activeCourse.discount_percentage}% OFF</span>
-        <span className="hidden sm:inline text-emerald-100">• Offer ends in</span>
-        <span className="px-2 py-0.5 rounded bg-black/30 font-mono text-amber-200">
+      <div className="bg-gradient-to-r from-[#07130F] via-[#0A1813] to-[#070D11] border-b border-emerald-500/15 px-4 py-2 text-center text-xs font-bold text-slate-200 shadow-md flex items-center justify-center space-x-2">
+        <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+        <span className="font-extrabold tracking-wide">LIMITED ADMISSIONS: FLAT {activeCourse.discount_percentage}% OFF</span>
+        <span className="hidden sm:inline text-slate-400 text-[11px]">• Offer closes in</span>
+        <span className="px-2 py-0.5 rounded-md bg-emerald-950/60 font-mono text-emerald-300 border border-emerald-500/25 text-[11px] font-black shadow-sm">
           {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
         </span>
       </div>
 
       {/* 2. Navigation Header */}
-      <header className="sticky top-0 z-40 px-4 md:px-8 py-3 backdrop-blur-2xl bg-[#08090E]/85 border-b border-white/[0.08]">
+      <header className="sticky top-0 z-40 px-4 md:px-8 py-3 backdrop-blur-2xl bg-[var(--bg-header)] border-b border-[var(--border-subtle)] transition-colors">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           {/* Brand Logo */}
           <div className="flex items-center space-x-2.5">
             <img
               src="/logo.png?v=2"
               alt="bazara.in Logo"
-              className="w-8 h-8 rounded-xl object-contain shadow-lg shadow-indigo-500/25"
+              className="w-8 h-8 rounded-xl object-contain shadow-md shadow-emerald-500/20"
             />
             <div className="flex items-baseline space-x-1">
-              <span className="font-extrabold text-xl tracking-tight text-white uppercase">
+              <span className="font-extrabold text-xl tracking-tight text-primary-theme uppercase font-heading">
                 bazara
               </span>
-              <span className="text-xs font-bold text-emerald-400">.in</span>
-              <span className="hidden md:inline-block ml-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400 bg-white/[0.06] px-2 py-0.5 rounded-full border border-white/10">
+              <span className="text-xs font-bold text-emerald-500 dark:text-emerald-400">.in</span>
+              <span className="hidden md:inline-block ml-2 text-[10px] font-semibold uppercase tracking-widest text-muted-theme bg-[var(--bg-card-secondary)] px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
                 Academy
               </span>
             </div>
           </div>
 
-
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-300">
-            <a href="#curriculum" className="hover:text-emerald-400 transition-colors">Curriculum</a>
-            <a href="#about-bazara" className="hover:text-emerald-400 transition-colors">About bazara.in</a>
-            <a href="#instructor" className="hover:text-emerald-400 transition-colors">Mentor</a>
-            <a href="#reviews" className="hover:text-emerald-400 transition-colors">Reviews</a>
-            <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</a>
+          <nav className="hidden md:flex items-center space-x-6 text-xs font-bold text-secondary-theme">
+            <a href="#curriculum" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Curriculum</a>
+            <a href="#about-bazara" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">About bazara.in</a>
+            <a href="#instructor" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Mentor</a>
+            <a href="#reviews" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Reviews</a>
+            <a href="#faq" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">FAQ</a>
             <button
               onClick={() => setPolicyModal({ isOpen: true, tab: 'terms' })}
-              className="text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+              className="text-muted-theme hover:text-primary-theme transition-colors cursor-pointer"
             >
               Policies
             </button>
           </nav>
 
-          {/* CTA Action */}
-          <div className="flex items-center space-x-2">
+          {/* CTA Action & Theme Toggle */}
+          <div className="flex items-center space-x-3">
+            {toggleTheme && (
+              <button
+                onClick={toggleTheme}
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                className="w-8 h-8 rounded-full flex items-center justify-center border border-[var(--border-subtle)] bg-[var(--bg-card)] text-secondary-theme hover:text-primary-theme shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-amber-400" strokeWidth={2} />
+                ) : (
+                  <Moon className="w-4 h-4 text-indigo-500" strokeWidth={2} />
+                )}
+              </button>
+            )}
+
             <button
               onClick={() => onEnroll(activeCourse)}
-              className="px-4 md:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer btn-shine-effect"
+              className="px-4 md:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 shadow-[0_0_18px_rgba(16,185,129,0.3)] hover:shadow-[0_0_24px_rgba(16,185,129,0.45)] hover:scale-105 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer btn-shine-effect"
             >
               <span>Enroll Now ₹{activeCourse.price}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           </div>
         </div>
@@ -338,7 +355,7 @@ export default function CourseLandingPage({
 
           {/* Pricing & Hero CTA Box */}
           <div className="pt-4 max-w-lg mx-auto space-y-3">
-            <div className="p-4 rounded-3xl bg-[#131724] border border-white/10 shadow-xl space-y-3">
+            <div className="p-4 rounded-3xl bg-[var(--bg-card)] border border-white/10 shadow-xl space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Limited Time Special Admission</span>
@@ -433,7 +450,7 @@ export default function CourseLandingPage({
                 key={mIdx}
                 className={`rounded-2xl border transition-all overflow-hidden ${
                   isOpen
-                    ? 'bg-[#131724] border-emerald-500/40 shadow-lg shadow-emerald-500/5'
+                    ? 'bg-[var(--bg-card)] border-emerald-500/40 shadow-lg shadow-emerald-500/5'
                     : 'bg-[#0d101a] border-white/[0.08] hover:border-white/20'
                 }`}
               >
@@ -492,7 +509,7 @@ export default function CourseLandingPage({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="p-5 rounded-3xl bg-[#131724] border border-white/10 space-y-2">
+            <div className="p-5 rounded-3xl bg-[var(--bg-card)] border border-white/10 space-y-2">
               <div className="w-9 h-9 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                 <Laptop className="w-5 h-5" />
               </div>
@@ -502,7 +519,7 @@ export default function CourseLandingPage({
               </p>
             </div>
 
-            <div className="p-5 rounded-3xl bg-[#131724] border border-white/10 space-y-2">
+            <div className="p-5 rounded-3xl bg-[var(--bg-card)] border border-white/10 space-y-2">
               <div className="w-9 h-9 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
                 <Users className="w-5 h-5" />
               </div>
@@ -512,7 +529,7 @@ export default function CourseLandingPage({
               </p>
             </div>
 
-            <div className="p-5 rounded-3xl bg-[#131724] border border-white/10 space-y-2">
+            <div className="p-5 rounded-3xl bg-[var(--bg-card)] border border-white/10 space-y-2">
               <div className="w-9 h-9 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
                 <Zap className="w-5 h-5" />
               </div>
@@ -573,7 +590,7 @@ export default function CourseLandingPage({
 
       {/* 8. MEET YOUR MENTOR: VIPLAV KUMAR */}
       <section id="instructor" className="py-12 px-4 md:px-8 max-w-4xl mx-auto">
-        <div className="p-6 md:p-8 rounded-3xl bg-[#131724] border border-white/10 flex flex-col md:flex-row items-center gap-6">
+        <div className="p-6 md:p-8 rounded-3xl bg-[var(--bg-card)] border border-white/10 flex flex-col md:flex-row items-center gap-6">
           <div className="w-28 h-28 md:w-36 md:h-36 rounded-2xl overflow-hidden shrink-0 border-2 border-emerald-500/30 shadow-xl bg-slate-800 flex items-center justify-center">
             <div className="w-full h-full bg-gradient-to-tr from-emerald-600 via-teal-700 to-indigo-800 flex flex-col items-center justify-center text-white p-2 text-center">
               <span className="text-3xl font-black">VK</span>
@@ -610,7 +627,7 @@ export default function CourseLandingPage({
               'Private Telegram VIP Mastermind Community with Viplav Kumar',
               'Lifetime Free Curriculum Updates for New AI Tools & Frameworks'
             ].map((item, idx) => (
-              <div key={idx} className="p-3.5 rounded-2xl bg-[#131724] border border-white/[0.06] flex items-center space-x-3">
+              <div key={idx} className="p-3.5 rounded-2xl bg-[var(--bg-card)] border border-white/[0.06] flex items-center space-x-3">
                 <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
                 <span className="text-xs font-semibold text-slate-200">{item}</span>
               </div>
@@ -628,7 +645,7 @@ export default function CourseLandingPage({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {reviews.map((rev, rIdx) => (
-            <div key={rIdx} className="p-5 rounded-3xl bg-[#131724] border border-white/10 space-y-3 flex flex-col justify-between">
+            <div key={rIdx} className="p-5 rounded-3xl bg-[var(--bg-card)] border border-white/10 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex text-amber-400 text-xs">★★★★★</div>
                 <p className="text-xs text-slate-300 leading-relaxed italic">
@@ -661,7 +678,7 @@ export default function CourseLandingPage({
           {courseFaqs.map((faq, fIdx) => {
             const isOpen = openFaqIdx === fIdx;
             return (
-              <div key={fIdx} className="rounded-2xl bg-[#131724] border border-white/[0.08] overflow-hidden">
+              <div key={fIdx} className="rounded-2xl bg-[var(--bg-card)] border border-white/[0.08] overflow-hidden">
                 <button
                   onClick={() => setOpenFaqIdx(isOpen ? null : fIdx)}
                   className="w-full p-4 text-left flex items-center justify-between text-xs md:text-sm font-bold text-slate-200 cursor-pointer"
@@ -682,28 +699,28 @@ export default function CourseLandingPage({
 
       {/* 12. BOTTOM ENROLLMENT CARD */}
       <section className="py-12 px-4 md:px-8 max-w-3xl mx-auto">
-        <div className="p-6 md:p-10 rounded-3xl bg-gradient-to-tr from-emerald-950/50 via-[#131724] to-indigo-950/50 border border-emerald-500/30 text-center space-y-5 shadow-2xl">
-          <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">
+        <div className="p-6 md:p-10 rounded-3xl bg-[var(--bg-card)] border border-emerald-500/20 text-center space-y-5 shadow-2xl">
+          <span className="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 text-xs font-bold border border-emerald-500/25">
             Instant Lifetime Access
           </span>
-          <h2 className="text-2xl md:text-4xl font-black text-white">
+          <h2 className="font-heading text-2xl md:text-4xl font-black text-primary-theme">
             Start Building Modern Websites with AI Today
           </h2>
-          <p className="text-xs md:text-sm text-slate-300 max-w-md mx-auto">
+          <p className="text-xs md:text-sm text-secondary-theme max-w-md mx-auto leading-relaxed">
             Get instant access to all 32 HD video lessons, 3 capstone projects source code, AI prompt bank, and private community with Viplav Kumar for just ₹{activeCourse.price}.
           </p>
 
           <div className="flex items-center justify-center space-x-3">
-            <span className="text-3xl md:text-4xl font-black text-emerald-400">₹{activeCourse.price}</span>
-            <span className="text-base text-slate-400 line-through">₹{activeCourse.original_price}</span>
+            <span className="font-heading text-3xl md:text-4xl font-black text-emerald-500 dark:text-emerald-400">₹{activeCourse.price}</span>
+            <span className="text-base text-muted-theme line-through font-semibold">₹{activeCourse.original_price}</span>
           </div>
 
           <button
             onClick={() => onEnroll(activeCourse)}
-            className="w-full max-w-md mx-auto py-4 rounded-2xl font-black text-sm uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+            className="w-full max-w-md mx-auto py-4 rounded-2xl font-black text-sm uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_28px_rgba(16,185,129,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
           >
             <span>Enroll Now • ₹{activeCourse.price} Only</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
           </button>
 
 
@@ -772,12 +789,12 @@ export default function CourseLandingPage({
       </footer>
 
       {/* 14. MOBILE STICKY BOTTOM ENROLL DOCK */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 bg-[#08090E]/95 backdrop-blur-2xl border-t border-white/10 md:hidden flex items-center justify-between gap-3">
+      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 bg-[var(--bg-dock)] backdrop-blur-2xl border-t border-[var(--border-subtle)] md:hidden flex items-center justify-between gap-3 transition-colors">
         <div>
-          <span className="text-[10px] text-slate-400 block line-through">₹{activeCourse.original_price}</span>
+          <span className="text-[10px] text-muted-theme block line-through">₹{activeCourse.original_price}</span>
           <div className="flex items-baseline space-x-1.5">
-            <span className="text-lg font-black text-emerald-400">₹{activeCourse.price}</span>
-            <span className="text-[10px] font-bold text-emerald-400 px-1.5 py-0.2 rounded bg-emerald-500/20">
+            <span className="font-heading text-lg font-black text-emerald-500 dark:text-emerald-400">₹{activeCourse.price}</span>
+            <span className="text-[10px] font-bold text-emerald-500 dark:text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/15">
               {activeCourse.discount_percentage}% OFF
             </span>
           </div>
@@ -785,12 +802,11 @@ export default function CourseLandingPage({
 
         <button
           onClick={() => onEnroll(activeCourse)}
-          className="flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 flex items-center justify-center space-x-1.5 active:scale-95 transition-all cursor-pointer btn-shine-effect"
+          className="flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 shadow-[0_0_18px_rgba(16,185,129,0.3)] hover:shadow-[0_0_24px_rgba(16,185,129,0.45)] hover:scale-[1.02] flex items-center justify-center space-x-1.5 active:scale-95 transition-all cursor-pointer btn-shine-effect"
         >
           <span>Enroll Now</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </button>
-
       </div>
 
       {/* Video Teaser Modal */}

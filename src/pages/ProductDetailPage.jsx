@@ -31,7 +31,9 @@ export default function ProductDetailPage({
   onNavigate,
   onOpenLogin,
   onBack, 
-  onBuyNow 
+  onBuyNow,
+  theme,
+  toggleTheme 
 }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeReelModal, setActiveReelModal] = useState(null);
@@ -76,7 +78,7 @@ export default function ProductDetailPage({
   };
 
   return (
-    <div className="min-h-screen pb-32 bg-gradient-to-b from-[#080a12] via-[#07090f] to-[#040508] text-slate-100 selection:bg-emerald-500/30 relative overflow-hidden">
+    <div className="min-h-screen pb-32 bg-base text-primary-theme selection:bg-emerald-500/30 relative overflow-hidden transition-colors duration-200">
       {/* Clean Cinema Ambient Background (NO Polka-Dots) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Soft Top Emerald Halo */}
@@ -92,15 +94,17 @@ export default function ProductDetailPage({
         user={user} 
         onNavigate={onNavigate || onBack} 
         onOpenLogin={onOpenLogin} 
-        activeTab="home" 
+        activeTab="home"
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       {/* Secondary Navigation & Breadcrumb Strip */}
-      <div className="sticky top-[60px] md:top-[68px] z-20 px-4 md:px-8 py-2.5 backdrop-blur-2xl bg-[#080a14]/90 border-b border-white/[0.08] shadow-lg shadow-black/40">
+      <div className="sticky top-[60px] md:top-[68px] z-20 px-4 md:px-8 py-2.5 backdrop-blur-2xl bg-[var(--bg-header)] border-b border-[var(--border-subtle)] shadow-sm transition-colors">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <button
             onClick={onBack}
-            className="px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/12 text-slate-200 hover:text-white border border-white/15 flex items-center space-x-1.5 text-xs font-bold active:scale-95 transition-all cursor-pointer shadow-sm"
+            className="px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] text-secondary-theme hover:text-primary-theme border border-[var(--border-subtle)] flex items-center space-x-1.5 text-xs font-bold active:scale-95 transition-all cursor-pointer shadow-sm"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Store</span>
@@ -489,27 +493,27 @@ export default function ProductDetailPage({
       </main>
 
       {/* 7. ⭐ BOTTOM FLOATING STICKY BAR WITH ANIMATED SHINING BUY BUTTON (Visible on mobile / tablet) */}
-      <div className="fixed bottom-0 left-0 right-0 w-full z-50 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-2xl bg-[#080a14]/95 border-t border-white/15 shadow-[0_-10px_40px_rgba(0,0,0,0.85)] lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 w-full z-50 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-2xl bg-[var(--bg-dock)] border-t border-[var(--border-subtle)] shadow-xl lg:hidden transition-colors">
         <div className="max-w-md mx-auto flex items-center justify-between space-x-4">
           {/* Left Price Info */}
           <div className="pl-1">
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-lg font-black text-emerald-400">₹{product.price}</span>
+              <span className="font-heading text-lg font-black text-emerald-500 dark:text-emerald-400">₹{product.price}</span>
               {product.original_price && (
-                <span className="text-xs text-slate-400 line-through">₹{product.original_price}</span>
+                <span className="text-xs text-muted-theme line-through">₹{product.original_price}</span>
               )}
             </div>
-            <span className="text-[10px] text-slate-400 flex items-center">
-              <FolderDown className="w-3 h-3 mr-1 text-emerald-400" /> Instant G-Drive
+            <span className="text-[10px] text-secondary-theme flex items-center">
+              <FolderDown className="w-3 h-3 mr-1 text-emerald-500 dark:text-emerald-400" /> Instant G-Drive
             </span>
           </div>
 
           {/* Right Shining Animated Button */}
           <button
             onClick={() => onBuyNow(product)}
-            className="relative flex-1 overflow-hidden py-3.5 px-4 rounded-full font-black text-xs uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/30 active:scale-[0.98] transition-all flex items-center justify-center space-x-2 btn-shine-effect"
+            className="relative flex-1 overflow-hidden py-3.5 px-4 rounded-full font-black text-xs uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-500 to-teal-600 shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_26px_rgba(16,185,129,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-2 btn-shine-effect cursor-pointer"
           >
-            <span className="relative z-10 font-black">BUY NOW - INSTANT ACCESS 🚀</span>
+            <span className="relative z-10 font-black">BUY NOW • INSTANT ACCESS</span>
             <Zap className="relative z-10 w-4 h-4 fill-slate-950" />
           </button>
         </div>

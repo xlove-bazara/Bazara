@@ -51,6 +51,42 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(Boolean(getPolicyTabFromPath()));
   const [policyInitialTab, setPolicyInitialTab] = useState(getPolicyTabFromPath() || 'terms');
+  
+  // Dark/Light mode theme state
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('bazara_theme') || 'dark';
+    } catch (e) {
+      return 'dark';
+    }
+  });
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => {
+      const nextTheme = prevTheme === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('bazara_theme', nextTheme);
+      } catch (e) {}
+      if (nextTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+      }
+      return nextTheme;
+    });
+  };
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
+  }, [theme]);
 
 
   const refreshData = async () => {
@@ -234,22 +270,21 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center space-y-4">
+      <div className="min-h-screen bg-base text-primary-theme flex flex-col items-center justify-center space-y-4">
         <div className="relative">
           <img src="/logo.png?v=2" alt="bazara.in" className="w-14 h-14 rounded-2xl object-contain shadow-2xl shadow-indigo-500/30 animate-pulse" />
         </div>
         <div className="flex items-center space-x-1.5">
-          <span className="text-sm font-black text-white uppercase tracking-wider">bazara</span>
-          <span className="text-xs font-bold text-emerald-400">.in</span>
+          <span className="text-sm font-black text-white dark:text-white text-slate-900 uppercase tracking-wider">bazara</span>
+          <span className="text-xs font-bold text-emerald-500 dark:text-emerald-400">.in</span>
         </div>
-        <p className="text-xs text-slate-400">Loading ultra-premium digital learning platform...</p>
+        <p className="text-xs text-secondary-theme">Loading ultra-premium digital learning platform...</p>
       </div>
     );
-
   }
 
   return (
-    <div className="min-h-screen bg-[#08090E] text-slate-100">
+    <div className="min-h-screen bg-base text-primary-theme transition-colors duration-200">
       {/* 1. ROOT LANDING PAGE (bazara.in /): Single Course Landing Page with About bazara & FAQs */}
       {currentPage === 'landing' && (
         <div key="landing" className="animate-page-enter">
@@ -258,6 +293,8 @@ export default function App() {
             onEnroll={(courseToBuy) => handleInstantBuy(courseToBuy || featuredCourse)}
             onNavigateToStore={() => navigateTo('home', '/home')}
             settings={settings}
+            theme={theme}
+            toggleTheme={toggleTheme}
           />
         </div>
       )}
@@ -273,6 +310,8 @@ export default function App() {
             onNavigate={handleNavigate}
             user={user}
             setUser={setUser}
+            theme={theme}
+            toggleTheme={toggleTheme}
           />
         </div>
       )}
@@ -288,11 +327,13 @@ export default function App() {
               onOpenLogin={() => setIsLoginModalOpen(true)}
               onBack={() => navigateTo('home', '/home')}
               onBuyNow={handleInstantBuy}
+              theme={theme}
+              toggleTheme={toggleTheme}
             />
           ) : (
-            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-[#08090E] text-slate-400">
+            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-base text-secondary-theme">
               <div className="w-8 h-8 rounded-full border-2 border-emerald-400/20 border-t-emerald-400 animate-spin" />
-              <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Product...</p>
+              <p className="text-xs font-semibold tracking-wider uppercase">Loading Product...</p>
             </div>
           )}
         </div>
@@ -309,9 +350,9 @@ export default function App() {
               onPaymentComplete={handlePaymentComplete}
             />
           ) : (
-            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-[#08090E] text-slate-400">
+            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-base text-secondary-theme">
               <div className="w-8 h-8 rounded-full border-2 border-emerald-400/20 border-t-emerald-400 animate-spin" />
-              <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Checkout...</p>
+              <p className="text-xs font-semibold tracking-wider uppercase">Loading Checkout...</p>
             </div>
           )}
         </div>

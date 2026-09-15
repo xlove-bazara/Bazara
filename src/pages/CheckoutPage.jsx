@@ -241,18 +241,18 @@ export default function CheckoutPage({
 
 
   return (
-    <div className="min-h-screen pb-20 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-20 bg-base text-primary-theme selection:bg-emerald-500/30 transition-colors duration-200">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
+      <header className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl bg-[var(--bg-header)] border-b border-[var(--border-subtle)] transition-colors">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <button
             onClick={onBack}
-            className="p-2 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
+            className="p-2 rounded-full glass-panel text-secondary-theme hover:text-primary-theme border border-[var(--border-subtle)] active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-300">
-            <Lock className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="flex items-center space-x-1.5 text-xs font-bold text-secondary-theme">
+            <Lock className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <span>256-Bit Encrypted Checkout</span>
           </div>
           <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
@@ -266,7 +266,7 @@ export default function CheckoutPage({
           {/* Left Column: Order Summary, Upsell Bump & Delivery Details */}
           <div className="lg:col-span-7 space-y-4">
             {/* ================= 1. ORDER SUMMARY ================= */}
-            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up">
+            <section className="p-5 rounded-3xl bg-[var(--bg-card)] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
               <Package className="w-4 h-4" />
@@ -340,7 +340,7 @@ export default function CheckoutPage({
             className={`relative overflow-hidden p-4 rounded-3xl transition-all duration-300 cursor-pointer shadow-2xl select-none animate-fade-in-up [animation-delay:80ms] ${
               addUpsell 
                 ? 'bg-gradient-to-br from-emerald-950/40 via-[#131724] to-[#0d101d] border-2 border-emerald-500 shadow-emerald-500/15 ring-2 ring-emerald-500/20 scale-[1.01]' 
-                : 'bg-[#131724]/80 border border-white/10 hover:border-white/20 hover:scale-[1.005]'
+                : 'bg-[var(--bg-card)]/80 border border-white/10 hover:border-white/20 hover:scale-[1.005]'
             }`}
           >
             {/* Subtle Ambient Radial Glow when selected */}
@@ -427,7 +427,7 @@ export default function CheckoutPage({
 
         {/* ================= 3. DELIVERY DETAILS (NOW THIRD) ================= */}
 
-        <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up [animation-delay:120ms]">
+        <section className="p-5 rounded-3xl bg-[var(--bg-card)] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up [animation-delay:120ms]">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -497,7 +497,7 @@ export default function CheckoutPage({
           {/* Right Column: Sticky Payment Gateway & Order Breakdown on Desktop */}
           <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
             {/* ================= 4. SECURE PAYMENT GATEWAY & BILL ================= */}
-            <section className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up [animation-delay:160ms]">
+            <section className="p-5 rounded-3xl bg-[var(--bg-card)] border border-white/[0.08] space-y-4 shadow-2xl shadow-black/50 animate-fade-in-up [animation-delay:160ms]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2.5">
                   <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-md shadow-emerald-500/10">

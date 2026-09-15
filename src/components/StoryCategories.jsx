@@ -1,22 +1,20 @@
 import React from 'react';
-import { Flame, Film, GraduationCap, Laptop, BookOpen, Crown } from 'lucide-react';
+import { Layers, Video, GraduationCap, Sparkles, Cpu, BookOpen } from 'lucide-react';
 
 const categories = [
-  { id: 'all', label: 'All Assets', icon: Flame, color: 'from-amber-500 to-rose-600' },
-  { id: 'reels', label: 'Reel Bundle', icon: Film, color: 'from-emerald-400 to-cyan-500' },
-  { id: 'course', label: 'Video Course', icon: GraduationCap, color: 'from-indigo-500 to-purple-600' },
-  { id: 'subscription', label: 'Subscription', icon: Crown, color: 'from-amber-400 to-yellow-600' },
-  { id: 'software', label: 'Software', icon: Laptop, color: 'from-blue-500 to-indigo-500' },
-  { id: 'ebook', label: 'E-Book', icon: BookOpen, color: 'from-purple-500 to-pink-500' }
+  { id: 'all', label: 'All Packs', icon: Layers },
+  { id: 'reels', label: 'Reel Bundle', icon: Video },
+  { id: 'course', label: 'Video Course', icon: GraduationCap },
+  { id: 'subscription', label: 'VIP Pass', icon: Sparkles },
+  { id: 'software', label: 'Software', icon: Cpu },
+  { id: 'ebook', label: 'E-Books', icon: BookOpen }
 ];
-
 
 export default function StoryCategories({ selectedCategory, onSelectCategory }) {
   return (
-    <div className="w-full overflow-x-auto no-scrollbar py-3 px-4">
-      <div className="flex items-center space-x-4 md:space-x-6 min-w-max md:min-w-0 md:justify-center">
+    <div className="w-full overflow-x-auto no-scrollbar py-2 px-1">
+      <div className="flex items-center space-x-3 sm:space-x-5 min-w-max md:min-w-0 md:justify-center">
         {categories.map((cat) => {
-
           const Icon = cat.icon;
           const isSelected = selectedCategory === cat.id;
 
@@ -24,40 +22,33 @@ export default function StoryCategories({ selectedCategory, onSelectCategory }) 
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
-              className="flex flex-col items-center space-y-1.5 focus:outline-none group active:scale-95 transition-transform"
+              className="flex flex-col items-center space-y-1.5 focus:outline-none group active:scale-95 transition-all cursor-pointer"
             >
-              {/* Glowing circular container */}
+              {/* Refined outline circular container */}
               <div
-                className={`relative w-14 h-14 rounded-full p-[2px] transition-all duration-300 ${
+                className={`relative w-13 h-13 sm:w-14 sm:h-14 rounded-2xl p-[1px] flex items-center justify-center transition-all duration-200 ${
                   isSelected
-                    ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#08090E] scale-105'
-                    : 'group-hover:scale-105'
+                    ? 'bg-gradient-to-b from-emerald-400 to-teal-500 shadow-[0_0_16px_rgba(16,185,129,0.35)] scale-105'
+                    : 'bg-[var(--border-subtle)] hover:bg-emerald-500/30'
                 }`}
               >
                 <div
-                  className={`w-full h-full rounded-full flex items-center justify-center bg-[#111420] border ${
-                    isSelected ? 'border-emerald-400' : 'border-white/10'
+                  className={`w-full h-full rounded-[15px] flex items-center justify-center transition-colors ${
+                    isSelected
+                      ? 'bg-[var(--bg-card)] text-emerald-500 dark:text-emerald-400'
+                      : 'bg-[var(--bg-card)] text-secondary-theme group-hover:text-primary-theme group-hover:bg-[var(--bg-card-hover)]'
                   }`}
                 >
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-tr ${cat.color} text-white shadow-inner`}
-                  >
-                    <Icon className="w-5 h-5 drop-shadow-sm" />
-                  </div>
+                  <Icon className="w-5 h-5" strokeWidth={1.75} />
                 </div>
-
-                {cat.isHot && (
-                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
-                  </span>
-                )}
               </div>
 
               {/* Label */}
               <span
-                className={`text-[11px] font-medium tracking-tight whitespace-nowrap transition-colors ${
-                  isSelected ? 'text-emerald-400 font-bold' : 'text-slate-400 group-hover:text-slate-200'
+                className={`text-[11px] font-bold tracking-tight whitespace-nowrap transition-colors ${
+                  isSelected 
+                    ? 'text-emerald-500 dark:text-emerald-400 font-extrabold' 
+                    : 'text-secondary-theme group-hover:text-primary-theme'
                 }`}
               >
                 {cat.label}
@@ -69,3 +60,4 @@ export default function StoryCategories({ selectedCategory, onSelectCategory }) 
     </div>
   );
 }
+

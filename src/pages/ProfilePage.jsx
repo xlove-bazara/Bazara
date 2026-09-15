@@ -84,24 +84,24 @@ export default function ProfilePage({
 
 
   return (
-    <div className="min-h-screen pb-28 md:pb-16 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-28 md:pb-16 bg-base text-primary-theme selection:bg-emerald-500/30 transition-colors duration-200">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 px-4 md:px-8 py-3.5 backdrop-blur-2xl bg-[#08090E]/85 border-b border-white/[0.06]">
+      <header className="sticky top-0 z-30 px-4 md:px-8 py-3.5 backdrop-blur-2xl bg-[var(--bg-header)] border-b border-[var(--border-subtle)] transition-colors">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <button
             onClick={onBackToHome}
-            className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full glass-panel text-slate-300 hover:text-white border border-white/10 hover:border-white/20 active:scale-95 transition-all cursor-pointer"
+            className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full glass-panel text-secondary-theme hover:text-primary-theme border border-[var(--border-subtle)] active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="text-xs font-bold hidden sm:inline">Back to Store</span>
           </button>
 
           <div className="flex items-center space-x-2">
-            <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-xl object-contain shadow-md" />
+            <img src="/logo.png?v=2" alt="bazara.in" className="w-7 h-7 rounded-xl object-contain shadow-md shadow-emerald-500/20" />
             <div className="flex items-baseline space-x-1">
-              <span className="font-black text-base text-white">bazara</span>
-              <span className="text-xs font-bold text-emerald-400">.in</span>
-              <span className="ml-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white/[0.05] px-2 py-0.5 rounded-full border border-white/10">
+              <span className="font-extrabold text-base text-primary-theme uppercase font-heading">bazara</span>
+              <span className="text-xs font-bold text-emerald-500 dark:text-emerald-400">.in</span>
+              <span className="ml-2 text-[10px] font-bold text-muted-theme uppercase tracking-widest bg-[var(--bg-card-secondary)] px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
                 Account & Vault
               </span>
             </div>
@@ -126,7 +126,7 @@ export default function ProfilePage({
           <div className="lg:col-span-5 space-y-6">
             
             {/* Primary Profile Card */}
-            <div className="p-6 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-5 shadow-2xl relative overflow-hidden">
+            <div className="p-6 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-card)] space-y-5 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-center space-x-4">
@@ -135,9 +135,9 @@ export default function ProfilePage({
                   <img
                     src={selectedAvatar}
                     alt={displayName}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover bg-[#1c2237] border-2 border-emerald-400 shadow-xl shadow-emerald-500/25 p-1"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover bg-[var(--bg-card-secondary)] border-2 border-emerald-400 shadow-xl shadow-emerald-500/25 p-1"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[#121624] flex items-center justify-center">
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[var(--bg-card)] flex items-center justify-center">
                     <Check className="w-3 h-3 text-slate-950 stroke-[3]" />
                   </div>
                 </div>
@@ -145,12 +145,12 @@ export default function ProfilePage({
                 {/* Name & Contact Info */}
                 <div className="space-y-1 flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-black text-white truncate">
+                    <h3 className="text-lg font-black text-primary-theme font-heading truncate">
                       {displayName}
                     </h3>
                     <button
                       onClick={() => setEditingName(!editingName)}
-                      className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-muted-theme hover:text-primary-theme transition-colors cursor-pointer"
                       title="Edit Display Name"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
@@ -270,12 +270,12 @@ export default function ProfilePage({
               )}
             </div>
 
-            {/* Membership Benefits */}
-            <div className="p-5 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-3 shadow-xl">
-              <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+              {/* Membership Benefits */}
+            <div className="p-5 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-card)] space-y-3 shadow-xl">
+              <h4 className="text-xs font-black uppercase tracking-wider text-muted-theme">
                 Creator Membership Privileges
               </h4>
-              <div className="space-y-2.5 text-xs text-slate-300 font-medium">
+              <div className="space-y-2.5 text-xs text-secondary-theme font-medium">
                 <div className="flex items-center space-x-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Instant 1-Click Google Drive Vault Access</span>
@@ -297,15 +297,15 @@ export default function ProfilePage({
           <div className="lg:col-span-7 space-y-6">
             
             {/* My Purchased Assets / Google Drive Vault */}
-            <div className="p-6 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-4 shadow-2xl">
+            <div className="p-6 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-card)] space-y-4 shadow-2xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-md">
                     <FolderDown className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-base font-black text-white">My Purchased Assets</h4>
-                    <span className="text-xs text-slate-400 font-medium">Direct Google Drive cloud downloads</span>
+                    <h4 className="text-base font-black text-primary-theme font-heading">My Purchased Assets</h4>
+                    <span className="text-xs text-muted-theme font-medium">Direct Google Drive cloud downloads</span>
                   </div>
                 </div>
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
@@ -313,19 +313,19 @@ export default function ProfilePage({
                 </span>
               </div>
 
-              <div className="border-b border-white/[0.08]" />
+              <div className="border-b border-[var(--border-subtle)]" />
 
               {completedOrder ? (
-                <div className="p-5 rounded-2xl bg-[#090c15] border border-emerald-500/25 space-y-4 shadow-inner">
+                <div className="p-5 rounded-2xl bg-[var(--bg-card-secondary)] border border-emerald-500/25 space-y-4 shadow-inner">
                   <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                     <div>
                       <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-400 uppercase tracking-wider">
                         Active Order
                       </span>
-                      <h5 className="text-sm sm:text-base font-extrabold text-white mt-1">
+                      <h5 className="text-sm sm:text-base font-extrabold text-primary-theme mt-1 font-heading">
                         {completedOrder.productTitle}
                       </h5>
-                      <span className="text-xs text-slate-400 font-mono">
+                      <span className="text-xs text-muted-theme font-mono">
                         Order ID: {completedOrder.id}
                       </span>
                     </div>
@@ -338,7 +338,7 @@ export default function ProfilePage({
                     href={completedOrder.driveUrl || "https://drive.google.com"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-lg shadow-emerald-500/25 active:scale-[0.98] cursor-pointer btn-shine-effect"
+                    className="w-full py-3.5 px-4 rounded-2xl btn-cta-premium font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-lg active:scale-[0.98] cursor-pointer"
                   >
                     <FolderDown className="w-4 h-4 text-slate-950 stroke-[2.5]" />
                     <span>Open in Google Drive 📁</span>
@@ -346,14 +346,14 @@ export default function ProfilePage({
                   </a>
                 </div>
               ) : (
-                <div className="p-8 rounded-2xl bg-[#090c15] border border-white/5 text-center space-y-3">
-                  <FolderDown className="w-10 h-10 text-slate-600 mx-auto" />
-                  <p className="text-xs font-semibold text-slate-400">
+                <div className="p-8 rounded-2xl bg-[var(--bg-card-secondary)] border border-[var(--border-subtle)] text-center space-y-3">
+                  <FolderDown className="w-10 h-10 text-muted-theme mx-auto opacity-50" />
+                  <p className="text-xs font-semibold text-muted-theme">
                     Aapke account me abhi koi active purchase nahi hai.
                   </p>
                   <button
                     onClick={onBackToHome}
-                    className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider btn-cta-premium shadow-md transition-all cursor-pointer"
                   >
                     <span>Browse Bundles & Masterclass →</span>
                   </button>
@@ -362,8 +362,8 @@ export default function ProfilePage({
             </div>
 
             {/* Support & Community Mastermind */}
-            <div className="p-6 rounded-3xl bg-[#121624] border border-white/[0.08] space-y-4 shadow-2xl">
-              <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+            <div className="p-6 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-card)] space-y-4 shadow-2xl">
+              <h4 className="text-xs font-black uppercase tracking-wider text-muted-theme">
                 Direct VIP Support & Community
               </h4>
 
@@ -372,40 +372,40 @@ export default function ProfilePage({
                   href="https://wa.me/919837371137"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-[#090c15] border border-white/10 hover:border-emerald-500/40 flex items-center justify-between group transition-all"
+                  className="p-4 rounded-2xl bg-[var(--bg-card-secondary)] border border-[var(--border-subtle)] hover:border-emerald-500/40 flex items-center justify-between group transition-all"
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
                       <MessageCircle className="w-5 h-5" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-white block group-hover:text-emerald-400 transition-colors">
+                      <span className="text-xs font-bold text-primary-theme block group-hover:text-emerald-400 transition-colors">
                         WhatsApp Support
                       </span>
-                      <span className="text-[10px] text-slate-400 font-medium">Instant 24/7 Response</span>
+                      <span className="text-[10px] text-muted-theme font-medium">Instant 24/7 Response</span>
                     </div>
                   </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+                  <ExternalLink className="w-3.5 h-3.5 text-muted-theme group-hover:text-emerald-400 transition-colors" />
                 </a>
 
                 <a
                   href="https://t.me/bazaraofficial"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-[#090c15] border border-white/10 hover:border-indigo-500/40 flex items-center justify-between group transition-all"
+                  className="p-4 rounded-2xl bg-[var(--bg-card-secondary)] border border-[var(--border-subtle)] hover:border-indigo-500/40 flex items-center justify-between group transition-all"
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center">
                       <Award className="w-5 h-5" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-white block group-hover:text-indigo-400 transition-colors">
+                      <span className="text-xs font-bold text-primary-theme block group-hover:text-indigo-400 transition-colors">
                         Exclusive Telegram Community
                       </span>
-                      <span className="text-[10px] text-slate-400 font-medium">12K+ Creators Community</span>
+                      <span className="text-[10px] text-muted-theme font-medium">12K+ Creators Community</span>
                     </div>
                   </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+                  <ExternalLink className="w-3.5 h-3.5 text-muted-theme group-hover:text-indigo-400 transition-colors" />
                 </a>
               </div>
             </div>

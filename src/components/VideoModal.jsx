@@ -68,28 +68,28 @@ export default function VideoModal({
 
       {/* 2. Video Card Container (fits within mobile screen height) */}
       <div 
-        className={`relative w-full ${isShorts ? 'max-w-[340px] sm:max-w-sm max-h-[82dvh] h-[75dvh]' : 'max-w-xl max-h-[80dvh]'} rounded-3xl overflow-hidden glass-panel border border-white/20 shadow-2xl bg-[#090b14] flex flex-col`}
+        className={`relative w-full ${isShorts ? 'max-w-[340px] sm:max-w-sm max-h-[82dvh] h-[75dvh]' : 'max-w-xl max-h-[80dvh]'} rounded-3xl overflow-hidden glass-panel border border-[var(--border-card)] shadow-2xl bg-[var(--bg-card)] flex flex-col`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header Strip */}
-        <div className="px-4 py-2.5 bg-[#0e121e] border-b border-white/10 flex items-center justify-between shrink-0">
+        <div className="px-4 py-2.5 bg-[var(--bg-card-secondary)] border-b border-[var(--border-subtle)] flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-bold text-slate-200 uppercase tracking-wider truncate max-w-[200px]">
+            <span className="text-[11px] font-bold text-primary-theme uppercase tracking-wider truncate max-w-[200px]">
               {ytId ? 'Video Preview' : 'Sample Preview'}
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-[11px] font-semibold text-slate-400 hover:text-white px-2 py-0.5 rounded-md hover:bg-white/10 transition-colors cursor-pointer"
+            className="text-[11px] font-semibold text-muted-theme hover:text-primary-theme px-2 py-0.5 rounded-md hover:bg-white/10 transition-colors cursor-pointer"
           >
             Close ✕
           </button>
         </div>
 
         {/* Video Player Area */}
-        <div className="relative flex-1 w-full bg-slate-950 flex items-center justify-center overflow-hidden">
+        <div className="relative flex-1 w-full bg-black flex items-center justify-center overflow-hidden">
           {ytId ? (
             <iframe
               src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
@@ -132,7 +132,7 @@ export default function VideoModal({
               </button>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-6 text-center text-slate-400">
+            <div className="flex flex-col items-center justify-center p-6 text-center text-muted-theme">
               <Play className="w-10 h-10 mb-2 opacity-50" />
               <p className="text-xs">No video preview link available</p>
             </div>
@@ -140,8 +140,8 @@ export default function VideoModal({
         </div>
 
         {/* Bottom Bar: Video Title & Direct YouTube Link */}
-        <div className="px-4 py-2.5 bg-[#0a0d16] border-t border-white/10 flex items-center justify-between text-xs shrink-0">
-          <span className="text-slate-300 font-medium truncate max-w-[190px] sm:max-w-xs">{activeTitle}</span>
+        <div className="px-4 py-2.5 bg-[var(--bg-card-secondary)] border-t border-[var(--border-subtle)] flex items-center justify-between text-xs shrink-0">
+          <span className="text-secondary-theme font-medium truncate max-w-[190px] sm:max-w-xs">{activeTitle}</span>
           {ytId && (
             <a
               href={`https://www.youtube.com/watch?v=${ytId}`}
@@ -156,13 +156,13 @@ export default function VideoModal({
 
         {/* Optional Buy Button (Only when explicitly enabled, e.g. on Course page) */}
         {showBuyButton && onBuyClick && (
-          <div className="p-3 bg-[#0d101a] border-t border-white/10 shrink-0">
+          <div className="p-3 bg-[var(--bg-card-secondary)] border-t border-[var(--border-subtle)] shrink-0">
             <button
               onClick={() => {
                 onClose();
                 onBuyClick();
               }}
-              className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+              className="w-full py-3 rounded-2xl text-xs font-black uppercase tracking-wider btn-cta-premium active:scale-95 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
             >
               <Zap className="w-4 h-4 fill-slate-950" />
               <span>{buyButtonText}</span>

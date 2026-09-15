@@ -7,12 +7,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#08090E" />
     <title>bazara.in | Digital Store</title>
-    <!-- Fonts -->
+    <!-- Fonts: Satoshi for Headings, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@500,600,700,800,900&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('bazara_theme');
+          var isDark = saved ? saved === 'dark' : true; // Default dark
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-[#08090E] text-slate-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-300 min-h-screen overflow-x-hidden">
+  <body class="bg-base text-primary antialiased selection:bg-emerald-500/30 selection:text-emerald-300 min-h-screen overflow-x-hidden transition-colors duration-200">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
