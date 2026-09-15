@@ -84,9 +84,9 @@ export default function ProfilePage({
 
 
   return (
-    <div className="min-h-screen pb-28 md:pb-16 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-28 md:pb-16 bg-transparent text-slate-100 selection:bg-emerald-500/30">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 px-4 md:px-8 py-3.5 backdrop-blur-2xl bg-[#08090E]/85 border-b border-white/[0.06]">
+      <header className="sticky top-0 z-30 px-4 md:px-8 py-3.5 backdrop-blur-2xl bg-[#091017]/80 border-b border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <button
             onClick={onBackToHome}

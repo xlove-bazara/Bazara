@@ -168,7 +168,7 @@ export default function HomePage({
   }, [reviewsList.length]);
 
   return (
-    <div className="min-h-screen pb-24 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-24 bg-transparent text-slate-100 selection:bg-emerald-500/30">
       {/* 1. Continuous Infinite Marquee Ticker */}
       <MarqueeTicker announcements={settings?.marquee_announcements} />
 

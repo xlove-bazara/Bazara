@@ -210,7 +210,7 @@ export default function CourseLandingPage({
   ];
 
   return (
-    <div className="min-h-screen pb-20 md:pb-8 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-20 md:pb-8 bg-transparent text-slate-100 selection:bg-emerald-500/30">
       {/* 1. Urgency Countdown Top Bar */}
       <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 px-4 py-2 text-center text-xs font-bold text-white shadow-md flex items-center justify-center space-x-2">
         <span className="inline-block w-2 h-2 rounded-full bg-amber-300 animate-ping" />
@@ -222,7 +222,7 @@ export default function CourseLandingPage({
       </div>
 
       {/* 2. Navigation Header */}
-      <header className="sticky top-0 z-40 px-4 md:px-8 py-3 backdrop-blur-2xl bg-[#08090E]/85 border-b border-white/[0.08]">
+      <header className="sticky top-0 z-40 px-4 md:px-8 py-3 backdrop-blur-2xl bg-[#091017]/80 border-b border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           {/* Brand Logo */}
           <div className="flex items-center space-x-2.5">
@@ -772,7 +772,7 @@ export default function CourseLandingPage({
       </footer>
 
       {/* 14. MOBILE STICKY BOTTOM ENROLL DOCK */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 bg-[#08090E]/95 backdrop-blur-2xl border-t border-white/10 md:hidden flex items-center justify-between gap-3">
+      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 bg-[#091017]/90 backdrop-blur-2xl border-t border-white/10 md:hidden flex items-center justify-between gap-3">
         <div>
           <span className="text-[10px] text-slate-400 block line-through">₹{activeCourse.original_price}</span>
           <div className="flex items-baseline space-x-1.5">

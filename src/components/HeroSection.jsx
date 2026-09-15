@@ -13,7 +13,7 @@ export default function HeroSection({ featuredCourse, onEnroll, onViewCourse }) 
 
   return (
     <section className="px-1 py-1">
-      <div className="relative overflow-hidden rounded-3xl p-3.5 sm:p-6 md:p-8 glass-card-luxury border border-emerald-500/30 shadow-2xl bg-gradient-to-br from-[#0e1424] via-[#0b0f1a] to-[#08090e]">
+      <div className="relative overflow-hidden rounded-3xl p-3.5 sm:p-6 md:p-8 glass-card-luxury border border-emerald-500/30 shadow-2xl bg-gradient-to-br from-[#121c24]/90 via-[#0d141e]/85 to-[#090e16]/90">
         {/* Ambient background glows */}
         <div className="absolute -top-16 -right-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />

@@ -438,7 +438,7 @@ export default function WhatsAppCrmPage({ onBack }) {
   // ================= 1. ADMIN AUTHENTICATION GATE =================
   if (!isAdminAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center p-4 selection:bg-emerald-500/30">
+      <div className="min-h-screen bg-transparent flex flex-col items-center justify-center p-4 selection:bg-emerald-500/30">
         <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-[#0e111d] border border-white/15 shadow-2xl space-y-6 text-center">
           <div className="space-y-3">
             <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-500/20">

@@ -234,7 +234,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center space-y-4">
+      <div className="min-h-screen bg-transparent flex flex-col items-center justify-center space-y-4">
         <div className="relative">
           <img src="/logo.png?v=2" alt="bazara.in" className="w-14 h-14 rounded-2xl object-contain shadow-2xl shadow-indigo-500/30 animate-pulse" />
         </div>
@@ -245,14 +245,28 @@ export default function App() {
         <p className="text-xs text-slate-400">Loading ultra-premium digital learning platform...</p>
       </div>
     );
-
   }
 
   return (
-    <div className="min-h-screen bg-[#08090E] text-slate-100">
-      {/* 1. ROOT LANDING PAGE (bazara.in /): Single Course Landing Page with About bazara & FAQs */}
-      {currentPage === 'landing' && (
-        <div key="landing" className="animate-page-enter">
+    <div className="min-h-screen relative bg-transparent text-slate-100 selection:bg-emerald-500/30 selection:text-emerald-300">
+      {/* Global Luxury Ambient Lighting & Vignette Layer (matches reference screenshot) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        {/* Soft Top Forest Teal/Cyan Glow */}
+        <div className="absolute -top-[180px] left-1/2 -translate-x-1/2 w-[850px] max-w-[120vw] h-[500px] bg-teal-500/[0.08] rounded-full blur-[130px]" />
+        {/* Deep Midnight Indigo Aura on Right */}
+        <div className="absolute -top-[80px] -right-[120px] w-[500px] h-[500px] bg-indigo-600/[0.08] rounded-full blur-[140px]" />
+        {/* Subtle Mid-Screen Emerald Bloom */}
+        <div className="absolute top-[42%] -left-[160px] w-[450px] h-[450px] bg-emerald-600/[0.06] rounded-full blur-[150px]" />
+        {/* Subtle Bottom Ambient Depth */}
+        <div className="absolute -bottom-[150px] right-1/4 w-[600px] h-[450px] bg-indigo-900/[0.08] rounded-full blur-[160px]" />
+        {/* Micro-luminous Top Rim Light */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-teal-400/25 to-transparent" />
+      </div>
+
+      <div className="relative z-10">
+        {/* 1. ROOT LANDING PAGE (bazara.in /): Single Course Landing Page with About bazara & FAQs */}
+        {currentPage === 'landing' && (
+          <div key="landing" className="animate-page-enter">
           <CourseLandingPage
             course={featuredCourse}
             onEnroll={(courseToBuy) => handleInstantBuy(courseToBuy || featuredCourse)}
@@ -290,7 +304,7 @@ export default function App() {
               onBuyNow={handleInstantBuy}
             />
           ) : (
-            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-[#08090E] text-slate-400">
+            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-transparent text-slate-400">
               <div className="w-8 h-8 rounded-full border-2 border-emerald-400/20 border-t-emerald-400 animate-spin" />
               <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Product...</p>
             </div>
@@ -309,7 +323,7 @@ export default function App() {
               onPaymentComplete={handlePaymentComplete}
             />
           ) : (
-            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-[#08090E] text-slate-400">
+            <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-transparent text-slate-400">
               <div className="w-8 h-8 rounded-full border-2 border-emerald-400/20 border-t-emerald-400 animate-spin" />
               <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Checkout...</p>
             </div>
@@ -382,6 +396,7 @@ export default function App() {
         onClose={() => setIsPolicyModalOpen(false)}
         initialTab={policyInitialTab}
       />
+      </div>
     </div>
   );
 }

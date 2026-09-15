@@ -19,7 +19,7 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
   ];
 
   return (
-    <header className="sticky top-0 z-30 px-4 md:px-8 pt-3 pb-2.5 backdrop-blur-2xl bg-[#07090E]/80 border-b border-white/[0.06]">
+    <header className="sticky top-0 z-30 px-4 md:px-8 pt-3 pb-2.5 backdrop-blur-2xl bg-[#091017]/75 border-b border-white/[0.08] shadow-lg shadow-black/20">
       <div className="max-w-md md:max-w-7xl mx-auto">
 
         {/* Desktop Header Layout (>= 768px) */}

@@ -595,7 +595,7 @@ export default function AdminPage({
   // ================= 1. ADMIN AUTHENTICATION GATE =================
   if (!isAdminAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#08090E] flex flex-col items-center justify-center p-4 selection:bg-emerald-500/30">
+      <div className="min-h-screen bg-transparent flex flex-col items-center justify-center p-4 selection:bg-emerald-500/30">
         <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-[#0e111d] border border-white/15 shadow-2xl space-y-6 text-center">
           <div className="space-y-3">
             <img src="/logo.png?v=2" alt="bazara.in" className="w-16 h-16 mx-auto rounded-2xl object-contain shadow-xl shadow-indigo-500/30" />
@@ -661,9 +661,9 @@ export default function AdminPage({
 
   // ================= 2. DESKTOP OPTIMIZED ADMIN DASHBOARD =================
   return (
-    <div className="min-h-screen pb-20 bg-[#08090E] text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen pb-20 bg-transparent text-slate-100 selection:bg-emerald-500/30">
       {/* Top Desktop & Mobile Header */}
-      <header className="sticky top-0 z-30 px-4 sm:px-8 py-3.5 backdrop-blur-xl bg-[#08090E]/85 border-b border-white/[0.06]">
+      <header className="sticky top-0 z-30 px-4 sm:px-8 py-3.5 backdrop-blur-xl bg-[#091017]/80 border-b border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <button

@@ -30,7 +30,7 @@ export default function StoryCategories({ selectedCategory, onSelectCategory }) 
               <div
                 className={`relative w-14 h-14 rounded-full p-[2px] transition-all duration-300 ${
                   isSelected
-                    ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#08090E] scale-105'
+                    ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0d141b] scale-105'
                     : 'group-hover:scale-105'
                 }`}
               >
