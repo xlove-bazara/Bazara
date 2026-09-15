@@ -85,9 +85,8 @@ export default function AdminPage({
   onBack,
   onOpenCrm
 }) {
-  // Admin Authentication State (100% 2FA Email OTP)
+  // Admin Authentication State (100% 2FA Email OTP - Locked to Store Owner)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(checkAdminSession);
-  const [adminEmail, setAdminEmail] = useState(() => localStorage.getItem('bazara_admin_email') || ADMIN_DEFAULT_EMAIL);
   const [authError, setAuthError] = useState('');
   const [authSuccessMsg, setAuthSuccessMsg] = useState('');
   const [loadingAuth, setLoadingAuth] = useState(false);
@@ -374,7 +373,7 @@ export default function AdminPage({
     return () => clearInterval(interval);
   }, [otpCooldown]);
 
-  // 2FA: Send OTP to Admin Email
+  // 2FA: Send OTP to Authorized Owner Email
   const handleSendOtp = async () => {
     const rlStatus = getAdminRateLimitStatus();
     if (rlStatus.isLocked) {
@@ -383,22 +382,18 @@ export default function AdminPage({
       return;
     }
 
-    if (!adminEmail || !adminEmail.includes('@')) {
-      setAuthError('Please provide a valid email address.');
-      return;
-    }
     setSendingOtp(true);
     setAuthError('');
     setAuthSuccessMsg('');
 
     try {
-      await adminSendEmailOtp(adminEmail.trim());
+      await adminSendEmailOtp();
       setOtpSent(true);
       setOtpCooldown(60);
-      setAuthSuccessMsg(`✓ 6-digit verification code sent to ${adminEmail.trim()}! Check your inbox.`);
+      setAuthSuccessMsg('✓ 6-digit security OTP sent to verified owner email! Please check your inbox.');
     } catch (err) {
       console.warn('Send OTP error:', err);
-      setAuthError(`Failed to send verification email: ${err?.message || 'Check email service'}`);
+      setAuthError(`Failed to send verification code: ${err?.message || 'Check email service'}`);
     } finally {
       setSendingOtp(false);
     }
@@ -424,7 +419,6 @@ export default function AdminPage({
 
     try {
       await adminVerifyEmailOtp({
-        email: adminEmail.trim(),
         token: otpInput.trim()
       });
 
@@ -432,7 +426,6 @@ export default function AdminPage({
       setRateLimit(getAdminRateLimitStatus());
       setIsAdminAuthenticated(true);
       setSessionTimeRemaining(getAdminSessionTimeRemaining());
-      localStorage.setItem('bazara_admin_email', adminEmail.trim());
       setOtpInput('');
       setAuthError('');
     } catch (err) {
@@ -730,42 +723,41 @@ export default function AdminPage({
           )}
 
           {/* ================= 2FA EMAIL OTP LOGIN ================= */}
-          <form onSubmit={handleVerifyOtp} className="space-y-4 text-left">
-            <div>
-              <label className="text-xs font-bold text-slate-300 block mb-1.5 flex items-center justify-between">
-                <span>Store Owner Registered Email</span>
-                <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" /> 2FA Protected
-                </span>
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
-                  placeholder="owner@bazara.in"
-                  className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono"
-                  required
-                  disabled={rateLimit.isLocked}
-                />
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={sendingOtp || otpCooldown > 0 || rateLimit.isLocked}
-                  className="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 disabled:opacity-50 cursor-pointer shrink-0 transition-colors flex items-center space-x-1.5"
-                >
-                  {sendingOtp ? (
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-400" />
-                  ) : (
-                    <Send className="w-3.5 h-3.5 text-emerald-400" />
-                  )}
-                  <span>{otpCooldown > 0 ? `${otpCooldown}s` : otpSent ? 'Resend' : 'Send Code'}</span>
-                </button>
+          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold text-slate-200">Owner 2FA Verification</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                A 6-digit one-time passcode will be sent to your email.
-              </p>
+              <span className="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
+                Private & Secure
+              </span>
             </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Security access code will be sent exclusively to the verified store owner. Click below to receive your 6-digit OTP.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleSendOtp}
+              disabled={sendingOtp || otpCooldown > 0 || rateLimit.isLocked}
+              className="w-full py-3 rounded-xl text-xs font-black uppercase tracking-wider bg-white/[0.08] hover:bg-white/[0.14] text-white border border-white/10 disabled:opacity-50 cursor-pointer transition-all flex items-center justify-center space-x-2"
+            >
+              {sendingOtp ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-emerald-400" />
+                  <span>Sending Security Code...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 text-emerald-400" />
+                  <span>{otpCooldown > 0 ? `Resend Code in ${otpCooldown}s` : otpSent ? 'Resend 6-Digit OTP' : 'Send 6-Digit OTP to Owner 📩'}</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <form onSubmit={handleVerifyOtp} className="space-y-4 text-left">
 
             <div>
               <label className="text-xs font-bold text-slate-300 block mb-1.5 flex items-center justify-between">
@@ -1767,7 +1759,7 @@ export default function AdminPage({
               <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-2.5 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">Owner Registered Email:</span>
-                  <span className="font-mono text-emerald-400 font-bold">{adminEmail}</span>
+                  <span className="font-mono text-emerald-400 font-bold">x****u@gmail.com (Confidential)</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">Authentication Method:</span>

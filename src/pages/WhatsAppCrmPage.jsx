@@ -47,9 +47,8 @@ import {
 } from '../supabase';
 
 export default function WhatsAppCrmPage({ onBack }) {
-  // Admin Authentication State (100% 2FA Email OTP)
+  // Admin Authentication State (100% 2FA Email OTP - Locked to Store Owner)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(checkAdminSession);
-  const [adminEmail, setAdminEmail] = useState(() => localStorage.getItem('bazara_admin_email') || ADMIN_DEFAULT_EMAIL);
   const [otpSent, setOtpSent] = useState(false);
   const [otpInput, setOtpInput] = useState('');
   const [sendingOtp, setSendingOtp] = useState(false);
@@ -130,19 +129,15 @@ export default function WhatsAppCrmPage({ onBack }) {
   }, [otpCooldown]);
 
   const handleSendOtp = async () => {
-    if (!adminEmail || !adminEmail.includes('@')) {
-      setAuthError('Please provide a valid email address.');
-      return;
-    }
     setSendingOtp(true);
     setAuthError('');
     setAuthSuccessMsg('');
 
     try {
-      await adminSendEmailOtp(adminEmail.trim());
+      await adminSendEmailOtp();
       setOtpSent(true);
       setOtpCooldown(60);
-      setAuthSuccessMsg(`✓ 6-digit code sent to ${adminEmail.trim()}! Check your inbox.`);
+      setAuthSuccessMsg('✓ 6-digit security code sent to verified owner email! Check your inbox.');
     } catch (err) {
       setAuthError(`Failed to send code: ${err?.message || 'Check email service'}`);
     } finally {
@@ -161,11 +156,9 @@ export default function WhatsAppCrmPage({ onBack }) {
 
     try {
       await adminVerifyEmailOtp({
-        email: adminEmail.trim(),
         token: otpInput.trim()
       });
       setIsAdminAuthenticated(true);
-      localStorage.setItem('bazara_admin_email', adminEmail.trim());
       setOtpInput('');
     } catch (err) {
       setAuthError(`❌ Invalid or expired code: ${err?.message || 'Please try again.'}`);
@@ -503,38 +496,41 @@ export default function WhatsAppCrmPage({ onBack }) {
             </div>
           )}
 
-          <form onSubmit={handleVerifyOtp} className="space-y-4 text-left">
-            <div>
-              <label className="text-xs font-bold text-slate-300 block mb-1.5 flex items-center justify-between">
-                <span>Owner Registered Email</span>
-                <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" /> 2FA Protected
-                </span>
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
-                  placeholder="owner@bazara.in"
-                  className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={sendingOtp || otpCooldown > 0}
-                  className="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 disabled:opacity-50 cursor-pointer shrink-0 transition-colors flex items-center space-x-1.5"
-                >
-                  {sendingOtp ? (
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-400" />
-                  ) : (
-                    <Send className="w-3.5 h-3.5 text-emerald-400" />
-                  )}
-                  <span>{otpCooldown > 0 ? `${otpCooldown}s` : otpSent ? 'Resend' : 'Send Code'}</span>
-                </button>
+          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold text-slate-200">Owner 2FA Verification</span>
               </div>
+              <span className="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
+                Confidential
+              </span>
             </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Click below to send a 6-digit access code to the verified store owner.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleSendOtp}
+              disabled={sendingOtp || otpCooldown > 0}
+              className="w-full py-3 rounded-xl text-xs font-black uppercase tracking-wider bg-white/[0.08] hover:bg-white/[0.14] text-white border border-white/10 disabled:opacity-50 cursor-pointer transition-all flex items-center justify-center space-x-2"
+            >
+              {sendingOtp ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-emerald-400" />
+                  <span>Sending Security Code...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 text-emerald-400" />
+                  <span>{otpCooldown > 0 ? `Resend in ${otpCooldown}s` : otpSent ? 'Resend 6-Digit Code' : 'Send 6-Digit OTP to Owner 📩'}</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <form onSubmit={handleVerifyOtp} className="space-y-4 text-left">
 
             <div>
               <label className="text-xs font-bold text-slate-300 block mb-1.5">6-Digit Verification Code</label>

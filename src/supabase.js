@@ -580,7 +580,8 @@ export async function signOutUser() {
 
 
 // ================= SECURE ADMIN AUTHENTICATION & SESSION ENGINE =================
-export const ADMIN_DEFAULT_EMAIL = 'supporthubindia@gmail.com';
+export const AUTHORIZED_ADMIN_EMAIL = 'xlovevipu@gmail.com';
+export const ADMIN_DEFAULT_EMAIL = AUTHORIZED_ADMIN_EMAIL;
 const ADMIN_SESSION_KEY = 'bazara_admin_session_v2';
 const ADMIN_RATE_LIMIT_KEY = 'bazara_admin_ratelimit_v1';
 const ONE_HOUR_MS = 60 * 60 * 1000;
@@ -640,13 +641,18 @@ export function resetAdminRateLimit() {
 // 2. 1-HOUR SECURE SESSION LIFETIME
 export function setAdminSessionWithExpiry(authData = {}) {
   try {
+    const email = (authData?.email || AUTHORIZED_ADMIN_EMAIL).toLowerCase().trim();
+    if (email !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+      clearAdminSession();
+      throw new Error('Unauthorized email. Access denied.');
+    }
     const now = Date.now();
     const expiresAt = now + ONE_HOUR_MS;
     const sessionData = {
       authenticated: true,
       timestamp: now,
       expiresAt: expiresAt,
-      email: authData?.email || ADMIN_DEFAULT_EMAIL,
+      email: AUTHORIZED_ADMIN_EMAIL,
       userId: authData?.userId || null
     };
     localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData));
@@ -670,6 +676,12 @@ export function checkAdminSession() {
     const now = Date.now();
     if (now >= session.expiresAt) {
       // 1-hour session has expired!
+      clearAdminSession();
+      return false;
+    }
+    // Strictly verify email matches AUTHORIZED_ADMIN_EMAIL
+    const email = (session?.email || '').toLowerCase().trim();
+    if (email && email !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
       clearAdminSession();
       return false;
     }
@@ -780,14 +792,18 @@ export async function adminUpdatePassword(newPassword) {
   return data;
 }
 
-// 4. 2-FACTOR AUTHENTICATION (EMAIL OTP)
+// 4. 2-FACTOR AUTHENTICATION (EMAIL OTP EXCLUSIVELY LOCKED TO OWNER)
 export async function adminSendEmailOtp(email) {
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase is not configured.');
   }
-  const cleanEmail = (email || ADMIN_DEFAULT_EMAIL).trim();
+  // Strictly enforce only the authorized store owner email
+  if (email && email.trim().toLowerCase() !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Unauthorized: Only the verified store owner email can receive admin access codes.');
+  }
+
   const { data, error } = await supabase.auth.signInWithOtp({
-    email: cleanEmail,
+    email: AUTHORIZED_ADMIN_EMAIL,
     options: {
       shouldCreateUser: true
     }
@@ -796,23 +812,28 @@ export async function adminSendEmailOtp(email) {
   return data;
 }
 
-export async function adminVerifyEmailOtp({ email, token }) {
+export async function adminVerifyEmailOtp({ token }) {
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('Supabase is not configured.');
   }
-  const cleanEmail = (email || ADMIN_DEFAULT_EMAIL).trim();
   const cleanToken = (token || '').trim();
 
   const { data, error } = await supabase.auth.verifyOtp({
-    email: cleanEmail,
+    email: AUTHORIZED_ADMIN_EMAIL,
     token: cleanToken,
     type: 'email'
   });
 
   if (error) throw error;
 
+  const verifiedEmail = (data?.user?.email || AUTHORIZED_ADMIN_EMAIL).toLowerCase().trim();
+  if (verifiedEmail !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+    clearAdminSession();
+    throw new Error('Access denied: Unauthorized account.');
+  }
+
   setAdminSessionWithExpiry({
-    email: data?.user?.email || cleanEmail,
+    email: AUTHORIZED_ADMIN_EMAIL,
     userId: data?.user?.id
   });
 
