@@ -349,8 +349,6 @@ export default function AdminPage({
 
   const [formData, setFormData] = useState(emptyProduct);
 
-  const [loadingAuth, setLoadingAuth] = useState(false);
-
   // 1. 1-Hour Session Expiry Watchdog & Heartbeat
   useEffect(() => {
     if (!isAdminAuthenticated) return;
