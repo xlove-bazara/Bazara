@@ -579,85 +579,238 @@ export async function signOutUser() {
 }
 
 
-export async function getAdminPassword() {
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ timeout: true }), 2500));
-      const fetchPromise = supabase
-        .from('site_settings')
-        .select('admin_password')
-        .eq('id', 1)
-        .single();
-      const res = await Promise.race([fetchPromise, timeoutPromise]);
-      if (res && !res.timeout && !res.error && res.data?.admin_password) {
-        return res.data.admin_password;
-      }
-    } catch (e) {
-      console.warn('Supabase fetch admin password error:', e);
-    }
-  }
+// ================= SECURE ADMIN AUTHENTICATION & SESSION ENGINE =================
+export const ADMIN_DEFAULT_EMAIL = 'supporthubindia@gmail.com';
+const ADMIN_SESSION_KEY = 'bazara_admin_session_v2';
+const ADMIN_RATE_LIMIT_KEY = 'bazara_admin_ratelimit_v1';
+const ONE_HOUR_MS = 60 * 60 * 1000;
+const LOCKOUT_MS = 15 * 60 * 1000;
+const MAX_ATTEMPTS = 5;
+
+// 1. RATE LIMITING ENGINE (Max 5 attempts -> 15 min lockout)
+export function getAdminRateLimitStatus() {
   try {
-    const stored = localStorage.getItem(ADMIN_PASS_KEY);
-    return stored || 'admin123'; // Default fallback
+    const raw = localStorage.getItem(ADMIN_RATE_LIMIT_KEY);
+    if (!raw) return { isLocked: false, remainingSeconds: 0, attemptsRemaining: MAX_ATTEMPTS };
+    const parsed = JSON.parse(raw);
+    const now = Date.now();
+    if (parsed.lockoutUntil && parsed.lockoutUntil > now) {
+      const remainingSec = Math.ceil((parsed.lockoutUntil - now) / 1000);
+      return { isLocked: true, remainingSeconds: remainingSec, attemptsRemaining: 0 };
+    }
+    // Lockout expired -> reset
+    if (parsed.lockoutUntil && parsed.lockoutUntil <= now) {
+      resetAdminRateLimit();
+      return { isLocked: false, remainingSeconds: 0, attemptsRemaining: MAX_ATTEMPTS };
+    }
+    const attempts = Number(parsed.attempts) || 0;
+    return {
+      isLocked: false,
+      remainingSeconds: 0,
+      attemptsRemaining: Math.max(0, MAX_ATTEMPTS - attempts)
+    };
   } catch (e) {
-    return 'admin123';
+    return { isLocked: false, remainingSeconds: 0, attemptsRemaining: MAX_ATTEMPTS };
   }
 }
 
-export async function saveAdminPassword(newPassword) {
-  if (isSupabaseConfigured && supabase) {
-    try {
-      await supabase
-        .from('site_settings')
-        .upsert([{ id: 1, admin_password: newPassword, updated_at: new Date().toISOString() }]);
-    } catch (e) {
-      console.warn('Supabase save admin password error:', e);
-    }
-  }
+export function recordAdminFailedAttempt() {
   try {
-    localStorage.setItem(ADMIN_PASS_KEY, newPassword);
-    return true;
+    const raw = localStorage.getItem(ADMIN_RATE_LIMIT_KEY);
+    const current = raw ? JSON.parse(raw) : { attempts: 0, lockoutUntil: 0 };
+    const attempts = (Number(current.attempts) || 0) + 1;
+    if (attempts >= MAX_ATTEMPTS) {
+      const lockoutUntil = Date.now() + LOCKOUT_MS;
+      localStorage.setItem(ADMIN_RATE_LIMIT_KEY, JSON.stringify({ attempts, lockoutUntil }));
+      return { isLocked: true, remainingSeconds: Math.ceil(LOCKOUT_MS / 1000), attemptsRemaining: 0 };
+    }
+    localStorage.setItem(ADMIN_RATE_LIMIT_KEY, JSON.stringify({ attempts, lockoutUntil: 0 }));
+    return { isLocked: false, remainingSeconds: 0, attemptsRemaining: Math.max(0, MAX_ATTEMPTS - attempts) };
   } catch (e) {
-    return false;
+    return { isLocked: false, remainingSeconds: 0, attemptsRemaining: MAX_ATTEMPTS - 1 };
   }
 }
 
+export function resetAdminRateLimit() {
+  try {
+    localStorage.removeItem(ADMIN_RATE_LIMIT_KEY);
+  } catch (e) {}
+}
+
+// 2. 1-HOUR SECURE SESSION LIFETIME
+export function setAdminSessionWithExpiry(authData = {}) {
+  try {
+    const now = Date.now();
+    const expiresAt = now + ONE_HOUR_MS;
+    const sessionData = {
+      authenticated: true,
+      timestamp: now,
+      expiresAt: expiresAt,
+      email: authData?.email || ADMIN_DEFAULT_EMAIL,
+      userId: authData?.userId || null
+    };
+    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData));
+    sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData));
+    resetAdminRateLimit();
+    return sessionData;
+  } catch (e) {
+    return null;
+  }
+}
 
 export function checkAdminSession() {
   try {
-    const sessionAuth = sessionStorage.getItem(ADMIN_SESSION_KEY);
-    if (sessionAuth === 'authenticated') return true;
-
-    const localAuth = localStorage.getItem(ADMIN_SESSION_KEY);
-    if (localAuth) {
-      try {
-        const parsed = JSON.parse(localAuth);
-        // Valid for 7 days
-        if (parsed?.authenticated && parsed?.timestamp && (Date.now() - parsed.timestamp < 7 * 24 * 60 * 60 * 1000)) {
-          return true;
-        }
-      } catch (e) {
-        if (localAuth === 'authenticated') return true;
-      }
+    const raw = localStorage.getItem(ADMIN_SESSION_KEY) || sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (!raw) return false;
+    const session = JSON.parse(raw);
+    if (!session?.authenticated || !session?.expiresAt) {
+      clearAdminSession();
+      return false;
     }
-    return false;
+    const now = Date.now();
+    if (now >= session.expiresAt) {
+      // 1-hour session has expired!
+      clearAdminSession();
+      return false;
+    }
+    return true;
   } catch (e) {
+    clearAdminSession();
     return false;
   }
 }
 
-export function setAdminSession(auth) {
+export function getAdminSessionTimeRemaining() {
   try {
-    if (auth) {
-      sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
-      localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
-        authenticated: true,
-        timestamp: Date.now()
-      }));
-    } else {
-      sessionStorage.removeItem(ADMIN_SESSION_KEY);
-      localStorage.removeItem(ADMIN_SESSION_KEY);
-    }
+    const raw = localStorage.getItem(ADMIN_SESSION_KEY) || sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (!raw) return 0;
+    const session = JSON.parse(raw);
+    if (!session?.expiresAt) return 0;
+    const remainingMs = session.expiresAt - Date.now();
+    return Math.max(0, remainingMs);
+  } catch (e) {
+    return 0;
+  }
+}
+
+export function clearAdminSession() {
+  try {
+    localStorage.removeItem(ADMIN_SESSION_KEY);
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    localStorage.removeItem('bazara_admin_session');
+    sessionStorage.removeItem('bazara_admin_session');
   } catch (e) {}
+}
+
+export function setAdminSession(auth) {
+  if (auth) {
+    setAdminSessionWithExpiry();
+  } else {
+    clearAdminSession();
+  }
+}
+
+// 3. SUPABASE AUTH (BCRYPT HASHING & PASSWORDS)
+export async function adminSignInWithSupabase({ email, password }) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured.');
+  }
+  const cleanEmail = (email || ADMIN_DEFAULT_EMAIL).trim();
+  const cleanPass = (password || '').trim();
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: cleanEmail,
+    password: cleanPass
+  });
+
+  if (error) throw error;
+
+  setAdminSessionWithExpiry({
+    email: data.user?.email || cleanEmail,
+    userId: data.user?.id
+  });
+
+  return data;
+}
+
+export async function adminSignUpWithSupabase({ email, password }) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured.');
+  }
+  const cleanEmail = (email || ADMIN_DEFAULT_EMAIL).trim();
+  const cleanPass = (password || '').trim();
+
+  const { data, error } = await supabase.auth.signUp({
+    email: cleanEmail,
+    password: cleanPass,
+    options: {
+      data: { role: 'admin' }
+    }
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function adminUpdatePassword(newPassword) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured.');
+  }
+  const cleanPass = (newPassword || '').trim();
+  if (cleanPass.length < 8) {
+    throw new Error('Password must be at least 8 characters long.');
+  }
+
+  const { data, error } = await supabase.auth.updateUser({
+    password: cleanPass
+  });
+
+  if (error) throw error;
+
+  setAdminSessionWithExpiry({
+    email: data?.user?.email || ADMIN_DEFAULT_EMAIL,
+    userId: data?.user?.id
+  });
+
+  return data;
+}
+
+// 4. 2-FACTOR AUTHENTICATION (EMAIL OTP)
+export async function adminSendEmailOtp(email) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured.');
+  }
+  const cleanEmail = (email || ADMIN_DEFAULT_EMAIL).trim();
+  const { data, error } = await supabase.auth.signInWithOtp({
+    email: cleanEmail,
+    options: {
+      shouldCreateUser: true
+    }
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function adminVerifyEmailOtp({ email, token }) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase is not configured.');
+  }
+  const cleanEmail = (email || ADMIN_DEFAULT_EMAIL).trim();
+  const cleanToken = (token || '').trim();
+
+  const { data, error } = await supabase.auth.verifyOtp({
+    email: cleanEmail,
+    token: cleanToken,
+    type: 'email'
+  });
+
+  if (error) throw error;
+
+  setAdminSessionWithExpiry({
+    email: data?.user?.email || cleanEmail,
+    userId: data?.user?.id
+  });
+
+  return data;
 }
 

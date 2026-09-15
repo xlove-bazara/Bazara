@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Trash2, 
@@ -46,7 +46,13 @@ import {
   Copy,
   CheckCheck,
   FileText,
-  DownloadCloud
+  DownloadCloud,
+  Mail,
+  Shield,
+  Key,
+  Clock,
+  AlertTriangle,
+  Send
 } from 'lucide-react';
 
 import { 
@@ -54,10 +60,19 @@ import {
   deleteProduct, 
   updateSettings, 
   clearDemoProducts,
-  getAdminPassword,
-  saveAdminPassword,
   checkAdminSession,
-  setAdminSession,
+  clearAdminSession,
+  setAdminSessionWithExpiry,
+  getAdminSessionTimeRemaining,
+  getAdminRateLimitStatus,
+  recordAdminFailedAttempt,
+  resetAdminRateLimit,
+  adminSignInWithSupabase,
+  adminSignUpWithSupabase,
+  adminUpdatePassword,
+  adminSendEmailOtp,
+  adminVerifyEmailOtp,
+  ADMIN_DEFAULT_EMAIL,
   getOrders,
   uploadImageFile,
   getCoupons,
@@ -75,13 +90,32 @@ export default function AdminPage({
 }) {
   // Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(checkAdminSession);
+  const [authMethod, setAuthMethod] = useState('password'); // 'password' | 'otp'
+  const [adminEmail, setAdminEmail] = useState(() => localStorage.getItem('bazara_admin_email') || ADMIN_DEFAULT_EMAIL);
   const [passwordInput, setPasswordInput] = useState('');
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
+  const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [authSuccessMsg, setAuthSuccessMsg] = useState('');
+  const [loadingAuth, setLoadingAuth] = useState(false);
+
+  // Rate Limiting Protection (Max 5 attempts -> 15 min lockout)
+  const [rateLimit, setRateLimit] = useState(getAdminRateLimitStatus);
+
+  // 2FA Email OTP State
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpInput, setOtpInput] = useState('');
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [otpCooldown, setOtpCooldown] = useState(0);
+
+  // 1-Hour Session Timer Watchdog
+  const [sessionTimeRemaining, setSessionTimeRemaining] = useState(getAdminSessionTimeRemaining);
 
   // Password Change in Settings
   const [currentPassInput, setCurrentPassInput] = useState('');
   const [newPassInput, setNewPassInput] = useState('');
+  const [confirmNewPass, setConfirmNewPass] = useState('');
   const [passChangeStatus, setPassChangeStatus] = useState('');
 
   // Tab & Editor State
@@ -317,79 +351,236 @@ export default function AdminPage({
 
   const [loadingAuth, setLoadingAuth] = useState(false);
 
+  // 1. 1-Hour Session Expiry Watchdog & Heartbeat
+  useEffect(() => {
+    if (!isAdminAuthenticated) return;
+
+    // Check every 5 seconds to guarantee strict 1-hour session enforcement
+    const interval = setInterval(() => {
+      const isValid = checkAdminSession();
+      if (!isValid) {
+        clearAdminSession();
+        setIsAdminAuthenticated(false);
+        setAuthError('⏰ Your 1-hour secure admin session has expired. Please log in again for security.');
+      } else {
+        setSessionTimeRemaining(getAdminSessionTimeRemaining());
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAdminAuthenticated]);
+
+  // Rate limit countdown ticker when locked out
+  useEffect(() => {
+    if (!rateLimit.isLocked) return;
+    const interval = setInterval(() => {
+      const status = getAdminRateLimitStatus();
+      setRateLimit(status);
+      if (!status.isLocked) clearInterval(interval);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [rateLimit.isLocked]);
+
+  // OTP cooldown ticker
+  useEffect(() => {
+    if (otpCooldown <= 0) return;
+    const interval = setInterval(() => {
+      setOtpCooldown(prev => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [otpCooldown]);
+
   // Admin Auth Handlers
   const handleAdminLogin = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    if (!passwordInput || !passwordInput.trim()) {
-      setAuthError('Please enter the owner password.');
+
+    // Check rate limit first
+    const rlStatus = getAdminRateLimitStatus();
+    if (rlStatus.isLocked) {
+      setRateLimit(rlStatus);
+      setAuthError(`⛔ Account temporarily locked due to 5 failed attempts. Please wait ${rlStatus.remainingSeconds}s.`);
       return;
     }
+
+    if (!passwordInput || !passwordInput.trim()) {
+      setAuthError('Please enter your owner password.');
+      return;
+    }
+
     setLoadingAuth(true);
     setAuthError('');
+    setAuthSuccessMsg('');
 
     try {
-      const cleanInput = passwordInput.trim();
+      const cleanEmail = adminEmail.trim();
+      const cleanPass = passwordInput.trim();
 
-      // Instant Fast-Path: If input is default 'admin123' (case-insensitive) or matches localStorage
-      const localStored = localStorage.getItem('bazara_admin_password');
-      if (cleanInput.toLowerCase() === 'admin123' || (localStored && cleanInput === localStored.trim())) {
-        setAdminSession(true);
+      if (isFirstTimeSetup) {
+        if (cleanPass.length < 8) {
+          setAuthError('Password must be at least 8 characters long.');
+          setLoadingAuth(false);
+          return;
+        }
+        if (cleanPass !== confirmPasswordInput.trim()) {
+          setAuthError('Passwords do not match.');
+          setLoadingAuth(false);
+          return;
+        }
+
+        // Register initial admin account in Supabase Auth (bcrypt encrypted)
+        await adminSignUpWithSupabase({
+          email: cleanEmail,
+          password: cleanPass
+        });
+
+        // Sign in immediately
+        await adminSignInWithSupabase({
+          email: cleanEmail,
+          password: cleanPass
+        });
+
         setIsAdminAuthenticated(true);
-        setAuthError('');
-        setLoadingAuth(false);
+        resetAdminRateLimit();
+        setRateLimit(getAdminRateLimitStatus());
+        setSessionTimeRemaining(getAdminSessionTimeRemaining());
+        localStorage.setItem('bazara_admin_email', cleanEmail);
+        setPasswordInput('');
+        setConfirmPasswordInput('');
+        setIsFirstTimeSetup(false);
         return;
       }
 
-      // Check against Supabase / database password
-      const correct = await getAdminPassword();
-      const cleanCorrect = (correct || 'admin123').trim();
+      // Normal Sign In via Supabase Auth (bcrypt encrypted verification)
+      await adminSignInWithSupabase({
+        email: cleanEmail,
+        password: cleanPass
+      });
 
-      if (cleanInput === cleanCorrect || cleanInput.toLowerCase() === cleanCorrect.toLowerCase()) {
-        setAdminSession(true);
-        setIsAdminAuthenticated(true);
-        setAuthError('');
-      } else {
-        setAuthError('❌ Incorrect Password! Try default: admin123');
-      }
+      // Login Successful!
+      resetAdminRateLimit();
+      setRateLimit(getAdminRateLimitStatus());
+      setIsAdminAuthenticated(true);
+      setSessionTimeRemaining(getAdminSessionTimeRemaining());
+      localStorage.setItem('bazara_admin_email', cleanEmail);
+      setPasswordInput('');
+      setAuthError('');
     } catch (err) {
-      console.warn('Admin auth error:', err);
-      if (passwordInput.trim().toLowerCase() === 'admin123') {
-        setAdminSession(true);
-        setIsAdminAuthenticated(true);
-        setAuthError('');
+      console.warn('Admin login error:', err);
+      const msg = err?.message || '';
+
+      if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid_credentials')) {
+        const updatedRl = recordAdminFailedAttempt();
+        setRateLimit(updatedRl);
+
+        if (updatedRl.isLocked) {
+          setAuthError(`⛔ 5 failed attempts reached! Account locked for 15 minutes to prevent brute-force attacks.`);
+        } else {
+          setAuthError(`❌ Invalid credentials. ${updatedRl.attemptsRemaining} of 5 attempts remaining before temporary lockout.`);
+        }
+      } else if (msg.toLowerCase().includes('user already registered')) {
+        setAuthError('Account already exists. Please enter your existing password to log in.');
+        setIsFirstTimeSetup(false);
       } else {
-        setAuthError('Authentication check failed. Default is: admin123');
+        const updatedRl = recordAdminFailedAttempt();
+        setRateLimit(updatedRl);
+        setAuthError(`❌ Authentication failed: ${msg}. ${updatedRl.attemptsRemaining} attempts left.`);
       }
     } finally {
       setLoadingAuth(false);
     }
   };
 
-  const handleAdminLogout = () => {
-    setAdminSession(false);
-    setIsAdminAuthenticated(false);
-    setPasswordInput('');
+  // 2FA: Send OTP to Admin Email
+  const handleSendOtp = async () => {
+    if (!adminEmail || !adminEmail.includes('@')) {
+      setAuthError('Please provide a valid email address.');
+      return;
+    }
+    setSendingOtp(true);
+    setAuthError('');
+    setAuthSuccessMsg('');
+
+    try {
+      await adminSendEmailOtp(adminEmail.trim());
+      setOtpSent(true);
+      setOtpCooldown(60);
+      setAuthSuccessMsg(`✓ 6-digit verification code sent to ${adminEmail.trim()}! Check your inbox.`);
+    } catch (err) {
+      console.warn('Send OTP error:', err);
+      setAuthError(`Failed to send verification email: ${err?.message || 'Check email service'}`);
+    } finally {
+      setSendingOtp(false);
+    }
   };
 
+  // 2FA: Verify OTP
+  const handleVerifyOtp = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!otpInput || otpInput.trim().length < 6) {
+      setAuthError('Please enter the 6-digit verification code.');
+      return;
+    }
+    setLoadingAuth(true);
+    setAuthError('');
+
+    try {
+      await adminVerifyEmailOtp({
+        email: adminEmail.trim(),
+        token: otpInput.trim()
+      });
+
+      resetAdminRateLimit();
+      setRateLimit(getAdminRateLimitStatus());
+      setIsAdminAuthenticated(true);
+      setSessionTimeRemaining(getAdminSessionTimeRemaining());
+      localStorage.setItem('bazara_admin_email', adminEmail.trim());
+      setOtpInput('');
+      setAuthError('');
+    } catch (err) {
+      console.warn('Verify OTP error:', err);
+      const updatedRl = recordAdminFailedAttempt();
+      setRateLimit(updatedRl);
+      setAuthError(`❌ Invalid or expired OTP. ${updatedRl.attemptsRemaining} attempts left.`);
+    } finally {
+      setLoadingAuth(false);
+    }
+  };
+
+  const handleAdminLogout = () => {
+    clearAdminSession();
+    setIsAdminAuthenticated(false);
+    setPasswordInput('');
+    setAuthError('');
+    setAuthSuccessMsg('You have safely logged out of the admin console.');
+  };
+
+  // Settings: Change Admin Password (Bcrypt encrypted in Supabase Auth)
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    const cleanNew = (newPassInput || '').trim();
+    const cleanConfirm = (confirmNewPass || '').trim();
+
+    if (!cleanNew || cleanNew.length < 8) {
+      setPassChangeStatus('❌ New password must be at least 8 characters long!');
+      return;
+    }
+
+    if (cleanNew !== cleanConfirm) {
+      setPassChangeStatus('❌ New passwords do not match! Please verify both inputs.');
+      return;
+    }
+
+    setPassChangeStatus('⏳ Updating password securely via Supabase Auth (bcrypt)...');
     try {
-      const correct = await getAdminPassword();
-      if (currentPassInput.trim() !== correct.trim()) {
-        setPassChangeStatus('❌ Current password is incorrect!');
-        return;
-      }
-      if (!newPassInput || newPassInput.trim().length < 4) {
-        setPassChangeStatus('❌ New password must be at least 4 characters long!');
-        return;
-      }
-      await saveAdminPassword(newPassInput.trim());
-      setPassChangeStatus('✓ Password permanently saved in Supabase Database!');
+      await adminUpdatePassword(cleanNew);
+      setPassChangeStatus('✓ Admin password securely updated and encrypted with Supabase bcrypt!');
       setCurrentPassInput('');
       setNewPassInput('');
-      setTimeout(() => setPassChangeStatus(''), 3500);
+      setConfirmNewPass('');
+      setSessionTimeRemaining(getAdminSessionTimeRemaining());
+      setTimeout(() => setPassChangeStatus(''), 5000);
     } catch (err) {
-      setPassChangeStatus('❌ Error saving to Supabase: ' + err.message);
+      setPassChangeStatus('❌ Error updating password: ' + (err?.message || 'Please try again'));
     }
   };
 
@@ -627,85 +818,249 @@ export default function AdminPage({
   if (!isAdminAuthenticated) {
     return (
       <div className="min-h-screen bg-transparent flex flex-col items-center justify-center p-4 selection:bg-emerald-500/30">
-        <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-[#0e111d] border border-white/15 shadow-2xl space-y-6 text-center">
-          <div className="space-y-3">
-            <img src="/logo.png?v=2" alt="bazara.in" className="w-16 h-16 mx-auto rounded-2xl object-contain shadow-xl shadow-indigo-500/30" />
+        <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl glass-card-luxury border border-white/15 shadow-2xl space-y-6 text-center">
+          
+          {/* Logo & Header */}
+          <div className="space-y-2.5">
+            <div className="relative inline-block">
+              <img src="/logo.png?v=2" alt="bazara.in" className="w-14 h-14 mx-auto rounded-2xl object-contain shadow-xl shadow-indigo-500/30" />
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[#0e111d] flex items-center justify-center">
+                <ShieldCheck className="w-2.5 h-2.5 text-slate-950 stroke-[3]" />
+              </span>
+            </div>
             <div>
-              <h1 className="text-xl font-black text-white tracking-tight">bazara.in Control Panel</h1>
-              <p className="text-xs text-slate-400 mt-1">Restricted Area • Store Owner Authentication Required</p>
+              <h1 className="text-xl font-black text-white tracking-tight">bazara.in Admin Console</h1>
+              <p className="text-xs text-slate-400 mt-0.5">Encrypted with Supabase Auth (Bcrypt) • 1-Hr Secure Session</p>
             </div>
           </div>
 
-          {authError && (
+          {/* Dual Authentication Mode Switcher */}
+          <div className="grid grid-cols-2 p-1 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => {
+                setAuthMethod('password');
+                setAuthError('');
+                setAuthSuccessMsg('');
+              }}
+              className={`py-2 rounded-xl transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                authMethod === 'password'
+                  ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Key className="w-3.5 h-3.5" />
+              <span>Password</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAuthMethod('otp');
+                setAuthError('');
+                setAuthSuccessMsg('');
+              }}
+              className={`py-2 rounded-xl transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                authMethod === 'otp'
+                  ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span>2FA Email OTP</span>
+            </button>
+          </div>
+
+          {/* Rate Limit Lockout Banner */}
+          {rateLimit.isLocked && (
+            <div className="p-3.5 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-200 text-xs font-semibold flex items-center space-x-2.5 text-left">
+              <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0" />
+              <div>
+                <span className="font-black block text-rose-300">Brute-Force Lockout Active</span>
+                <span>5 failed attempts. Please wait <strong className="text-white font-mono">{rateLimit.remainingSeconds}s</strong> before trying again.</span>
+              </div>
+            </div>
+          )}
+
+          {/* Feedback Messages */}
+          {authError && !rateLimit.isLocked && (
             <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-semibold">
               {authError}
             </div>
           )}
+          {authSuccessMsg && (
+            <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+              {authSuccessMsg}
+            </div>
+          )}
 
-          <form onSubmit={handleAdminLogin} className="space-y-4 text-left">
-            <div>
-              <label className="text-xs font-bold text-slate-300 block mb-1.5">Owner Password</label>
-              <div className="relative">
+          {/* ================= METHOD 1: PASSWORD AUTHENTICATION ================= */}
+          {authMethod === 'password' && (
+            <form onSubmit={handleAdminLogin} className="space-y-4 text-left">
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1.5 flex items-center justify-between">
+                  <span>Store Owner Email</span>
+                </label>
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder="Enter admin password..."
-                  className="w-full px-3.5 py-3 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono pr-10"
+                  type="email"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  placeholder="owner@bazara.in"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono"
                   required
-                  autoFocus
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3.5 text-slate-400 hover:text-white cursor-pointer"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
               </div>
-              <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2">
-                <span>🔑 Default password:</span>
+
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1.5 flex items-center justify-between">
+                  <span>{isFirstTimeSetup ? 'Create Strong Password' : 'Owner Password'}</span>
+                  {!rateLimit.isLocked && (
+                    <span className="text-[10px] text-slate-400 font-normal">
+                      {rateLimit.attemptsRemaining} of 5 tries left
+                    </span>
+                  )}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder={isFirstTimeSetup ? 'Min 8 chars, letters & numbers' : 'Enter your password...'}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono pr-10"
+                    required
+                    disabled={rateLimit.isLocked}
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-slate-400 hover:text-white cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {isFirstTimeSetup && (
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1.5">Confirm Password</label>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={confirmPasswordInput}
+                    onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                    placeholder="Repeat your password..."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono"
+                    required
+                  />
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loadingAuth || rateLimit.isLocked}
+                className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loadingAuth ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
+                    <span>Verifying with Supabase Auth...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    <span>{isFirstTimeSetup ? 'Register & Enter Admin Console 🚀' : 'Unlock Admin Panel 🚀'}</span>
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
                 <button
                   type="button"
                   onClick={() => {
-                    setPasswordInput('admin123');
+                    setIsFirstTimeSetup(!isFirstTimeSetup);
                     setAuthError('');
                   }}
-                  className="text-emerald-400 hover:text-emerald-300 font-mono font-bold bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded cursor-pointer transition-all flex items-center space-x-1 active:scale-95"
-                  title="Click to auto-fill default password"
+                  className="text-emerald-400 hover:text-emerald-300 underline cursor-pointer"
                 >
-                  <span>admin123</span>
-                  <span className="text-[9px] text-emerald-300 font-sans font-normal">(Click to autofill)</span>
+                  {isFirstTimeSetup ? '← Already have a password? Log in' : 'First time? Set up initial password →'}
                 </button>
               </div>
-            </div>
+            </form>
+          )}
 
-            <button
-              type="submit"
-              disabled={loadingAuth}
-              className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect disabled:opacity-80 disabled:cursor-wait"
-            >
-              {loadingAuth ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
-                  <span>Verifying Password...</span>
-                </>
-              ) : (
-                <>
-                  <Lock className="w-4 h-4" />
-                  <span>Unlock Admin Panel 🚀</span>
-                </>
+          {/* ================= METHOD 2: 2FA EMAIL OTP ================= */}
+          {authMethod === 'otp' && (
+            <form onSubmit={handleVerifyOtp} className="space-y-4 text-left">
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1.5">Owner Registered Email</label>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={adminEmail}
+                    onChange={(e) => setAdminEmail(e.target.value)}
+                    placeholder="owner@bazara.in"
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={sendingOtp || otpCooldown > 0}
+                    className="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-white/[0.08] hover:bg-white/15 text-slate-200 border border-white/10 disabled:opacity-50 cursor-pointer shrink-0 transition-colors flex items-center space-x-1"
+                  >
+                    {sendingOtp ? (
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5 text-emerald-400" />
+                    )}
+                    <span>{otpCooldown > 0 ? `${otpCooldown}s` : otpSent ? 'Resend' : 'Send Code'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {otpSent && (
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1.5">6-Digit Verification Code</label>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    value={otpInput}
+                    onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
+                    placeholder="123456"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-center tracking-[0.5em] text-lg font-mono focus:outline-none focus:border-emerald-400"
+                    required
+                    autoFocus
+                  />
+                </div>
               )}
-            </button>
-          </form>
 
-          <div className="pt-2 border-t border-white/[0.06]">
+              <button
+                type="submit"
+                disabled={loadingAuth || !otpSent || otpInput.length < 6 || rateLimit.isLocked}
+                className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingAuth ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
+                    <span>Verifying 2FA Code...</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Verify & Enter Admin Console 🚀</span>
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
+          <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
             <button
               onClick={onBack}
-              className="text-xs text-slate-400 hover:text-white underline cursor-pointer"
+              className="hover:text-white underline cursor-pointer"
             >
               ← Return to Website
             </button>
+            <span className="text-[10px] text-slate-500 font-mono">Session: 1-Hr Limit</span>
           </div>
         </div>
       </div>
@@ -732,6 +1087,10 @@ export default function AdminPage({
                   <span className="font-extrabold text-sm sm:text-base text-white tracking-tight">bazara.in Admin Console</span>
                   <span className="hidden sm:inline-block text-[10px] font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
                     Online
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-300 bg-white/[0.05] border border-white/10 px-2 py-0.5 rounded-full flex items-center space-x-1" title="1-Hour Session Validity">
+                    <Clock className="w-3 h-3 text-emerald-400" />
+                    <span>{Math.max(1, Math.ceil(sessionTimeRemaining / 60000))}m session</span>
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-400 hidden sm:block">Full-Stack Digital Store, Video Courses & YouTube Engine</p>
@@ -1631,10 +1990,23 @@ export default function AdminPage({
             <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-4 shadow-xl">
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-white flex items-center space-x-2">
-                  <KeyRound className="w-4 h-4 text-emerald-400" />
-                  <span>Admin Security & Password Lock</span>
+                  <Shield className="w-4 h-4 text-emerald-400" />
+                  <span>Admin Security & Password (Supabase Bcrypt)</span>
                 </h4>
-                <p className="text-xs text-slate-400">Apna secret admin password yahan se badlein</p>
+                <p className="text-xs text-slate-400">Manage your bcrypt-encrypted admin password and session security</p>
+              </div>
+
+              {/* Active Session Status Card */}
+              <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
+                <div className="flex items-center space-x-2">
+                  <Clock className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span className="text-slate-300">
+                    Active Session: <strong className="text-white font-mono">{Math.max(1, Math.ceil(sessionTimeRemaining / 60000))} minutes remaining</strong>
+                  </span>
+                </div>
+                <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/20 px-2 py-0.5 rounded-full">
+                  1-Hour Auto-Timeout
+                </span>
               </div>
 
               {passChangeStatus && (
@@ -1645,26 +2017,44 @@ export default function AdminPage({
                 </div>
               )}
 
-              <form onSubmit={handleChangePassword} className="space-y-3 text-xs">
+              <form onSubmit={handleChangePassword} className="space-y-3.5 text-xs">
                 <div>
-                  <label className="font-semibold text-slate-300 block mb-1">Current Admin Password</label>
-                  <input
-                    type="password"
-                    value={currentPassInput}
-                    onChange={(e) => setCurrentPassInput(e.target.value)}
-                    placeholder="Enter current password..."
-                    className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white font-mono"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="font-semibold text-slate-300 block mb-1">New Admin Password</label>
+                  <label className="font-semibold text-slate-300 block mb-1">New Strong Admin Password</label>
                   <input
                     type="password"
                     value={newPassInput}
                     onChange={(e) => setNewPassInput(e.target.value)}
-                    placeholder="Enter new password (min 4 chars)..."
+                    placeholder="Enter new password (min 8 chars)..."
+                    className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white font-mono"
+                    required
+                  />
+                  {newPassInput && (
+                    <div className="mt-1.5 flex items-center space-x-2">
+                      <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all ${
+                            newPassInput.length >= 12
+                              ? 'w-full bg-emerald-400'
+                              : newPassInput.length >= 8
+                              ? 'w-2/3 bg-amber-400'
+                              : 'w-1/3 bg-rose-400'
+                          }`}
+                        />
+                      </div>
+                      <span className="text-[10px] text-slate-400">
+                        {newPassInput.length >= 12 ? 'Very Strong' : newPassInput.length >= 8 ? 'Good (8+ chars)' : 'Too Short'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="font-semibold text-slate-300 block mb-1">Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={confirmNewPass}
+                    onChange={(e) => setConfirmNewPass(e.target.value)}
+                    placeholder="Re-type new password to confirm..."
                     className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white font-mono"
                     required
                   />
@@ -1672,16 +2062,17 @@ export default function AdminPage({
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-wider text-xs cursor-pointer btn-shine-effect"
+                  className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black uppercase tracking-wider text-xs cursor-pointer btn-shine-effect shadow-lg shadow-emerald-500/20"
                 >
-                  Update Admin Password 🔒
+                  Save & Encrypt with Supabase Auth (Bcrypt) 🔒
                 </button>
               </form>
 
               <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] text-[11px] text-slate-400 space-y-1">
-                <span className="font-bold text-slate-300 block">Security Notes:</span>
-                <p>• Password change karne ke baad agli baar login karte waqt naya password use hoga.</p>
-                <p>• Panel close karne ke baad top header me <strong className="text-rose-400">Lock Admin</strong> button dabakar lock kar sakte hain.</p>
+                <span className="font-bold text-slate-300 block">Security Architecture:</span>
+                <p>• Password is encrypted directly in Supabase built-in Auth (Bcrypt algorithm).</p>
+                <p>• Session stays valid for 1 hour across refresh, and automatically expires thereafter.</p>
+                <p>• Brute-force protection: 5 failed attempts activate an automatic 15-minute lockout.</p>
               </div>
             </div>
           </div>

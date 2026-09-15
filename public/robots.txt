@@ -1,0 +1,15 @@
+# Robots.txt for bazara.in
+# Prevent search engine crawlers from indexing administrative routes
+User-agent: *
+Disallow: /admin
+Disallow: /crm
+Disallow: /whatsapp-crm
+Disallow: /inbox
+Disallow: /api/
+
+Allow: /
+Allow: /home
+Allow: /product/
+Allow: /checkout
+
+Sitemap: https://bazara.in/sitemap.xml
