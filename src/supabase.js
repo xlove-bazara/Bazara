@@ -710,6 +710,11 @@ export function setAdminSession(auth) {
   }
 }
 
+// Backward compatibility stub
+export async function getAdminPassword() {
+  return null;
+}
+
 // 3. SUPABASE AUTH (BCRYPT HASHING & PASSWORDS)
 export async function adminSignInWithSupabase({ email, password }) {
   if (!isSupabaseConfigured || !supabase) {

@@ -38,14 +38,22 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { whatsappCrmService } from '../services/whatsappCrmService';
-import { checkAdminSession, getAdminPassword, setAdminSession } from '../supabase';
+import {
+  checkAdminSession,
+  clearAdminSession,
+  setAdminSessionWithExpiry,
+  adminSignInWithSupabase,
+  ADMIN_DEFAULT_EMAIL
+} from '../supabase';
 
 export default function WhatsAppCrmPage({ onBack }) {
   // Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(checkAdminSession);
+  const [adminEmail, setAdminEmail] = useState(() => localStorage.getItem('bazara_admin_email') || ADMIN_DEFAULT_EMAIL);
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [loadingAuth, setLoadingAuth] = useState(false);
 
   // State: Conversations & Active selection
   const [conversations, setConversations] = useState([]);
@@ -112,41 +120,30 @@ export default function WhatsAppCrmPage({ onBack }) {
   const handleAdminLogin = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setAuthError('');
-    const clean = (passwordInput || '').trim();
-    if (!clean) {
-      setAuthError('Please enter password');
+    const cleanPass = (passwordInput || '').trim();
+    if (!cleanPass) {
+      setAuthError('Please enter your admin password');
       return;
     }
 
-    if (clean.toLowerCase() === 'admin123') {
-      setAdminSession(true);
+    setLoadingAuth(true);
+    try {
+      const { user } = await adminSignInWithSupabase({
+        email: adminEmail,
+        password: cleanPass
+      });
+      setAdminSessionWithExpiry(user);
       setIsAdminAuthenticated(true);
       setPasswordInput('');
-      return;
-    }
-
-    try {
-      const realPassword = await getAdminPassword();
-      if (clean === realPassword?.trim() || clean.toLowerCase() === realPassword?.trim().toLowerCase()) {
-        setAdminSession(true);
-        setIsAdminAuthenticated(true);
-        setPasswordInput('');
-      } else {
-        setAuthError('Incorrect password. Default is admin123');
-      }
     } catch (err) {
-      if (clean.toLowerCase() === 'admin123') {
-        setAdminSession(true);
-        setIsAdminAuthenticated(true);
-        setPasswordInput('');
-      } else {
-        setAuthError('Authentication failed. Default password is admin123');
-      }
+      setAuthError(err?.message || 'Authentication failed. Please verify credentials or set password in /admin.');
+    } finally {
+      setLoadingAuth(false);
     }
   };
 
   const handleAdminLogout = () => {
-    setAdminSession(false);
+    clearAdminSession();
     setIsAdminAuthenticated(false);
   };
 
@@ -471,7 +468,19 @@ export default function WhatsAppCrmPage({ onBack }) {
 
           <form onSubmit={handleAdminLogin} className="space-y-4 text-left">
             <div>
-              <label className="text-xs font-bold text-slate-300 block mb-1.5">Owner Password</label>
+              <label className="text-xs font-bold text-slate-300 block mb-1.5">Admin Email</label>
+              <input
+                type="email"
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                placeholder="Admin email..."
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:border-emerald-400 font-mono"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-slate-300 block mb-1.5">Admin Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -491,16 +500,26 @@ export default function WhatsAppCrmPage({ onBack }) {
                 </button>
               </div>
               <p className="text-[11px] text-slate-500 mt-1.5">
-                🔑 Default password: <code className="text-emerald-400 font-mono font-bold bg-white/[0.05] px-1.5 py-0.5 rounded">admin123</code>
+                🔒 Secured via Supabase Auth. Manage credentials at <a href="/admin" className="text-emerald-400 underline hover:text-emerald-300">/admin</a>.
               </p>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+              disabled={loadingAuth}
+              className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect disabled:opacity-50"
             >
-              <Lock className="w-4 h-4" />
-              <span>Unlock WhatsApp CRM 🚀</span>
+              {loadingAuth ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Verifying Credentials...</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span>Unlock WhatsApp CRM 🚀</span>
+                </>
+              )}
             </button>
           </form>
 
