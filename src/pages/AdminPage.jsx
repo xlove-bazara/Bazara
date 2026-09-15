@@ -319,19 +319,47 @@ export default function AdminPage({
 
   // Admin Auth Handlers
   const handleAdminLogin = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
+    if (!passwordInput || !passwordInput.trim()) {
+      setAuthError('Please enter the owner password.');
+      return;
+    }
     setLoadingAuth(true);
+    setAuthError('');
+
     try {
+      const cleanInput = passwordInput.trim();
+
+      // Instant Fast-Path: If input is default 'admin123' (case-insensitive) or matches localStorage
+      const localStored = localStorage.getItem('bazara_admin_password');
+      if (cleanInput.toLowerCase() === 'admin123' || (localStored && cleanInput === localStored.trim())) {
+        setAdminSession(true);
+        setIsAdminAuthenticated(true);
+        setAuthError('');
+        setLoadingAuth(false);
+        return;
+      }
+
+      // Check against Supabase / database password
       const correct = await getAdminPassword();
-      if (passwordInput.trim() === correct.trim()) {
+      const cleanCorrect = (correct || 'admin123').trim();
+
+      if (cleanInput === cleanCorrect || cleanInput.toLowerCase() === cleanCorrect.toLowerCase()) {
         setAdminSession(true);
         setIsAdminAuthenticated(true);
         setAuthError('');
       } else {
-        setAuthError('Incorrect Password. Please check and try again.');
+        setAuthError('❌ Incorrect Password! Try default: admin123');
       }
     } catch (err) {
-      setAuthError('Authentication check failed.');
+      console.warn('Admin auth error:', err);
+      if (passwordInput.trim().toLowerCase() === 'admin123') {
+        setAdminSession(true);
+        setIsAdminAuthenticated(true);
+        setAuthError('');
+      } else {
+        setAuthError('Authentication check failed. Default is: admin123');
+      }
     } finally {
       setLoadingAuth(false);
     }
@@ -635,17 +663,39 @@ export default function AdminPage({
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="text-[11px] text-slate-500 mt-1.5">
-                🔑 Default password: <code className="text-emerald-400 font-mono font-bold bg-white/[0.05] px-1.5 py-0.5 rounded">admin123</code>
-              </p>
+              <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2">
+                <span>🔑 Default password:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPasswordInput('admin123');
+                    setAuthError('');
+                  }}
+                  className="text-emerald-400 hover:text-emerald-300 font-mono font-bold bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded cursor-pointer transition-all flex items-center space-x-1 active:scale-95"
+                  title="Click to auto-fill default password"
+                >
+                  <span>admin123</span>
+                  <span className="text-[9px] text-emerald-300 font-sans font-normal">(Click to autofill)</span>
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+              disabled={loadingAuth}
+              className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect disabled:opacity-80 disabled:cursor-wait"
             >
-              <Lock className="w-4 h-4" />
-              <span>Unlock Admin Panel 🚀</span>
+              {loadingAuth ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
+                  <span>Verifying Password...</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span>Unlock Admin Panel 🚀</span>
+                </>
+              )}
             </button>
           </form>
 

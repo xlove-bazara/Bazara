@@ -582,13 +582,15 @@ export async function signOutUser() {
 export async function getAdminPassword() {
   if (isSupabaseConfigured && supabase) {
     try {
-      const { data, error } = await supabase
+      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ timeout: true }), 2500));
+      const fetchPromise = supabase
         .from('site_settings')
         .select('admin_password')
         .eq('id', 1)
         .single();
-      if (!error && data?.admin_password) {
-        return data.admin_password;
+      const res = await Promise.race([fetchPromise, timeoutPromise]);
+      if (res && !res.timeout && !res.error && res.data?.admin_password) {
+        return res.data.admin_password;
       }
     } catch (e) {
       console.warn('Supabase fetch admin password error:', e);
