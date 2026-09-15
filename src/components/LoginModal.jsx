@@ -141,20 +141,20 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-sm rounded-3xl p-6 glass-panel border border-[var(--border-card)] shadow-2xl bg-[var(--bg-card)] space-y-4">
+      <div className="relative w-full max-w-sm rounded-3xl p-6 glass-panel border border-white/15 shadow-2xl bg-[#0e111d] space-y-4">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-full bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-1.5 rounded-full bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Title with Brand Logo */}
         <div className="text-center space-y-1.5">
-          <img src="/logo.png?v=2" alt="bazara.in" className="w-11 h-11 mx-auto rounded-xl object-contain shadow-lg shadow-emerald-500/20" />
-          <h3 className="text-lg font-black text-primary-theme font-heading">Login to bazara.in</h3>
-          <p className="text-xs text-muted-theme">Access your purchased courses, videos & instant drive links</p>
+          <img src="/logo.png?v=2" alt="bazara.in" className="w-11 h-11 mx-auto rounded-xl object-contain shadow-lg shadow-indigo-500/25" />
+          <h3 className="text-lg font-black text-white">Login to bazara.in</h3>
+          <p className="text-xs text-slate-400">Access your purchased courses, videos & instant drive links</p>
         </div>
 
         {/* 1-Tap Google Button */}
@@ -173,8 +173,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         </button>
 
         <div className="relative flex items-center justify-center">
-          <div className="w-full border-t border-[var(--border-subtle)]" />
-          <span className="absolute bg-[var(--bg-card)] px-2.5 text-[10px] uppercase font-bold text-muted-theme">
+          <div className="w-full border-t border-white/10" />
+          <span className="absolute bg-[#0e111d] px-2.5 text-[10px] uppercase font-bold text-slate-500">
             OR LOGIN WITH OTP
           </span>
         </div>
@@ -210,13 +210,13 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         {step === 'input' ? (
           <form onSubmit={handleSendOtp} className="space-y-3">
             <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-secondary-theme">
+              <label className="text-[11px] font-semibold text-slate-300">
                 {authMode === 'phone' ? 'Mobile / WhatsApp Number' : 'Email Address'}
               </label>
               
               {authMode === 'phone' ? (
                 <div className="flex items-center space-x-2">
-                  <span className="px-3 py-2.5 rounded-xl bg-[var(--bg-card-secondary)] border border-[var(--border-subtle)] text-xs font-bold text-secondary-theme">
+                  <span className="px-3 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-xs font-bold text-slate-300">
                     +91
                   </span>
                   <input
@@ -225,7 +225,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value.replace(/\D/g, ''))}
                     placeholder="Enter 10-digit number"
-                    className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-card-secondary)] border border-[var(--border-subtle)] text-xs text-primary-theme placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                     required
                   />
                 </div>
@@ -235,7 +235,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full px-3 py-2.5 rounded-xl bg-[var(--bg-card-secondary)] border border-[var(--border-subtle)] text-xs text-primary-theme placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                   required
                 />
               )}
@@ -244,7 +244,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider btn-cta-premium active:scale-95 transition-all cursor-pointer"
+              className="w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer btn-shine-effect"
             >
               {loading ? 'Sending OTP...' : `Send ${authMode === 'phone' ? 'WhatsApp' : 'Email'} OTP →`}
             </button>
@@ -253,7 +253,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           <form onSubmit={handleVerifyOtp} className="space-y-3">
             <div className="space-y-1">
               <div className="flex justify-between items-center text-xs">
-                <label className="text-[11px] font-semibold text-secondary-theme">Enter 6-Digit OTP Code</label>
+                <label className="text-[11px] font-semibold text-slate-300">Enter 6-Digit OTP Code</label>
                 <span className="text-[10px] text-emerald-400 font-mono">
                   Sent to {authMode === 'phone' ? `WhatsApp: +91 ${identifier}` : identifier}
                 </span>
@@ -264,7 +264,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="Enter 6-digit OTP"
-                className="w-full text-center tracking-widest text-lg font-mono font-bold py-2.5 rounded-xl bg-[var(--bg-card-secondary)] border border-[var(--border-subtle)] text-primary-theme placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                className="w-full text-center tracking-widest text-lg font-mono font-bold py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 required
                 autoFocus
               />
@@ -274,12 +274,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                 <button
                   type="button"
                   onClick={() => { setStep('input'); setOtp(''); setErrorMsg(''); }}
-                  className="text-muted-theme hover:text-primary-theme underline cursor-pointer"
+                  className="text-slate-400 hover:text-slate-200 underline cursor-pointer"
                 >
                   Change {authMode === 'phone' ? 'number' : 'email'}
                 </button>
                 {countdown > 0 ? (
-                  <span className="text-muted-theme">Resend in {countdown}s</span>
+                  <span className="text-slate-400">Resend in {countdown}s</span>
                 ) : (
                   <button
                     type="button"
@@ -295,7 +295,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider btn-cta-premium active:scale-95 transition-all cursor-pointer"
+              className="w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer btn-shine-effect"
             >
               {loading ? 'Verifying...' : 'Verify & Access Vault 🚀'}
             </button>

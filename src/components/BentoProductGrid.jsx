@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ArrowRight, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Star, ChevronLeft, ChevronRight, ShieldCheck, Zap } from 'lucide-react';
 
 export default function BentoProductGrid({ 
   products, 
@@ -31,15 +31,15 @@ export default function BentoProductGrid({
   return (
     <section className="py-2 space-y-4">
       {/* Section Header */}
-      <div className="px-1 md:px-0 flex items-center justify-between">
+      <div className="px-4 md:px-0 flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-xl md:text-2xl font-extrabold tracking-tight text-primary-theme flex items-center space-x-2">
+          <h2 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center space-x-2">
             <span>{title}</span>
           </h2>
-          <span className="text-xs font-medium text-secondary-theme block md:hidden mt-0.5">
+          <span className="text-xs font-semibold text-slate-400 block md:hidden">
             Swipe sideways to explore all packs
           </span>
-          <span className="text-xs font-medium text-secondary-theme hidden md:block mt-0.5">
+          <span className="text-xs font-semibold text-slate-400 hidden md:block">
             Instant Google Drive delivery on all items • 100% Commercial PLR Rights
           </span>
         </div>
@@ -48,17 +48,17 @@ export default function BentoProductGrid({
         <div className="flex md:hidden items-center space-x-1.5">
           <button
             onClick={() => scrollTo('prev')}
-            className="w-8 h-8 rounded-full glass-btn text-secondary-theme hover:text-primary-theme flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+            className="w-8 h-8 rounded-full glass-btn text-slate-300 hover:text-white flex items-center justify-center active:scale-95 transition-all"
             aria-label="Previous pack"
           >
-            <ChevronLeft className="w-4 h-4" strokeWidth={2} />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => scrollTo('next')}
-            className="w-8 h-8 rounded-full glass-btn text-secondary-theme hover:text-primary-theme flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+            className="w-8 h-8 rounded-full glass-btn text-slate-300 hover:text-white flex items-center justify-center active:scale-95 transition-all"
             aria-label="Next pack"
           >
-            <ChevronRight className="w-4 h-4" strokeWidth={2} />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function BentoProductGrid({
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex space-x-3.5 overflow-x-auto snap-x snap-mandatory no-scrollbar px-1 pb-2"
+          className="flex space-x-3.5 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2"
           style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
         >
           {products.map((product) => {
@@ -79,11 +79,11 @@ export default function BentoProductGrid({
               <div
                 key={`mob-${product.id}`}
                 onClick={() => onProductClick(product)}
-                className="w-[86%] max-w-[340px] shrink-0 snap-center rounded-3xl glass-card-luxury p-4 flex flex-col justify-between cursor-pointer space-y-3.5 select-none transition-all hover:scale-[1.01]"
+                className="w-[86%] max-w-[340px] shrink-0 snap-center rounded-3xl glass-card-luxury p-3.5 flex flex-col justify-between cursor-pointer space-y-3 select-none"
               >
                 <div className="space-y-3">
                   {/* Clean 4:3 Image */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black/30 border border-[var(--border-subtle)] shadow-inner">
+                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black/40 border border-white/[0.08] shadow-inner">
                     <img
                       src={product.cover_image}
                       alt={product.title}
@@ -93,36 +93,36 @@ export default function BentoProductGrid({
                   </div>
 
                   {/* Full Product Title */}
-                  <h3 className="font-heading text-sm font-bold text-primary-theme leading-snug group-hover:text-emerald-500 transition-colors">
+                  <h3 className="text-sm font-extrabold text-white leading-snug group-hover:text-emerald-400 transition-colors">
                     {product.title}
                   </h3>
 
                   {/* Star Rating & Reviews */}
-                  <div className="flex items-center space-x-1.5 text-xs">
+                  <div className="flex items-center space-x-1.5 text-xs text-amber-400">
                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />
-                    <span className="font-extrabold text-primary-theme">{rating}</span>
-                    <span className="text-secondary-theme">({reviews} reviews)</span>
+                    <span className="font-extrabold text-white">{rating}</span>
+                    <span className="text-slate-400">({reviews} reviews)</span>
                   </div>
 
                   {/* Pricing Row */}
                   <div className="flex items-baseline space-x-2 pt-0.5">
-                    <span className="font-heading text-lg font-black text-emerald-500 dark:text-emerald-400">
+                    <span className="text-lg font-black text-emerald-400">
                       ₹{product.price}
                     </span>
                     {product.original_price && (
-                      <span className="text-xs text-muted-theme line-through">
+                      <span className="text-xs text-slate-400 line-through">
                         ₹{product.original_price}
                       </span>
                     )}
                     {product.discount_percentage && (
-                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-500 dark:text-rose-400 border border-rose-500/20">
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/20">
                         SAVE {product.discount_percentage}%
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Green-to-Teal CTA Button */}
+                {/* Vibrant Gradient "View Details" Button with Shimmer Reflection */}
                 <div className="pt-2">
                   <button
                     type="button"
@@ -130,10 +130,11 @@ export default function BentoProductGrid({
                       e.stopPropagation();
                       onProductClick(product);
                     }}
-                    className="relative overflow-hidden w-full py-3 px-4 rounded-2xl text-xs font-black uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-500 to-teal-600 shadow-[0_0_18px_rgba(16,185,129,0.3)] hover:shadow-[0_0_24px_rgba(16,185,129,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+                    className="relative overflow-hidden w-full py-3 px-4 rounded-2xl text-xs font-black uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                   >
+                    <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/85 to-transparent animate-shimmer-sweep pointer-events-none" />
                     <span className="relative z-10">View Details</span>
-                    <ArrowRight className="relative z-10 w-4 h-4 text-slate-950 stroke-[2.5]" />
+                    <ArrowRight className="relative z-10 w-4 h-4 text-slate-950 stroke-[3]" />
                   </button>
                 </div>
               </div>
@@ -148,8 +149,8 @@ export default function BentoProductGrid({
               key={idx}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 activeIndex === idx
-                  ? 'w-6 bg-emerald-500'
-                  : 'w-1.5 bg-slate-500/30'
+                  ? 'w-6 bg-emerald-400'
+                  : 'w-1.5 bg-white/20'
               }`}
             />
           ))}
@@ -166,11 +167,11 @@ export default function BentoProductGrid({
             <div
               key={`desk-${product.id}`}
               onClick={() => onProductClick(product)}
-              className="group relative rounded-3xl glass-card-luxury p-5 flex flex-col justify-between cursor-pointer space-y-4 transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-xl"
+              className="group relative rounded-3xl glass-card-luxury p-5 flex flex-col justify-between cursor-pointer space-y-4 transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-emerald-500/20"
             >
               <div className="space-y-3.5">
                 {/* 4:3 Clean Cover Image */}
-                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black/30 border border-[var(--border-subtle)] shadow-md">
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black/40 border border-white/[0.08] shadow-md">
                   <img
                     src={product.cover_image}
                     alt={product.title}
@@ -184,30 +185,30 @@ export default function BentoProductGrid({
                   )}
                 </div>
 
-                {/* Full Title */}
-                <h3 className="font-heading text-base font-bold text-primary-theme leading-snug group-hover:text-emerald-500 transition-colors min-h-[3rem]">
+                {/* Full Title (Large and clear on Desktop) */}
+                <h3 className="text-base font-extrabold text-white leading-snug group-hover:text-emerald-400 transition-colors min-h-[3rem]">
                   {product.title}
                 </h3>
 
                 {/* Star Rating & Reviews */}
                 <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-1.5">
+                  <div className="flex items-center space-x-1.5 text-amber-400">
                     <Star className="w-4 h-4 fill-amber-400 text-amber-400 shrink-0" />
-                    <span className="font-extrabold text-primary-theme">{rating}</span>
-                    <span className="text-secondary-theme">({reviews} reviews)</span>
+                    <span className="font-extrabold text-white">{rating}</span>
+                    <span className="text-slate-400">({reviews} reviews)</span>
                   </div>
-                  <span className="text-[11px] font-bold text-emerald-500 dark:text-emerald-400">
+                  <span className="text-[11px] font-bold text-emerald-400">
                     Verified Drive Access
                   </span>
                 </div>
 
                 {/* Price Row */}
-                <div className="flex items-baseline space-x-2 pt-1 border-t border-[var(--border-subtle)]">
-                  <span className="font-heading text-2xl font-black text-emerald-500 dark:text-emerald-400">
+                <div className="flex items-baseline space-x-2 pt-1 border-t border-white/[0.06]">
+                  <span className="text-2xl font-black text-emerald-400">
                     ₹{product.price}
                   </span>
                   {product.original_price && (
-                    <span className="text-sm text-muted-theme line-through">
+                    <span className="text-sm text-slate-400 line-through">
                       ₹{product.original_price}
                     </span>
                   )}
@@ -222,10 +223,11 @@ export default function BentoProductGrid({
                     e.stopPropagation();
                     onProductClick(product);
                   }}
-                  className="relative overflow-hidden w-full py-3.5 px-5 rounded-2xl text-xs font-black uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-500 to-teal-600 shadow-[0_0_18px_rgba(16,185,129,0.3)] hover:shadow-[0_0_24px_rgba(16,185,129,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+                  className="relative overflow-hidden w-full py-3.5 px-5 rounded-2xl text-xs font-black uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 >
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/85 to-transparent animate-shimmer-sweep pointer-events-none" />
                   <span className="relative z-10">View Details</span>
-                  <ArrowRight className="relative z-10 w-4 h-4 text-slate-950 stroke-[2.5]" />
+                  <ArrowRight className="relative z-10 w-4 h-4 text-slate-950 stroke-[3]" />
                 </button>
               </div>
             </div>
@@ -235,4 +237,3 @@ export default function BentoProductGrid({
     </section>
   );
 }
-

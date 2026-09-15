@@ -16,28 +16,28 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-2xl max-h-[90vh] rounded-3xl bg-[var(--bg-card)] border border-[var(--border-card)] shadow-2xl flex flex-col overflow-hidden text-secondary-theme">
+      <div className="relative w-full max-w-2xl max-h-[90vh] rounded-3xl bg-[#0e111d] border border-white/15 shadow-2xl flex flex-col overflow-hidden text-slate-200">
         
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-card-secondary)]">
+        <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-[#121626]">
           <div className="flex items-center space-x-2.5">
             <img src="/logo.png?v=2" alt="bazara.in Logo" className="w-7 h-7 rounded-lg object-contain shadow-sm" />
             <div>
 
-              <h3 className="text-sm font-bold text-primary-theme font-heading">bazara.in Official Legal Policies</h3>
-              <p className="text-[10px] text-muted-theme">Compliant with Indian IT Act, Consumer Protection & Payment Gateway Norms</p>
+              <h3 className="text-sm font-bold text-white">bazara.in Official Legal Policies</h3>
+              <p className="text-[10px] text-slate-400">Compliant with Indian IT Act, Consumer Protection & Payment Gateway Norms</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/20 transition-all cursor-pointer"
+            className="p-1.5 rounded-full bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex items-center space-x-1 p-2 bg-[var(--bg-card-secondary)] border-b border-[var(--border-subtle)] overflow-x-auto no-scrollbar">
+        <div className="flex items-center space-x-1 p-2 bg-[#0a0d16] border-b border-white/[0.06] overflow-x-auto no-scrollbar">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -48,7 +48,7 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
                 className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-emerald-500 text-slate-950 shadow-md font-bold'
-                    : 'text-muted-theme hover:text-primary-theme hover:bg-white/[0.05]'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -275,11 +275,11 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-card-secondary)] text-[11px] text-muted-theme">
+        <div className="px-5 py-3 border-t border-white/10 flex items-center justify-between bg-[#121626] text-[11px] text-slate-400">
           <span>bazara.in • All Rights Reserved</span>
           <button
             onClick={onClose}
-            className="px-5 py-1.5 rounded-xl btn-cta-premium font-bold transition-all cursor-pointer"
+            className="px-4 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition-all cursor-pointer"
           >
             I Understand
           </button>
