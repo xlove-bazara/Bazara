@@ -344,17 +344,25 @@ export default function App() {
         </div>
       )}
 
-      {/* 4. CHECKOUT PAGE */}
-      {currentPage === 'checkout' && (
-        <div key={`checkout-${selectedProduct?.id || 'loading'}`} className="animate-page-enter">
-          {selectedProduct ? (
-            <CheckoutPage
-              product={selectedProduct}
-              user={user}
-              onBack={() => navigateTo(selectedProduct.category === 'course' ? 'landing' : 'home', selectedProduct.category === 'course' ? '/' : '/home')}
-              onPaymentComplete={handlePaymentComplete}
-            />
-          ) : (
+        {/* 4. CHECKOUT PAGE */}
+        {currentPage === 'checkout' && (
+          <div key={`checkout-${selectedProduct?.id || 'loading'}`} className="animate-page-enter">
+            {selectedProduct ? (
+              <CheckoutPage
+                product={selectedProduct}
+                user={user}
+                onBack={() => {
+                  if (selectedProduct.id === 'prod-ai-mastery-hindi' || selectedProduct.slug === 'ai-mastery-hindi-ebook-bundle') {
+                    navigateTo('ai-mastery', '/ai-mastery-hindi');
+                  } else if (selectedProduct.category === 'course') {
+                    navigateTo('landing', '/');
+                  } else {
+                    navigateTo('home', '/home');
+                  }
+                }}
+                onPaymentComplete={handlePaymentComplete}
+              />
+            ) : (
             <div className="min-h-screen flex flex-col items-center justify-center space-y-3 bg-transparent text-slate-400">
               <div className="w-8 h-8 rounded-full border-2 border-emerald-400/20 border-t-emerald-400 animate-spin" />
               <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Checkout...</p>
