@@ -364,8 +364,35 @@ export default function AiMasteryLandingPage({
             </div>
           </div>
 
+          {/* Main 3D Hero Banner Showcase */}
+          <div className="pt-4 max-w-3xl mx-auto">
+            <div className="relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl shadow-emerald-500/15 group bg-slate-950 aspect-video">
+              <img
+                src="/ai-mastery-banner.jpg"
+                alt="AI Mastery 4-in-1 E-Book Bundle"
+                className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+              />
+              <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md text-[10px] sm:text-[11px] font-black text-amber-300 border border-white/15 flex items-center space-x-1.5 shadow-lg">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>4 FULL E-BOOKS • 380+ PAGES</span>
+              </div>
+            </div>
+
+            {/* Feature Badges below the banner */}
+            <div className="mt-3 flex items-center justify-between text-[11px] sm:text-xs text-slate-300 px-1">
+              <span className="px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md font-semibold border border-white/10 text-slate-300 flex items-center space-x-1.5 shadow-sm">
+                <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Instant 1-Second Access</span>
+              </span>
+              <span className="px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold backdrop-blur-md flex items-center space-x-1.5 shadow-sm">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Lifetime Google Drive Access</span>
+              </span>
+            </div>
+          </div>
+
           {/* 4 Books 3D Interactive Hero Showcase Cards */}
-          <div className="pt-6 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto text-left">
+          <div className="pt-4 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto text-left">
             {booksList.map((b, idx) => (
               <div
                 key={b.id}

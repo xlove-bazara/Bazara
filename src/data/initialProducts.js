@@ -18,12 +18,12 @@ export const initialProducts = [
     bump_desc: "3,000+ ChatGPT, 2,000+ Gemini, 2,500+ AI Image Prompts, Marketing, Ads, SEO & Business Growth Vault.",
     bump_image: "/bump-offer-banner.jpg",
     bump_drive_url: "https://drive.google.com/drive/folders/bazara-15k-prompts-vault-access-demo",
-    cover_image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+    cover_image: "/ai-mastery-banner.jpg",
     gallery_images: [
+      "/ai-mastery-banner.jpg",
       "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=800&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80"
     ],
     sample_reels: [
       {
