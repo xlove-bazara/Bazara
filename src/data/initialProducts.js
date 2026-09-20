@@ -562,6 +562,14 @@ export const defaultSiteSettings = {
   ],
   support_whatsapp: "+91 98373 71137",
   support_email: "supporthubindia@gmail.com",
-  flash_sale_end_hours: 3
+  flash_sale_end_hours: 3,
+  // Store Lock & Maintenance Mode
+  is_maintenance_mode: false,
+  maintenance_headline: "We're Upgrading Bazara!",
+  maintenance_message: "We are currently making exciting upgrades & adding new practical AI e-books & masterclasses. We'll be back online shortly!",
+  maintenance_notice: "Back online within 2 hours",
+  maintenance_passcode: "bazara2026",
+  maintenance_whatsapp: "+91 98373 71137",
+  maintenance_phone: "+91 98373 71137"
 };
 

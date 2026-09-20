@@ -8,12 +8,14 @@ import AccessDashboardPage from './pages/AccessDashboardPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
 import WhatsAppCrmPage from './pages/WhatsAppCrmPage';
+import MaintenanceModePage from './pages/MaintenanceModePage';
 import LoginModal from './components/LoginModal';
 import PolicyModal from './components/PolicyModal';
-import { getProducts, getSettings, createOrder, getCurrentUser, signOutUser, supabase } from './supabase';
+import { getProducts, getSettings, updateSettings, createOrder, getCurrentUser, signOutUser, supabase, checkAdminSession } from './supabase';
 import { initialProducts } from './data/initialProducts';
 import { sendOrderDeliveryEmail } from './services/emailService';
 import { sendWhatsAppOrderDelivery } from './services/whatsappService';
+import { Lock, Unlock, X } from 'lucide-react';
 
 
 
@@ -53,6 +55,13 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(Boolean(getPolicyTabFromPath()));
   const [policyInitialTab, setPolicyInitialTab] = useState(getPolicyTabFromPath() || 'terms');
+  const [isAdminPreviewActive, setIsAdminPreviewActive] = useState(() => {
+    try {
+      return localStorage.getItem('bazara_admin_preview_active') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
 
 
   const refreshData = async () => {
@@ -264,8 +273,67 @@ export default function App() {
     initialProducts.find(p => p.id === 'prod-ai-mastery-hindi') ||
     initialProducts[0];
 
+  const isMaintenanceActive = Boolean(settings?.is_maintenance_mode);
+  const isAuthorizedPreview = isAdminPreviewActive || checkAdminSession();
+
+  // If Store is Locked and Visitor is NOT authorized with admin passcode -> show Maintenance Screen
+  if (isMaintenanceActive && !isAuthorizedPreview && currentPage !== 'admin' && currentPage !== 'crm') {
+    return (
+      <MaintenanceModePage
+        settings={settings}
+        onUnlockPreview={() => setIsAdminPreviewActive(true)}
+        onAdminLogin={() => navigateTo('admin', '/admin')}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen relative bg-transparent text-slate-100 selection:bg-emerald-500/30 selection:text-emerald-300">
+      
+      {/* Persistent Store Lock / Maintenance Mode Active Banner (When Previewing) */}
+      {isMaintenanceActive && (
+        <div className="sticky top-0 z-50 w-full bg-gradient-to-r from-amber-600 via-rose-600 to-amber-700 text-white px-3 sm:px-6 py-2.5 flex items-center justify-between text-xs font-bold shadow-2xl border-b border-white/20">
+          <div className="flex items-center space-x-2 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping shrink-0" />
+            <Lock className="w-4 h-4 shrink-0 text-amber-200" />
+            <span className="truncate">
+              MAINTENANCE MODE IS ACTIVE (Customers see Upgrading screen • You are in Admin Live Preview)
+            </span>
+          </div>
+          <div className="flex items-center space-x-2 shrink-0 ml-2">
+            {currentPage !== 'admin' && (
+              <button
+                onClick={() => navigateTo('admin', '/admin')}
+                className="px-3 py-1 rounded-lg bg-black/40 hover:bg-black/60 text-white font-bold text-[11px] border border-white/20 transition-all cursor-pointer"
+              >
+                Admin Dashboard
+              </button>
+            )}
+            <button
+              onClick={async () => {
+                const updated = { ...settings, is_maintenance_mode: false };
+                await updateSettings(updated);
+                await refreshData();
+              }}
+              className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] shadow-sm transition-all cursor-pointer flex items-center space-x-1"
+            >
+              <Unlock className="w-3 h-3" />
+              <span>Turn Off Maintenance</span>
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('bazara_admin_preview_active');
+                setIsAdminPreviewActive(false);
+              }}
+              className="p-1 rounded-lg hover:bg-black/30 text-white/80 hover:text-white transition-all cursor-pointer"
+              title="Exit Preview Mode"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Global Luxury Ambient Lighting & Vignette Layer (matches reference screenshot) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
         {/* Soft Top Forest Teal/Cyan Glow */}

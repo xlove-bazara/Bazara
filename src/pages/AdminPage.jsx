@@ -144,6 +144,58 @@ export default function AdminPage({
     setLoadingOrders(false);
   };
 
+  // Store Lock & Maintenance Mode State
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState(Boolean(settings?.is_maintenance_mode));
+  const [maintenanceHeadline, setMaintenanceHeadline] = useState(settings?.maintenance_headline || "We're Upgrading Bazara!");
+  const [maintenanceMessage, setMaintenanceMessage] = useState(settings?.maintenance_message || "We are currently making exciting upgrades & adding new practical AI e-books & masterclasses. We'll be back online shortly!");
+  const [maintenanceNotice, setMaintenanceNotice] = useState(settings?.maintenance_notice || "Back online within 2 hours");
+  const [maintenancePasscode, setMaintenancePasscode] = useState(settings?.maintenance_passcode || "bazara2026");
+  const [maintenanceWhatsapp, setMaintenanceWhatsapp] = useState(settings?.maintenance_whatsapp || settings?.support_whatsapp || "+91 98373 71137");
+  const [maintenancePhone, setMaintenancePhone] = useState(settings?.maintenance_phone || "+91 98373 71137");
+  const [showPasscodeAdmin, setShowPasscodeAdmin] = useState(false);
+  const [savingStoreLock, setSavingStoreLock] = useState(false);
+  const [storeLockSuccess, setStoreLockSuccess] = useState('');
+
+  // Sync settings when props change
+  useEffect(() => {
+    if (settings) {
+      setIsMaintenanceMode(Boolean(settings.is_maintenance_mode));
+      if (settings.maintenance_headline) setMaintenanceHeadline(settings.maintenance_headline);
+      if (settings.maintenance_message) setMaintenanceMessage(settings.maintenance_message);
+      if (settings.maintenance_notice) setMaintenanceNotice(settings.maintenance_notice);
+      if (settings.maintenance_passcode) setMaintenancePasscode(settings.maintenance_passcode);
+      if (settings.maintenance_whatsapp) setMaintenanceWhatsapp(settings.maintenance_whatsapp);
+      if (settings.maintenance_phone) setMaintenancePhone(settings.maintenance_phone);
+    }
+  }, [settings]);
+
+  const handleSaveStoreLock = async (explicitMode = null) => {
+    setSavingStoreLock(true);
+    setStoreLockSuccess('');
+    try {
+      const modeToSave = explicitMode !== null ? explicitMode : isMaintenanceMode;
+      const updated = {
+        ...settings,
+        is_maintenance_mode: modeToSave,
+        maintenance_headline: maintenanceHeadline,
+        maintenance_message: maintenanceMessage,
+        maintenance_notice: maintenanceNotice,
+        maintenance_passcode: maintenancePasscode,
+        maintenance_whatsapp: maintenanceWhatsapp,
+        maintenance_phone: maintenancePhone
+      };
+      await updateSettings(updated);
+      setIsMaintenanceMode(modeToSave);
+      if (onRefresh) await onRefresh();
+      setStoreLockSuccess(modeToSave ? '🔒 Store is now LOCKED for public visitors! Admin live preview is active.' : '🟢 Store is now LIVE and unlocked for all public visitors!');
+      setTimeout(() => setStoreLockSuccess(''), 4000);
+    } catch (err) {
+      console.error('Failed to save store lock settings:', err);
+      alert('Failed to update Store Lock settings. Please try again.');
+    }
+    setSavingStoreLock(false);
+  };
+
   React.useEffect(() => {
     loadRealOrders();
     loadCoupons();
@@ -818,6 +870,30 @@ export default function AdminPage({
   // ================= 2. DESKTOP OPTIMIZED ADMIN DASHBOARD =================
   return (
     <div className="min-h-screen pb-20 bg-transparent text-slate-100 selection:bg-emerald-500/30">
+      
+      {/* Maintenance Mode Top Banner (if active) */}
+      {isMaintenanceMode && (
+        <div className="w-full bg-gradient-to-r from-amber-600 via-rose-600 to-amber-700 text-white px-3 sm:px-6 py-2.5 flex items-center justify-between text-xs font-bold shadow-xl border-b border-white/20 z-40 relative">
+          <div className="flex items-center space-x-2 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping shrink-0" />
+            <Lock className="w-4 h-4 shrink-0 text-amber-200" />
+            <span className="truncate">
+              MAINTENANCE MODE IS ACTIVE (Customers see Upgrading screen • You are in Admin Live Preview)
+            </span>
+          </div>
+          <div className="flex items-center space-x-2 shrink-0 ml-2">
+            <button
+              onClick={() => handleSaveStoreLock(false)}
+              disabled={savingStoreLock}
+              className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] shadow-sm transition-all cursor-pointer flex items-center space-x-1 active:scale-95"
+            >
+              <Unlock className="w-3 h-3" />
+              <span>Turn Off Maintenance</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Top Desktop & Mobile Header */}
       <header className="sticky top-0 z-30 px-4 sm:px-8 py-3.5 backdrop-blur-xl bg-[#091017]/80 border-b border-white/[0.08]">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -1021,6 +1097,22 @@ export default function AdminPage({
             >
               <Settings className="w-3.5 h-3.5" />
               <span>Marquee & Security</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('store_lock')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
+                activeTab === 'store_lock'
+                  ? 'bg-amber-500 text-slate-950 font-black shadow-lg shadow-amber-500/25'
+                  : 'bg-[#131724] text-slate-400 hover:text-white border border-white/[0.06]'
+              }`}
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Store Lock</span>
+              {isMaintenanceMode && (
+                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-500 text-white animate-pulse ml-0.5">
+                  LOCKED
+                </span>
+              )}
             </button>
             <button
               onClick={() => {
@@ -1785,6 +1877,235 @@ export default function AdminPage({
                 <p>• Once verified, your session stays active for 1 full hour across browser refreshes.</p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ================= TAB: STORE LOCK & MAINTENANCE MODE ================= */}
+        {activeTab === 'store_lock' && (
+          <div className="space-y-6 animate-fadeIn">
+            
+            {/* Status & Quick Toggle Master Card */}
+            <div className={`p-6 rounded-3xl border transition-all duration-300 shadow-2xl ${
+              isMaintenanceMode 
+                ? 'bg-gradient-to-br from-amber-950/40 via-[#151928] to-[#0f121d] border-amber-500/40 shadow-amber-500/10' 
+                : 'bg-[#131724] border-white/[0.08]'
+            }`}>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-white/[0.08]">
+                <div className="flex items-start space-x-3.5">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
+                    isMaintenanceMode ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
+                  }`}>
+                    {isMaintenanceMode ? <Lock className="w-6 h-6" /> : <Unlock className="w-6 h-6" />}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-white tracking-tight">
+                      Store Lock & Maintenance Mode
+                    </h3>
+                    <p className="text-xs text-slate-300 max-w-xl mt-0.5">
+                      Lock store for public visitors while upgrading website. Admin can login & preview changes live!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {/* Status Indicator */}
+                  <div className={`px-3 py-1.5 rounded-full text-xs font-black flex items-center space-x-2 border ${
+                    isMaintenanceMode 
+                      ? 'bg-rose-500/15 border-rose-500/40 text-rose-300' 
+                      : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${isMaintenanceMode ? 'bg-rose-500 animate-ping' : 'bg-emerald-400'}`} />
+                    <span>{isMaintenanceMode ? '🔴 STORE IS LOCKED (Visitors see Coming Soon)' : '🟢 STORE IS LIVE (Open to public)'}</span>
+                  </div>
+
+                  {/* Quick Toggle Button */}
+                  <button
+                    onClick={() => handleSaveStoreLock(!isMaintenanceMode)}
+                    disabled={savingStoreLock}
+                    className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer active:scale-95 transition-all flex items-center space-x-1.5 shadow-lg ${
+                      isMaintenanceMode
+                        ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-emerald-500/25'
+                        : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/25'
+                    }`}
+                  >
+                    {isMaintenanceMode ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                    <span>{isMaintenanceMode ? 'UNLOCK STORE NOW' : 'LOCK STORE NOW'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Master Switch Row */}
+              <div className="pt-5 flex items-center justify-between">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-bold text-white">Enable Store Lock (Maintenance Mode)</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
+                      isMaintenanceMode ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-700 text-slate-300'
+                    }`}>
+                      {isMaintenanceMode ? 'ACTIVE' : 'INACTIVE'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    When switched on, all public visitors will be shown the Coming Soon maintenance page.
+                  </p>
+                </div>
+
+                {/* Big Switch */}
+                <button
+                  type="button"
+                  onClick={() => setIsMaintenanceMode(!isMaintenanceMode)}
+                  className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out cursor-pointer focus:outline-none ${
+                    isMaintenanceMode ? 'bg-amber-500' : 'bg-slate-700'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-full bg-white shadow-md transform transition-transform duration-300 ease-in-out ${
+                    isMaintenanceMode ? 'translate-x-6' : 'translate-x-0'
+                  }`} />
+                </button>
+              </div>
+            </div>
+
+            {/* Configurable Form Fields */}
+            <div className="p-6 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-5 shadow-xl">
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider text-slate-400">
+                Maintenance Page Display Content
+              </h4>
+
+              <div className="space-y-4">
+                {/* 1. Headline */}
+                <div>
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
+                    Coming Soon Headline
+                  </label>
+                  <input
+                    type="text"
+                    value={maintenanceHeadline}
+                    onChange={(e) => setMaintenanceHeadline(e.target.value)}
+                    placeholder="We're Upgrading Bazara!"
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400 transition-colors"
+                  />
+                </div>
+
+                {/* 2. Visitor Description Message */}
+                <div>
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
+                    Visitor Description Message
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={maintenanceMessage}
+                    onChange={(e) => setMaintenanceMessage(e.target.value)}
+                    placeholder="We are currently making exciting upgrades & adding new product packages. We'll be back online shortly!"
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400 transition-colors resize-none leading-relaxed"
+                  />
+                </div>
+
+                {/* 3. Notice & Secret Passcode in 2 columns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
+                      Estimated Completion Notice
+                    </label>
+                    <input
+                      type="text"
+                      value={maintenanceNotice}
+                      onChange={(e) => setMaintenanceNotice(e.target.value)}
+                      placeholder="Back online within 2 hours"
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                        Secret Admin Passcode
+                      </label>
+                      <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">
+                        Store Owner Bypass
+                      </span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showPasscodeAdmin ? "text" : "password"}
+                        value={maintenancePasscode}
+                        onChange={(e) => setMaintenancePasscode(e.target.value)}
+                        placeholder="bazara2026"
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm font-mono focus:outline-none focus:border-amber-400 transition-colors pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasscodeAdmin(!showPasscodeAdmin)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer"
+                      >
+                        {showPasscodeAdmin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Support Contacts in 2 columns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
+                      Support WhatsApp Number
+                    </label>
+                    <input
+                      type="text"
+                      value={maintenanceWhatsapp}
+                      onChange={(e) => setMaintenanceWhatsapp(e.target.value)}
+                      placeholder="+91 98373 71137"
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
+                      Support Phone Call Number
+                    </label>
+                    <input
+                      type="text"
+                      value={maintenancePhone}
+                      onChange={(e) => setMaintenancePhone(e.target.value)}
+                      placeholder="+91 98373 71137"
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400 transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {storeLockSuccess && (
+                <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center space-x-2 animate-scale-in">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>{storeLockSuccess}</span>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => handleSaveStoreLock(isMaintenanceMode)}
+                  disabled={savingStoreLock}
+                  className="w-full sm:flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 hover:opacity-95 text-slate-950 font-black text-xs uppercase tracking-wider shadow-xl shadow-emerald-500/25 active:scale-95 transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{savingStoreLock ? 'Saving Changes...' : 'Save Store Lock Settings 🚀'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem('bazara_admin_preview_active');
+                    window.location.href = '/';
+                  }}
+                  className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 font-bold text-xs uppercase tracking-wider border border-white/10 active:scale-95 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                >
+                  <Eye className="w-4 h-4 text-amber-400" />
+                  <span>View As Public Visitor</span>
+                </button>
+              </div>
+            </div>
+
           </div>
         )}
 
