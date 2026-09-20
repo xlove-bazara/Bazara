@@ -1,5 +1,141 @@
 export const initialProducts = [
   {
+    id: "prod-ai-mastery-hindi",
+    slug: "ai-mastery-hindi-ebook-bundle",
+    title: "AI Mastery in Hindi (4-in-1 Complete Practical E-Book Bundle)",
+    category: "ebook",
+    product_type: "ebook",
+    price: 99,
+    original_price: 999,
+    discount_percentage: 90,
+    tag: "🔥 BESTSELLER BUNDLE",
+    is_trending: true,
+    is_flash_sale: true,
+    badge: "📚 4 E-Books Combo in Hindi",
+    enable_bump_offer: true,
+    bump_title: "5,000+ Viral ChatGPT & AI Prompts Bank + Canva Templates",
+    bump_price: 49,
+    bump_desc: "Ready-to-copy prompts for Freelancing, SEO, Social Media Growth, and 100+ Editable Canva Graphics.",
+    bump_drive_url: "https://drive.google.com/drive/folders/bazara-5k-prompts-vault-access-demo",
+    cover_image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+    gallery_images: [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=800&auto=format&fit=crop&q=80"
+    ],
+    sample_reels: [
+      {
+        id: "ai-book-sample-1",
+        title: "Book 1: AI Mastermind Preview",
+        views: "PDF Preview",
+        type: "Book Look",
+        thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+        video_url: "https://assets.mixkit.co/videos/preview/mixkit-vertical-animation-of-futuristic-lines-and-particles-42514-large.mp4"
+      },
+      {
+        id: "ai-book-sample-2",
+        title: "Book 2: Smart Office Walkthrough",
+        views: "Chapter 2",
+        type: "Book Look",
+        thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&auto=format&fit=crop&q=80",
+        video_url: "https://assets.mixkit.co/videos/preview/mixkit-vertical-video-of-lights-passing-by-on-a-highway-at-night-42513-large.mp4"
+      },
+      {
+        id: "ai-book-sample-3",
+        title: "Reader Feedback: Suresh (Student)",
+        views: "★ 5.0 Rating",
+        type: "Reader Proof",
+        thumbnail: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
+        video_url: "https://assets.mixkit.co/videos/preview/mixkit-vertical-animation-of-futuristic-lines-and-particles-42514-large.mp4"
+      },
+      {
+        id: "ai-book-sample-4",
+        title: "Book 4: AI Money Maker Guide",
+        views: "Monetization",
+        type: "Book Look",
+        thumbnail: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=500&auto=format&fit=crop&q=80",
+        video_url: "https://assets.mixkit.co/videos/preview/mixkit-vertical-video-of-lights-passing-by-on-a-highway-at-night-42513-large.mp4"
+      }
+    ],
+    rating: 4.97,
+    reviews_count: 2450,
+    downloads_count: 18900,
+    drive_download_url: "https://drive.google.com/drive/folders/bazara-ai-mastery-hindi-4-books-access-demo",
+    short_desc: "Aapki apni Hindi bhasha me 4 powerful practical e-books ka master combo: AI Mastermind, Smart Office, AI For Students aur AI Money Maker. Step-by-step guides, prompts aur tools to master AI for study, work & online earning.",
+    ebook_details: {
+      pages_count: "380+ Pages (4 Full Color PDF eBooks)",
+      format: "High-Resolution PDF (Mobile, Tablet & Laptop Friendly)",
+      language: "Simple Hindi / Easy Hinglish",
+      free_sample_available: true,
+      bundle_books: [
+        {
+          id: "book-1",
+          title: "Book 1: AI Mastermind",
+          tag: "🧠 Prompt Engineering & Core AI",
+          cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
+          desc: "Master ChatGPT, DeepSeek, Claude, Midjourney & top 50+ AI tools. Step-by-step prompt frameworks to get 100% accurate results on first try.",
+          pages: "95 Pages",
+          key_topics: [
+            "Introduction to Generative AI in Simple Hindi (Zero technical jargon)",
+            "ChatGPT & DeepSeek Prompt Engineering Frameworks (Role-Task-Context-Output)",
+            "Midjourney, DALL-E 3 & Leonardo AI: Hyper-Realistic Image Generation",
+            "Top 50+ Free AI Tools Directory Categorized by Daily Work"
+          ]
+        },
+        {
+          id: "book-2",
+          title: "Book 2: Smart Office",
+          tag: "🏢 10x Office Speed & Automation",
+          cover: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80",
+          desc: "Automate daily office work: Complex Excel formulas, automated email writing, client proposals, PowerPoint deck creation in seconds.",
+          pages: "90 Pages",
+          key_topics: [
+            "Advanced Excel Formulas, VLOOKUP & Data Analysis with ChatGPT",
+            "Professional Email Drafting, Reply Templates & Client Follow-ups",
+            "Instant PPT Presentation Creation with Gamma & AI Slides",
+            "ATS-Friendly High-Converting Resume & Portfolio Builder"
+          ]
+        },
+        {
+          id: "book-3",
+          title: "Book 3: AI For Students",
+          tag: "🎓 Study Smart & Score High",
+          cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80",
+          desc: "Complete study buddy for school & college students. Fast assignment solving, complex topic breakdown, exam revision notes and research papers.",
+          pages: "100 Pages",
+          key_topics: [
+            "Creating 1-Page Visual Revision Summaries from 100-page Textbooks",
+            "Instant Assignment & Project Report Assistant with Citations",
+            "Maths & Coding Problem Solver with Step-by-Step Logic",
+            "AI-Powered Flashcards & Mock Test Question Generator"
+          ]
+        },
+        {
+          id: "book-4",
+          title: "Book 4: AI Money Maker",
+          tag: "💰 Freelance & Online Income",
+          cover: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&auto=format&fit=crop&q=80",
+          desc: "Practical monetization strategies: Freelance client services, Faceless YouTube/Instagram Reels scriptwriting, digital product creation and selling.",
+          pages: "95 Pages",
+          key_topics: [
+            "5 Proven High-Income AI Freelance Skills for 2026",
+            "Faceless Reels & Shorts Content Creation Engine (Scripts + Voiceover + Edits)",
+            "Creating & Selling Digital E-Books, Presets & Templates",
+            "How to Pitch & Close High-Paying Indian & International Clients"
+          ]
+        }
+      ]
+    },
+    features: [
+      "4 Complete Illustrated Color E-Books in Simple Hindi",
+      "Instant 1-Click Master Google Drive Download Access",
+      "Bonus 1: 500+ Copy-Paste Viral Prompts Cheat Sheet",
+      "Bonus 2: 100+ Essential AI Tools Directory",
+      "Bonus 3: Lifetime Free Future Updates & New Chapters"
+    ]
+  },
+  {
     id: "prod-reels-10k",
     slug: "10k-viral-luxury-ai-reels-bundle",
     title: "10,000+ Viral 4K Luxury, Motivation & AI Reels Bundle",

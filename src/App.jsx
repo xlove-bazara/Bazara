@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HomePage from './pages/HomePage';
 import CourseLandingPage from './pages/CourseLandingPage';
+import AiMasteryLandingPage from './pages/AiMasteryLandingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
@@ -38,7 +39,8 @@ export default function App() {
     if (path === '/crm' || path === '/whatsapp-crm' || path === '/inbox') return 'crm';
     if (path === '/profile') return 'profile';
     if (path === '/product') return 'product';
-    return 'landing'; // Default root '/' is the single course landing page
+    if (path === '/ai-mastery-hindi' || path === '/ai-mastery' || path === '/bundle' || path === '/ebooks') return 'ai-mastery';
+    return 'landing'; // Default root '/'
   };
 
   const [currentPage, setCurrentPage] = useState(getInitialPage);
@@ -166,7 +168,11 @@ export default function App() {
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
-    navigateTo('product', `/product?id=${product.slug || product.id}`);
+    if (product.id === 'prod-ai-mastery-hindi' || product.slug === 'ai-mastery-hindi-ebook-bundle') {
+      navigateTo('ai-mastery', `/ai-mastery-hindi`);
+    } else {
+      navigateTo('product', `/product?id=${product.slug || product.id}`);
+    }
   };
 
   const handleInstantBuy = (product) => {
@@ -247,6 +253,11 @@ export default function App() {
     );
   }
 
+  const aiMasteryProduct = 
+    products.find(p => p.id === 'prod-ai-mastery-hindi' || p.slug === 'ai-mastery-hindi-ebook-bundle') ||
+    initialProducts.find(p => p.id === 'prod-ai-mastery-hindi') ||
+    initialProducts[0];
+
   return (
     <div className="min-h-screen relative bg-transparent text-slate-100 selection:bg-emerald-500/30 selection:text-emerald-300">
       {/* Global Luxury Ambient Lighting & Vignette Layer (matches reference screenshot) */}
@@ -264,23 +275,44 @@ export default function App() {
       </div>
 
       <div className="relative z-10">
-        {/* 1. ROOT LANDING PAGE (bazara.in /): Single Course Landing Page with About bazara & FAQs */}
+        {/* 1. DEDICATED AI MASTERY HINDI LANDING PAGE */}
+        {currentPage === 'ai-mastery' && (
+          <div key="ai-mastery" className="animate-page-enter">
+            <AiMasteryLandingPage
+              product={aiMasteryProduct}
+              onEnroll={(bundleToBuy) => handleInstantBuy(bundleToBuy || aiMasteryProduct)}
+              onNavigateToStore={() => navigateTo('home', '/home')}
+              settings={settings}
+            />
+          </div>
+        )}
+
+        {/* 2. ROOT LANDING PAGE (bazara.in /): Single Course Landing Page with About bazara & FAQs */}
         {currentPage === 'landing' && (
           <div key="landing" className="animate-page-enter">
-          <CourseLandingPage
-            course={featuredCourse}
-            onEnroll={(courseToBuy) => handleInstantBuy(courseToBuy || featuredCourse)}
-            onNavigateToStore={() => navigateTo('home', '/home')}
-            settings={settings}
-          />
-        </div>
-      )}
+            {settings?.featured_course_id === 'prod-ai-mastery-hindi' ? (
+              <AiMasteryLandingPage
+                product={aiMasteryProduct}
+                onEnroll={(bundleToBuy) => handleInstantBuy(bundleToBuy || aiMasteryProduct)}
+                onNavigateToStore={() => navigateTo('home', '/home')}
+                settings={settings}
+              />
+            ) : (
+              <CourseLandingPage
+                course={featuredCourse}
+                onEnroll={(courseToBuy) => handleInstantBuy(courseToBuy || featuredCourse)}
+                onNavigateToStore={() => navigateTo('home', '/home')}
+                settings={settings}
+              />
+            )}
+          </div>
+        )}
 
-      {/* 2. STORE MARKETPLACE (bazara.in/home): All digital bundles, search & categories */}
-      {currentPage === 'home' && (
-        <div key="home" className="animate-page-enter">
-          <HomePage
-            products={products}
+        {/* 3. STORE MARKETPLACE (bazara.in/home): All digital bundles, search & categories */}
+        {currentPage === 'home' && (
+          <div key="home" className="animate-page-enter">
+            <HomePage
+              products={products}
             settings={settings}
             onSelectProduct={handleSelectProduct}
             onInstantBuy={handleInstantBuy}

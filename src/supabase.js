@@ -17,7 +17,7 @@ const SETTINGS_KEY = 'bazara_settings_v3';
 const ORDERS_KEY = 'bazara_orders_v1';
 const COUPONS_KEY = 'bazara_coupons_v1';
 
-// Seed initial products into localStorage if empty, and ensure latest course data
+// Seed initial products into localStorage if empty, and ensure latest course and bundle data
 const getStoredProducts = () => {
   try {
     const raw = localStorage.getItem(PRODUCTS_KEY);
@@ -27,6 +27,12 @@ const getStoredProducts = () => {
     }
     // Filter out system records from stored products
     prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
+
+    // Guarantee that prod-ai-mastery-hindi is present
+    const aiMastery = initialProducts.find(p => p.id === 'prod-ai-mastery-hindi');
+    if (aiMastery && !prods.some(p => p.id === 'prod-ai-mastery-hindi')) {
+      prods.unshift(aiMastery);
+    }
 
     // Guarantee that prod-course-ai defaults to App & Website Development with AI course while preserving user edits
     const latestWebDev = initialProducts.find(p => p.id === 'prod-course-ai');
@@ -42,10 +48,10 @@ const getStoredProducts = () => {
           ? { ...latestWebDev, ...prods[idx], title: latestWebDev.title, short_desc: latestWebDev.short_desc } 
           : { ...latestWebDev, ...prods[idx] };
       } else {
-        prods.unshift(latestWebDev);
+        prods.push(latestWebDev);
       }
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(prods));
     }
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(prods));
     return prods;
   } catch (e) {
     console.warn('LocalStorage error, using initialProducts', e);
@@ -71,6 +77,7 @@ const getStoredSettings = () => {
 // API Functions
 export async function getProducts() {
   const latestWebDev = initialProducts.find(p => p.id === 'prod-course-ai');
+  const aiMastery = initialProducts.find(p => p.id === 'prod-ai-mastery-hindi');
 
   if (isSupabaseConfigured && supabase) {
     try {
@@ -82,9 +89,14 @@ export async function getProducts() {
         // Filter out system internal config records
         const userProducts = data.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
 
-        // Guarantee the course masterclass is available for landing page and admin management
-        const hasCourse = userProducts.some(p => p.id === 'prod-course-ai' || p.category === 'course');
-        const prods = hasCourse ? userProducts : [...userProducts, latestWebDev].filter(Boolean);
+        // Guarantee AI mastery and course masterclass are available
+        let prods = [...userProducts];
+        if (aiMastery && !prods.some(p => p.id === 'prod-ai-mastery-hindi')) {
+          prods.unshift(aiMastery);
+        }
+        if (latestWebDev && !prods.some(p => p.id === 'prod-course-ai')) {
+          prods.push(latestWebDev);
+        }
 
         const mapped = prods.map(p => {
           if (p.id === 'prod-course-ai' && latestWebDev) {
@@ -96,6 +108,9 @@ export async function getProducts() {
             return isStale 
               ? { ...latestWebDev, ...p, title: latestWebDev.title, short_desc: latestWebDev.short_desc } 
               : { ...latestWebDev, ...p };
+          }
+          if (p.id === 'prod-ai-mastery-hindi' && aiMastery) {
+            return { ...aiMastery, ...p };
           }
           return p;
         });
