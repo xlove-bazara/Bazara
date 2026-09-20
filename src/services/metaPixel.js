@@ -1,7 +1,7 @@
 // Meta Pixel & Conversions API Tracking Helper for Bazara
-// Meta Dataset / Pixel ID: 946148178341992
+// Meta Dataset / Pixel ID: 946148641877992
 
-export const META_PIXEL_ID = '946148178341992';
+export const META_PIXEL_ID = '946148641877992';
 const TRACKED_PURCHASES_KEY = 'bazara_tracked_meta_purchases_v1';
 
 /**

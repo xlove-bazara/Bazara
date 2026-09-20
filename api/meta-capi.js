@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 
 // Vercel Serverless Function: Meta Conversions API (CAPI) Dispatcher
-// Pixel / Dataset ID: 946148178341992
+// Pixel / Dataset ID: 946148641877992
 
-const PIXEL_ID = '946148178341992';
+const PIXEL_ID = '946148641877992';
 
 /**
  * SHA-256 hash helper function for Meta user data normalization
