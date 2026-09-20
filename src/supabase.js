@@ -28,13 +28,17 @@ const getStoredProducts = () => {
     // Filter out system records from stored products
     prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
 
-    // Guarantee that prod-ai-mastery-hindi is present and updated with official drive links
+    // Guarantee that prod-ai-mastery-hindi is present and updated with official drive links and active pricing
     const aiMastery = initialProducts.find(p => p.id === 'prod-ai-mastery-hindi');
     if (aiMastery) {
       const aIdx = prods.findIndex(p => p.id === 'prod-ai-mastery-hindi');
       if (aIdx >= 0) {
         prods[aIdx] = {
           ...prods[aIdx],
+          price: aiMastery.price,
+          bump_price: aiMastery.bump_price,
+          original_price: aiMastery.original_price,
+          discount_percentage: aiMastery.discount_percentage,
           drive_download_url: aiMastery.drive_download_url,
           bump_drive_url: aiMastery.bump_drive_url,
           bump_image: aiMastery.bump_image,
@@ -124,6 +128,10 @@ export async function getProducts() {
             return {
               ...aiMastery,
               ...p,
+              price: aiMastery.price,
+              bump_price: aiMastery.bump_price,
+              original_price: aiMastery.original_price,
+              discount_percentage: aiMastery.discount_percentage,
               drive_download_url: p.drive_download_url && !p.drive_download_url.includes('demo') ? p.drive_download_url : aiMastery.drive_download_url,
               bump_drive_url: p.bump_drive_url && !p.bump_drive_url.includes('demo') ? p.bump_drive_url : aiMastery.bump_drive_url,
               bump_image: p.bump_image || aiMastery.bump_image,

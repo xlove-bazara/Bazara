@@ -17,19 +17,54 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { customerEmail, customerName, productTitle, driveUrl, orderId, amount } = req.body || {};
+    const { 
+      customerEmail, 
+      customerName, 
+      productTitle, 
+      driveUrl, 
+      upsellIncluded, 
+      upsellTitle, 
+      upsellDriveUrl, 
+      orderId, 
+      amount 
+    } = req.body || {};
 
     if (!customerEmail || !driveUrl) {
       return res.status(400).json({ error: 'customerEmail and driveUrl are required' });
     }
 
-    const brevoApiKey = process.env.BREVO_API_KEY;
-    const senderEmail = process.env.EMAIL_SENDER || 'supporthubindia@gmail.com';
+    const brevoApiKey = process.env.BREVO_API_KEY || process.env.VITE_BREVO_API_KEY;
+    const senderEmail = process.env.EMAIL_SENDER || process.env.VITE_EMAIL_SENDER || 'supporthubindia@gmail.com';
 
     if (!brevoApiKey) {
       console.warn('BREVO_API_KEY environment variable is missing on server');
       return res.status(500).json({ error: 'Server configuration error: BREVO_API_KEY is missing' });
     }
+
+    const bumpSectionHtml = upsellIncluded && (upsellDriveUrl || driveUrl) ? `
+      <!-- Add-on Bump Offer Section -->
+      <tr>
+        <td style="padding: 0 30px 25px 30px;">
+          <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 16px; padding: 20px; text-align: center;">
+            <div style="display: inline-block; padding: 4px 12px; background: rgba(245, 158, 11, 0.2); border-radius: 50px; font-size: 11px; font-weight: 800; color: #fbbf24; margin-bottom: 10px;">
+              ⚡ SPECIAL ADD-ON UNLOCKED
+            </div>
+            <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #ffffff; font-weight: 800;">
+              ${upsellTitle || '15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)'}
+            </h3>
+            <p style="margin: 0 0 16px 0; font-size: 12px; color: #fde68a; line-height: 1.5;">
+              Lifetime access to 15,000+ master prompts and growth templates.
+            </p>
+            <a href="${upsellDriveUrl || driveUrl}" target="_blank" style="display: block; width: 100%; box-sizing: border-box; background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); color: #451a03; text-decoration: none; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);">
+              ⚡ OPEN 15,000+ PROMPTS VAULT (GOOGLE DRIVE) →
+            </a>
+            <p style="margin: 10px 0 0 0; font-size: 11px; color: #94a3b8;">
+              Direct Link: <a href="${upsellDriveUrl || driveUrl}" style="color: #fbbf24; word-break: break-all; text-decoration: none;">${upsellDriveUrl || driveUrl}</a>
+            </p>
+          </div>
+        </td>
+      </tr>
+    ` : '';
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -43,7 +78,7 @@ export default async function handler(req, res) {
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #08090E; padding: 30px 15px;">
           <tr>
             <td align="center">
-              <table width="100%" max-width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #121626; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+              <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #121626; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
                 
                 <!-- Header -->
                 <tr>
@@ -67,7 +102,7 @@ export default async function handler(req, res) {
                       Thank you, ${customerName || 'Creator'}! 🎉
                     </h2>
                     <p style="margin: 0; font-size: 14px; color: #cbd5e1; line-height: 1.6;">
-                      Your enrollment in <strong>${productTitle || 'Digital Product'}</strong> is complete. Your Google Drive digital vault is ready for instant lifetime access.
+                      Your enrollment in <strong>${productTitle || 'Digital Product'}</strong> ${upsellIncluded ? `and <strong>${upsellTitle || 'Add-on Vault'}</strong>` : ''} is complete. Your Google Drive digital vault is ready for instant lifetime access.
                     </p>
                   </td>
                 </tr>
@@ -77,16 +112,22 @@ export default async function handler(req, res) {
                   <td style="padding: 0 30px 20px 30px;">
                     <table width="100%" cellpadding="12" cellspacing="0" style="background-color: #090c14; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); font-size: 13px;">
                       <tr>
-                        <td style="color: #64748b; font-weight: 600;">Product:</td>
+                        <td style="color: #64748b; font-weight: 600;">Main Bundle:</td>
                         <td align="right" style="color: #ffffff; font-weight: 700;">${productTitle}</td>
                       </tr>
+                      ${upsellIncluded ? `
+                      <tr>
+                        <td style="color: #64748b; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05);">Special Add-on:</td>
+                        <td align="right" style="color: #fbbf24; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.05);">${upsellTitle || '15,000+ AI Prompts Vault'}</td>
+                      </tr>
+                      ` : ''}
                       <tr>
                         <td style="color: #64748b; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05);">Order ID:</td>
                         <td align="right" style="color: #10b981; font-family: monospace; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.05);">${orderId || 'ORD-COMPLETED'}</td>
                       </tr>
                       <tr>
                         <td style="color: #64748b; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05);">Amount Paid:</td>
-                        <td align="right" style="color: #ffffff; font-weight: 800; border-top: 1px solid rgba(255,255,255,0.05);">₹${amount || 499}</td>
+                        <td align="right" style="color: #ffffff; font-weight: 800; border-top: 1px solid rgba(255,255,255,0.05);">₹${amount || 1}</td>
                       </tr>
                       <tr>
                         <td style="color: #64748b; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05);">License:</td>
@@ -96,25 +137,26 @@ export default async function handler(req, res) {
                   </td>
                 </tr>
 
-                <!-- Primary CTA Button -->
+                <!-- Primary CTA Button (Main Product) -->
                 <tr>
-                  <td style="padding: 10px 30px 30px 30px; text-align: center;">
+                  <td style="padding: 10px 30px 25px 30px; text-align: center;">
                     <a href="${driveUrl}" target="_blank" style="display: block; width: 100%; box-sizing: border-box; background: linear-gradient(90deg, #10b981 0%, #059669 100%); color: #022c22; text-decoration: none; padding: 16px 24px; border-radius: 14px; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);">
-                      📁 OPEN GOOGLE DRIVE VAULT & DOWNLOAD →
+                      📁 OPEN 4-IN-1 E-BOOKS (GOOGLE DRIVE) →
                     </a>
                     <p style="margin: 12px 0 0 0; font-size: 11px; color: #94a3b8;">
-                      Can't click the button? Copy this link into your browser:<br>
-                      <a href="${driveUrl}" style="color: #34d399; word-break: break-all; text-decoration: none;">${driveUrl}</a>
+                      Direct Link: <a href="${driveUrl}" style="color: #34d399; word-break: break-all; text-decoration: none;">${driveUrl}</a>
                     </p>
                   </td>
                 </tr>
+
+                ${bumpSectionHtml}
 
                 <!-- Instructions Strip -->
                 <tr>
                   <td style="padding: 20px 30px; background-color: #0a0d16; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: #94a3b8; line-height: 1.6;">
                     <strong style="color: #ffffff; display: block; margin-bottom: 6px;">💡 How to use your digital vault:</strong>
                     1. Bookmark the Google Drive link so you never lose it.<br>
-                    2. You can download lessons or video files directly to your device anytime.<br>
+                    2. You can download all 4 PDF E-Books & prompts directly to your smartphone or laptop.<br>
                     3. Access this and all future purchases on your profile dashboard at <a href="https://bazara.in" style="color: #10b981; text-decoration: none;">bazara.in</a>.<br>
                     4. Need support? Reply directly to this email.
                   </td>

@@ -194,6 +194,9 @@ export default function App() {
         customerName: orderPayload.customerName || user?.name,
         productTitle: orderPayload.productTitle,
         driveUrl: orderPayload.driveUrl,
+        upsellIncluded: orderPayload.upsellIncluded,
+        upsellTitle: orderPayload.upsellTitle,
+        upsellDriveUrl: orderPayload.upsellDriveUrl,
         orderId: order.id,
         amount: orderPayload.amount
       }).catch(err => console.warn('Automated delivery email failed:', err));
@@ -205,7 +208,10 @@ export default function App() {
         customerPhone: orderPayload.customerPhone,
         customerName: orderPayload.customerName || user?.name,
         productTitle: orderPayload.productTitle,
-        driveUrl: orderPayload.driveUrl
+        driveUrl: orderPayload.driveUrl,
+        upsellIncluded: orderPayload.upsellIncluded,
+        upsellTitle: orderPayload.upsellTitle,
+        upsellDriveUrl: orderPayload.upsellDriveUrl
       }).catch(err => console.warn('Automated WhatsApp delivery failed:', err));
     }
 

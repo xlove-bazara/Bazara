@@ -4,6 +4,9 @@ export async function sendOrderDeliveryEmail({
   customerName,
   productTitle,
   driveUrl,
+  upsellIncluded,
+  upsellTitle,
+  upsellDriveUrl,
   orderId,
   amount
 }) {
@@ -24,6 +27,9 @@ export async function sendOrderDeliveryEmail({
         customerName,
         productTitle,
         driveUrl,
+        upsellIncluded,
+        upsellTitle,
+        upsellDriveUrl,
         orderId,
         amount
       })
@@ -46,6 +52,20 @@ export async function sendOrderDeliveryEmail({
     return { success: false, error: 'Brevo API key not configured' };
   }
 
+  const bumpSectionHtml = upsellIncluded && (upsellDriveUrl || driveUrl) ? `
+    <div style="margin: 20px 0; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 18px; text-align: center;">
+      <div style="display: inline-block; padding: 4px 10px; background: rgba(245, 158, 11, 0.2); border-radius: 50px; font-size: 11px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">
+        ⚡ SPECIAL ADD-ON UNLOCKED
+      </div>
+      <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #ffffff; font-weight: 800;">
+        ${upsellTitle || '15,000+ AI Prompts Vault'}
+      </h3>
+      <a href="${upsellDriveUrl || driveUrl}" target="_blank" style="display: block; background: #f59e0b; color: #451a03; text-decoration: none; padding: 14px; border-radius: 10px; font-weight: 900; font-size: 14px;">
+        ⚡ OPEN 15,000+ PROMPTS VAULT →
+      </a>
+    </div>
+  ` : '';
+
   const htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -60,13 +80,16 @@ export async function sendOrderDeliveryEmail({
                 ✓ PAYMENT CONFIRMED & ACCESS UNLOCKED
               </div>
               <h2 style="margin: 10px 0; color: #fff; font-size: 20px;">Thank you, ${customerName || 'Creator'}! 🎉</h2>
-              <p style="color: #cbd5e1; font-size: 14px;">Your order for <strong>${productTitle}</strong> is confirmed.</p>
+              <p style="color: #cbd5e1; font-size: 14px;">Your order for <strong>${productTitle}</strong> ${upsellIncluded ? `and <strong>${upsellTitle || 'Add-on Vault'}</strong>` : ''} is confirmed.</p>
               
               <div style="margin: 25px 0;">
                 <a href="${driveUrl}" target="_blank" style="display: block; background: #10b981; color: #022c22; text-decoration: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 15px;">
-                  📁 OPEN GOOGLE DRIVE VAULT & DOWNLOAD →
+                  📁 OPEN 4-IN-1 E-BOOKS (GOOGLE DRIVE) →
                 </a>
               </div>
+
+              ${bumpSectionHtml}
+
               <p style="font-size: 11px; color: #64748b;">© 2026 bazara.in • Instant Digital Delivery Engine</p>
             </div>
           </td>

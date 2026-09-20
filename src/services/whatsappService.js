@@ -104,7 +104,10 @@ export async function sendWhatsAppOrderDelivery({
   customerPhone,
   customerName,
   productTitle,
-  driveUrl
+  driveUrl,
+  upsellIncluded,
+  upsellTitle,
+  upsellDriveUrl
 }) {
   if (!customerPhone) {
     console.warn('Customer phone missing, skipping WhatsApp delivery');
@@ -112,8 +115,14 @@ export async function sendWhatsAppOrderDelivery({
   }
 
   const safeName = (customerName || 'Creator').trim();
-  const safeTitle = (productTitle || 'Digital Product').trim();
-  const safeDriveUrl = (driveUrl || 'https://bazara.in').trim();
+  let safeTitle = (productTitle || 'Digital Product').trim();
+  if (upsellIncluded && upsellTitle) {
+    safeTitle = `${safeTitle} (+ ${upsellTitle})`;
+  }
+  let safeDriveUrl = (driveUrl || 'https://bazara.in').trim();
+  if (upsellIncluded && upsellDriveUrl && upsellDriveUrl !== driveUrl) {
+    safeDriveUrl = `${safeDriveUrl} | Add-on Vault: ${upsellDriveUrl}`;
+  }
 
   const components = [
     {
