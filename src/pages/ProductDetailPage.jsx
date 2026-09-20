@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Share2, 
@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
 import Header from '../components/Header';
+import { trackViewContent } from '../services/metaPixel';
 
 export default function ProductDetailPage({ 
   product, 
@@ -37,6 +38,13 @@ export default function ProductDetailPage({
   const [activeReelModal, setActiveReelModal] = useState(null);
   const [openAccordion, setOpenAccordion] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
+
+  // Track ViewContent event when viewing a specific product
+  useEffect(() => {
+    if (product) {
+      trackViewContent(product);
+    }
+  }, [product?.id]);
 
   if (!product) return null;
 

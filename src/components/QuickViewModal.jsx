@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, Star, CheckCircle, ArrowRight, Zap, FolderDown } from 'lucide-react';
+import { trackViewContent } from '../services/metaPixel';
 
 export default function QuickViewModal({ product, onClose, onViewDetails, onInstantBuy }) {
+  useEffect(() => {
+    if (product) {
+      trackViewContent(product);
+    }
+  }, [product?.id]);
+
   if (!product) return null;
 
   return (

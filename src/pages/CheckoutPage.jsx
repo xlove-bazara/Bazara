@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 
 import { getCoupons } from '../supabase';
+import { trackInitiateCheckout } from '../services/metaPixel';
 
 export default function CheckoutPage({ 
   product, 
@@ -63,6 +64,13 @@ export default function CheckoutPage({
       }
     };
   }, []);
+
+  // Track InitiateCheckout on checkout mount
+  useEffect(() => {
+    if (product) {
+      trackInitiateCheckout(product, total);
+    }
+  }, [product?.id]);
 
   const basePrice = product.price;
   const upsellPrice = product.bump_price || 49;

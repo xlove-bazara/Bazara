@@ -32,6 +32,7 @@ import {
   Smartphone
 } from 'lucide-react';
 import PolicyModal from '../components/PolicyModal';
+import { trackViewContent } from '../services/metaPixel';
 
 export default function AiMasteryLandingPage({ 
   product, 
@@ -80,6 +81,11 @@ export default function AiMasteryLandingPage({
     ...defaultBundle,
     ...(product || {})
   };
+
+  // Track ViewContent event on landing/bundle page view
+  useEffect(() => {
+    trackViewContent(activeBundle);
+  }, [activeBundle.id]);
 
   const booksList = [
     {

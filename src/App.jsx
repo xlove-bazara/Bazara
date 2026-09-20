@@ -15,6 +15,7 @@ import { getProducts, getSettings, updateSettings, createOrder, getCurrentUser, 
 import { initialProducts } from './data/initialProducts';
 import { sendOrderDeliveryEmail } from './services/emailService';
 import { sendWhatsAppOrderDelivery } from './services/whatsappService';
+import { trackPageView, trackPurchase } from './services/metaPixel';
 import { Lock, Unlock, X } from 'lucide-react';
 
 
@@ -129,6 +130,11 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Track Meta Pixel PageView on page change
+  useEffect(() => {
+    trackPageView(currentPage);
+  }, [currentPage]);
+
   // Restore selectedProduct from URL query parameter on refresh or direct link visit
   useEffect(() => {
     if (products && products.length > 0) {
@@ -195,6 +201,9 @@ export default function App() {
       userId: user?.id || null
     });
     setCompletedOrder(order);
+
+    // Track verified Purchase conversion in Meta Pixel & CAPI (with duplicate protection)
+    trackPurchase(order);
 
     // Automatically send official Google Drive delivery email via Brevo
     if (orderPayload.customerEmail) {

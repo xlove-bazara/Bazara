@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
 import PolicyModal from '../components/PolicyModal';
+import { trackViewContent } from '../services/metaPixel';
 
 export default function CourseLandingPage({ 
   course, 
@@ -87,6 +88,11 @@ export default function CourseLandingPage({
     ...(isCourseProduct ? course : {}),
     cover_image: '/course-banner.jpg'
   };
+
+  // Track ViewContent event on landing/product page view
+  useEffect(() => {
+    trackViewContent(activeCourse);
+  }, [activeCourse.id]);
 
   const defaultWebDevCurriculum = [
     {
