@@ -280,9 +280,6 @@ export default function App() {
           <div key="ai-mastery" className="animate-page-enter">
             <AiMasteryLandingPage
               product={aiMasteryProduct}
-              user={user}
-              onOpenLogin={() => setIsLoginModalOpen(true)}
-              onNavigate={handleNavigate}
               onEnroll={(bundleToBuy) => handleInstantBuy(bundleToBuy || aiMasteryProduct)}
               onNavigateToStore={() => navigateTo('home', '/home')}
               settings={settings}
@@ -296,9 +293,6 @@ export default function App() {
             {settings?.featured_course_id === 'prod-ai-mastery-hindi' ? (
               <AiMasteryLandingPage
                 product={aiMasteryProduct}
-                user={user}
-                onOpenLogin={() => setIsLoginModalOpen(true)}
-                onNavigate={handleNavigate}
                 onEnroll={(bundleToBuy) => handleInstantBuy(bundleToBuy || aiMasteryProduct)}
                 onNavigateToStore={() => navigateTo('home', '/home')}
                 settings={settings}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   CheckCircle, 
   Sparkles, 
@@ -11,8 +11,6 @@ import {
   ArrowRight, 
   ChevronDown, 
   ChevronUp, 
-  ChevronLeft,
-  ChevronRight,
   Star, 
   FolderDown, 
   Lock, 
@@ -31,16 +29,12 @@ import {
   PhoneCall,
   Mail,
   Shield,
-  Smartphone,
-  User
+  Smartphone
 } from 'lucide-react';
 import PolicyModal from '../components/PolicyModal';
 
 export default function AiMasteryLandingPage({ 
   product, 
-  user,
-  onOpenLogin,
-  onNavigate,
   onEnroll, 
   onNavigateToStore, 
   settings 
@@ -49,9 +43,6 @@ export default function AiMasteryLandingPage({
   const [openFaqIdx, setOpenFaqIdx] = useState(null);
   const [policyModal, setPolicyModal] = useState({ isOpen: false, tab: 'terms' });
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 44, seconds: 18 });
-
-  const reviewsScrollRef = useRef(null);
-  const booksScrollRef = useRef(null);
 
   // Urgency Countdown Timer
   useEffect(() => {
@@ -79,9 +70,8 @@ export default function AiMasteryLandingPage({
     downloads_count: 18900,
     short_desc: "Aapki apni Hindi bhasha me 4 powerful practical e-books ka master combo: AI Mastermind, Smart Office, AI For Students aur AI Money Maker. Step-by-step guides, prompts aur tools to master AI for study, work & online earning.",
     drive_download_url: "https://drive.google.com/drive/folders/bazara-ai-mastery-hindi-4-books-access-demo",
-    bump_title: "15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)",
-    bump_price: 49,
-    bump_image: "/bump-offer-banner.jpg"
+    bump_title: "5,000+ Viral ChatGPT Prompts Bank & Canva AI Templates",
+    bump_price: 49
   };
 
   const activeBundle = {
@@ -164,26 +154,26 @@ export default function AiMasteryLandingPage({
     {
       icon: GraduationCap,
       title: "School & College Students",
-      desc: "Assignments fast banayein, exam revision notes taiyar karein aur complex concepts ko aasan Hindi me samjhein.",
-      tag: "Study Smart"
+      desc: "Apne assignments fast banayein, exam revision notes taiyar karein aur complex concepts ko aasan Hindi me samjhein.",
+      color: "emerald"
     },
     {
       icon: Briefcase,
       title: "Job Seekers & Office Employees",
       desc: "Excel formulas, professional emails, presentations aur ATS-friendly resume banayein aur office me 10x fast banein.",
-      tag: "10x Office Speed"
+      color: "indigo"
     },
     {
       icon: TrendingUp,
       title: "Content Creators & Freelancers",
-      desc: "Faceless reels scripts, viral ideas, copy-paste prompts aur digital products sell karke online income generate karein.",
-      tag: "Online Earning"
+      desc: "Faceless reels scripts, viral ideas, copy-paste prompts aur digital products sell karke monthly online income generate karein.",
+      color: "amber"
     },
     {
       icon: BookOpen,
       title: "Teachers, Trainers & Business Owners",
-      desc: "Lesson plans banayein, training modules taiyar karein aur customer support & marketing ko automate karein.",
-      tag: "Automation"
+      desc: "Lesson plans banayein, training modules taiyar karein aur apne business ke customer support & marketing ko automate karein.",
+      color: "teal"
     }
   ];
 
@@ -193,24 +183,21 @@ export default function AiMasteryLandingPage({
       val: "₹1,499",
       title: "500+ Copy-Paste Viral Prompts Bank",
       desc: "Coding, Copywriting, Marketing, SEO aur Daily Productivity ke liye pre-written tested prompts.",
-      tag: "FREE BONUS 1",
-      icon: "⚡"
+      tag: "FREE BONUS 1"
     },
     {
       id: "b2",
       val: "₹1,499",
       title: "Top 100+ Free AI Tools Mega Directory",
       desc: "Best AI tools categorized by category (Video, Audio, Image, Text, Coding, Automation).",
-      tag: "FREE BONUS 2",
-      icon: "🛠️"
+      tag: "FREE BONUS 2"
     },
     {
       id: "b3",
       val: "₹1,999",
       title: "Lifetime G-Drive Updates & New Chapters",
       desc: "Future me jab bhi naye AI tools aayenge, naye PDF updates bina kisi extra charge ke Drive me milenge.",
-      tag: "FREE BONUS 3",
-      icon: "📁"
+      tag: "FREE BONUS 3"
     }
   ];
 
@@ -229,7 +216,7 @@ export default function AiMasteryLandingPage({
     },
     {
       q: "Order Bump Offer me kya milega?",
-      a: "Agar aap checkout karte waqt +₹49 ka Special Order Bump tick karte hain, toh aapko alag se '15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)' ka high-retention folder deliver kiya jayega."
+      a: "Agar aap checkout karte waqt +₹49 ka Special Order Bump tick karte hain, toh aapko alag se '5,000+ High-Retention Viral ChatGPT Prompts Bank + 100+ Editable Canva AI Templates' ka exclusive folder deliver kiya jayega."
     },
     {
       q: "Kya mujhe future me updates ke liye extra paise dene honge?",
@@ -269,36 +256,8 @@ export default function AiMasteryLandingPage({
       city: "Jaipur, Rajasthan",
       rating: 5,
       comment: "Pure bundle me zero bakwas aur 100% practical steps hain. Hindi me hone ki wajah se har tool ka use turant samajh aa gaya. Instant Google Drive delivery was butter smooth!"
-    },
-    {
-      name: "Sneha Mukherjee",
-      role: "College Lecturer",
-      city: "Kolkata, WB",
-      rating: 5,
-      comment: "Teaching lesson plans aur quiz questions banane me AI ka istemal itna aasan ho sakta hai maine socha nahi tha. Har teacher aur student ko ye zaroor padhna chahiye."
-    },
-    {
-      name: "Rohan Kulkarni",
-      role: "Startup Founder",
-      city: "Pune, Maharashtra",
-      rating: 5,
-      comment: "Business pitch decks, client proposal emails, aur market research ke liye ye 4 e-books pure gold hain. Instant value at unbeatable price."
     }
   ];
-
-  const scrollReviews = (direction) => {
-    if (reviewsScrollRef.current) {
-      const scrollAmount = direction === 'left' ? -340 : 340;
-      reviewsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
-  const scrollBooks = (direction) => {
-    if (booksScrollRef.current) {
-      const scrollAmount = direction === 'left' ? -360 : 360;
-      booksScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
 
   return (
     <div className="min-h-screen pb-24 md:pb-12 bg-transparent text-slate-100 selection:bg-emerald-500/30">
@@ -313,36 +272,33 @@ export default function AiMasteryLandingPage({
         </span>
       </div>
 
-      {/* 2. Navigation Header with LOGIN BUTTON */}
-      <header className="sticky top-0 z-40 px-3 sm:px-6 md:px-8 py-3 backdrop-blur-2xl bg-[#091017]/90 border-b border-white/[0.08] shadow-lg shadow-black/20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-2">
+      {/* 2. Navigation Header */}
+      <header className="sticky top-0 z-40 px-4 md:px-8 py-3.5 backdrop-blur-2xl bg-[#091017]/85 border-b border-white/[0.08]">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           {/* Brand Logo */}
-          <div 
-            onClick={() => onNavigate ? onNavigate('landing') : (onNavigateToStore && onNavigateToStore())}
-            className="flex items-center space-x-2 shrink-0 cursor-pointer"
-          >
+          <div className="flex items-center space-x-2.5">
             <img
               src="/logo.png?v=2"
               alt="bazara.in Logo"
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl object-contain shadow-lg shadow-emerald-500/20"
+              className="w-8 h-8 rounded-xl object-contain shadow-lg shadow-emerald-500/20"
             />
-            <div className="flex items-baseline space-x-0.5 sm:space-x-1">
-              <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white uppercase">
+            <div className="flex items-baseline space-x-1">
+              <span className="font-extrabold text-xl tracking-tight text-white uppercase">
                 bazara
               </span>
               <span className="text-xs font-bold text-emerald-400">.in</span>
-              <span className="hidden lg:inline-block ml-2 text-[10px] font-semibold uppercase tracking-widest text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="hidden sm:inline-block ml-2 text-[10px] font-semibold uppercase tracking-widest text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                 AI E-Books Hub
               </span>
             </div>
           </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center space-x-5 text-xs font-semibold text-slate-300">
-            <a href="#books-breakdown" className="hover:text-emerald-400 transition-colors">4 Books</a>
-            <a href="#who-is-this-for" className="hover:text-emerald-400 transition-colors">Who It's For</a>
-            <a href="#free-bonuses" className="hover:text-emerald-400 transition-colors">Bonuses</a>
-            <a href="#reviews" className="hover:text-emerald-400 transition-colors">Reviews</a>
+          <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-300">
+            <a href="#books-breakdown" className="hover:text-emerald-400 transition-colors">4 Books Inside</a>
+            <a href="#who-is-this-for" className="hover:text-emerald-400 transition-colors">Target Audience</a>
+            <a href="#free-bonuses" className="hover:text-emerald-400 transition-colors">Free Bonuses</a>
+            <a href="#reviews" className="hover:text-emerald-400 transition-colors">Verified Reviews</a>
             <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</a>
             <button
               onClick={() => setPolicyModal({ isOpen: true, tab: 'terms' })}
@@ -352,34 +308,11 @@ export default function AiMasteryLandingPage({
             </button>
           </nav>
 
-          {/* Top Actions: LOGIN BUTTON + GET 4 BOOKS CTA */}
-          <div className="flex items-center space-x-2 shrink-0">
-            {/* Login / Profile Button */}
-            {user ? (
-              <button
-                onClick={() => onNavigate ? onNavigate('profile') : (onNavigateToStore && onNavigateToStore())}
-                className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] border border-white/10 text-xs font-bold text-white transition-all cursor-pointer"
-                title="My Profile / Vault"
-              >
-                <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-black border border-emerald-500/30">
-                  {user.name ? user.name[0].toUpperCase() : 'U'}
-                </div>
-                <span className="hidden sm:inline max-w-[80px] truncate">{user.name || 'Account'}</span>
-              </button>
-            ) : (
-              <button
-                onClick={onOpenLogin}
-                className="flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-white/[0.06] hover:bg-white/[0.14] border border-white/10 text-xs font-bold text-slate-200 hover:text-white transition-all cursor-pointer active:scale-95"
-              >
-                <User className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Login</span>
-              </button>
-            )}
-
-            {/* Quick Buy CTA */}
+          {/* Top CTA */}
+          <div className="flex items-center space-x-2">
             <button
               onClick={() => onEnroll(activeBundle)}
-              className="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs font-black uppercase tracking-wider bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 hover:opacity-95 text-slate-950 shadow-lg shadow-emerald-500/30 active:scale-95 transition-all flex items-center space-x-1 cursor-pointer whitespace-nowrap"
+              className="px-4 md:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 hover:opacity-95 text-slate-950 shadow-lg shadow-emerald-500/30 active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer"
             >
               <span>Get 4 Books ₹{activeBundle.price}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -389,15 +322,15 @@ export default function AiMasteryLandingPage({
       </header>
 
       {/* 3. HERO SECTION */}
-      <section className="relative pt-6 md:pt-8 pb-12 px-4 md:px-8 overflow-hidden">
+      <section className="relative pt-8 pb-14 px-4 md:px-8 overflow-hidden">
         {/* Luxury Background Glows */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 md:w-[700px] h-96 bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute top-1/3 right-0 w-80 h-80 bg-indigo-600/15 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto text-center space-y-4 md:space-y-5 relative z-10">
+        <div className="max-w-4xl mx-auto text-center space-y-5 relative z-10">
           
           {/* Eyebrow Trust Badge */}
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-black shadow-sm">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-black shadow-sm">
             <Sparkles className="w-3.5 h-3.5 animate-pulse" />
             <span>🔥 4-in-1 Complete Practical AI E-Book Combo (Simple Hindi)</span>
           </div>
@@ -408,64 +341,68 @@ export default function AiMasteryLandingPage({
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xs sm:text-sm md:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
             Apni Hindi bhasha me seekhein step-by-step bina kisi coding headache ke. Students, Office Professionals, Teachers aur Creators ke liye India ka #1 AI Action Guide Bundle.
           </p>
 
-          {/* Social Proof Horizontal Strip */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 md:gap-6 text-xs text-slate-300 pt-1">
+          {/* Social Proof Strip */}
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-xs text-slate-300 pt-1">
             <div className="flex items-center space-x-1.5">
               <div className="flex text-amber-400 text-sm">★★★★★</div>
               <span className="font-bold text-white">{activeBundle.rating || 4.97}/5</span>
-              <span className="text-slate-400">({activeBundle.reviews_count || 2450}+ Reviews)</span>
+              <span className="text-slate-400">({activeBundle.reviews_count || 2450}+ Verified Readers)</span>
             </div>
-            <span className="text-slate-600">•</span>
+            <span className="hidden sm:inline text-slate-600">•</span>
             <div className="flex items-center space-x-1.5">
               <Users className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-bold text-white">{activeBundle.downloads_count || 18900}+ Delivered</span>
+              <span className="font-bold text-white">{activeBundle.downloads_count || 18900}+ Copies Delivered</span>
             </div>
-            <span className="text-slate-600">•</span>
+            <span className="hidden sm:inline text-slate-600">•</span>
             <div className="flex items-center space-x-1.5">
               <FolderDown className="w-3.5 h-3.5 text-indigo-400" />
               <span className="font-semibold text-white">Instant G-Drive Link</span>
             </div>
           </div>
 
-          {/* 4 Books Horizontal Mini Pill Strip */}
-          <div className="pt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-3xl mx-auto text-left">
+          {/* 4 Books 3D Interactive Hero Showcase Cards */}
+          <div className="pt-6 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto text-left">
             {booksList.map((b, idx) => (
               <div
                 key={b.id}
                 onClick={() => setSelectedBookIdx(idx)}
-                className={`p-3 rounded-2xl border transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                className={`p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                   selectedBookIdx === idx 
                     ? 'bg-gradient-to-b from-[#192233] to-[#111624] border-emerald-500 shadow-xl shadow-emerald-500/10 scale-[1.02]' 
-                    : 'bg-[#0f1422]/80 border-white/10 hover:border-white/20'
+                    : 'bg-[#0f1422]/80 border-white/10 hover:border-white/20 hover:scale-[1.01]'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-lg">{b.icon}</span>
-                  <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-white/[0.06] text-emerald-400 border border-white/10">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xl">{b.icon}</span>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-white/[0.06] text-emerald-400 border border-white/10">
                     BOOK {b.number}
                   </span>
                 </div>
-                <h4 className="text-xs font-black text-white group-hover:text-emerald-300 transition-colors truncate">
+                <h4 className="text-xs font-black text-white group-hover:text-emerald-300 transition-colors line-clamp-1">
                   {b.title}
                 </h4>
-                <p className="text-[10px] text-slate-400 mt-0.5 truncate leading-tight">
+                <p className="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-tight">
                   {b.hindiSubtitle}
                 </p>
+                <div className="mt-2.5 pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-slate-400">
+                  <span>{b.pages}</span>
+                  <span className="text-emerald-400 font-bold">PDF E-Book</span>
+                </div>
               </div>
             ))}
           </div>
 
           {/* Pricing & Hero CTA Box */}
-          <div className="pt-2 max-w-lg mx-auto space-y-3">
-            <div className="p-4 sm:p-5 rounded-3xl bg-[#131724] border border-white/10 shadow-2xl space-y-3">
+          <div className="pt-4 max-w-lg mx-auto space-y-3">
+            <div className="p-5 rounded-3xl bg-[#131724] border border-white/10 shadow-2xl space-y-3.5">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
-                    Digital 4-Book Bundle Offer
+                    Exclusive Digital Bundle Price
                   </span>
                   <div className="flex items-baseline space-x-2">
                     <span className="text-3xl sm:text-4xl font-black text-emerald-400">₹{activeBundle.price}</span>
@@ -486,7 +423,7 @@ export default function AiMasteryLandingPage({
               {/* Big Action CTA */}
               <button
                 onClick={() => onEnroll(activeBundle)}
-                className="w-full py-3.5 sm:py-4 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 active:scale-[0.98] transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
+                className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 active:scale-[0.98] transition-all flex items-center justify-center space-x-2 cursor-pointer btn-shine-effect"
               >
                 <Zap className="w-4 h-4 fill-slate-950" />
                 <span>GET 4-IN-1 AI MASTERY BUNDLE ₹{activeBundle.price} 🚀</span>
@@ -494,7 +431,7 @@ export default function AiMasteryLandingPage({
               </button>
 
               {/* Guarantees */}
-              <div className="flex items-center justify-center space-x-3 text-[11px] text-slate-400 pt-0.5">
+              <div className="flex items-center justify-center space-x-3 sm:space-x-4 text-[11px] text-slate-400 pt-1">
                 <span className="flex items-center space-x-1">
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Instant G-Drive</span>
@@ -514,188 +451,158 @@ export default function AiMasteryLandingPage({
         </div>
       </section>
 
-      {/* 4. KEY METRICS STRIP (HORIZONTAL GRID) */}
-      <section className="border-y border-white/[0.08] bg-[#0c0e18]/80 py-5 px-4">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+      {/* 4. KEY METRICS STRIP */}
+      <section className="border-y border-white/[0.08] bg-[#0c0e18]/80 py-6 px-4">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-            <BookOpen className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
-            <span className="text-sm sm:text-base font-black text-white block">4 Full E-Books</span>
-            <span className="text-[10px] sm:text-[11px] text-slate-400">Complete Master Bundle</span>
+            <BookOpen className="w-5 h-5 text-emerald-400 mx-auto mb-1.5" />
+            <span className="text-base font-black text-white block">4 Full E-Books</span>
+            <span className="text-[11px] text-slate-400">Complete Master Bundle</span>
           </div>
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-            <Layers className="w-4 h-4 text-indigo-400 mx-auto mb-1" />
-            <span className="text-sm sm:text-base font-black text-white block">380+ Pages</span>
-            <span className="text-[10px] sm:text-[11px] text-slate-400">Full Color Illustrated PDF</span>
+            <Layers className="w-5 h-5 text-indigo-400 mx-auto mb-1.5" />
+            <span className="text-base font-black text-white block">380+ Pages</span>
+            <span className="text-[11px] text-slate-400">Full Color Illustrated PDF</span>
           </div>
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-            <Laptop className="w-4 h-4 text-amber-400 mx-auto mb-1" />
-            <span className="text-sm sm:text-base font-black text-white block">50+ AI Tools</span>
-            <span className="text-[10px] sm:text-[11px] text-slate-400">Practical Step-by-Step</span>
+            <Laptop className="w-5 h-5 text-amber-400 mx-auto mb-1.5" />
+            <span className="text-base font-black text-white block">50+ AI Tools</span>
+            <span className="text-[11px] text-slate-400">Practical Step-by-Step</span>
           </div>
           <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-            <Smartphone className="w-4 h-4 text-teal-400 mx-auto mb-1" />
-            <span className="text-sm sm:text-base font-black text-white block">100% Mobile Ready</span>
-            <span className="text-[10px] sm:text-[11px] text-slate-400">Read on Phone & PC</span>
+            <Smartphone className="w-5 h-5 text-teal-400 mx-auto mb-1.5" />
+            <span className="text-base font-black text-white block">100% Mobile Ready</span>
+            <span className="text-[11px] text-slate-400">Read on Phone & PC</span>
           </div>
         </div>
       </section>
 
-      {/* 5. 4-BOOKS SHOWCASE: HORIZONTAL CAROUSEL + HORIZONTAL TABS */}
-      <section id="books-breakdown" className="py-10 md:py-14 px-4 md:px-8 max-w-5xl mx-auto space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div className="space-y-1">
-            <span className="text-xs font-black uppercase tracking-widest text-emerald-400">
-              What's Inside The Master Combo
-            </span>
-            <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-              Explore All 4 Practical AI E-Books
-            </h2>
-            <p className="text-xs text-slate-400 max-w-lg">
-              Horizontal cards me dekhein har book ke key chapters aur practical tools.
-            </p>
-          </div>
-
-          {/* Horizontal Scroll Arrows */}
-          <div className="flex items-center space-x-2 self-start sm:self-auto">
-            <button
-              onClick={() => scrollBooks('left')}
-              className="p-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
-              title="Previous Book"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => scrollBooks('right')}
-              className="p-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
-              title="Next Book"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+      {/* 5. DETAILED 4-BOOK BREAKDOWN (BENTO STYLE) */}
+      <section id="books-breakdown" className="py-14 px-4 md:px-8 max-w-4xl mx-auto space-y-8">
+        <div className="text-center space-y-2">
+          <span className="text-xs font-black uppercase tracking-widest text-emerald-400">
+            What's Inside The Master Combo
+          </span>
+          <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+            Explore All 4 Practical AI E-Books
+          </h2>
+          <p className="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">
+            Har book ko practical tarike se simple Hindi bhasha me design kiya gaya hai jisse aap turant implement kar sakein.
+          </p>
         </div>
 
-        {/* Horizontal Swipeable Cards Track */}
-        <div 
-          ref={booksScrollRef}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 px-1 scrollbar-none"
-        >
+        {/* 4 Books Detailed Cards */}
+        <div className="space-y-4">
           {booksList.map((book, idx) => (
             <div
               key={book.id}
-              className="snap-center shrink-0 w-[88%] sm:w-[420px] p-5 md:p-6 rounded-3xl bg-[#131724] border border-white/[0.08] hover:border-emerald-500/40 transition-all shadow-xl space-y-3.5 flex flex-col justify-between"
+              className="p-5 md:p-6 rounded-3xl bg-[#131724] border border-white/[0.08] hover:border-emerald-500/30 transition-all shadow-xl space-y-4"
             >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5">
-                  <div className="flex items-center space-x-2.5">
-                    <span className="text-2xl">{book.icon}</span>
-                    <div>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                          BOOK {book.number}
-                        </span>
-                        <h3 className="text-sm font-black text-white">
-                          {book.title}
-                        </h3>
-                      </div>
-                      <span className="text-[11px] text-slate-400 font-medium">
-                        {book.hindiSubtitle}
-                      </span>
-                    </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.06] pb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xl shrink-0">
+                    {book.icon}
                   </div>
-
-                  <span className="px-2 py-0.5 rounded-lg bg-white/[0.05] border border-white/[0.08] text-[10px] font-bold text-slate-300 shrink-0">
-                    {book.pages}
-                  </span>
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        BOOK {book.number}
+                      </span>
+                      <h3 className="text-base font-black text-white">
+                        {book.title}
+                      </h3>
+                    </div>
+                    <span className="text-xs text-slate-400 font-medium">
+                      {book.hindiSubtitle}
+                    </span>
+                  </div>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
-                  {book.desc}
-                </p>
-
-                <div className="p-3 rounded-2xl bg-[#090d16] border border-white/[0.06] space-y-1.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">
-                    Key Workflows:
+                <div className="flex items-center space-x-2 self-start sm:self-auto">
+                  <span className="px-2.5 py-1 rounded-xl bg-white/[0.05] border border-white/[0.08] text-[11px] font-bold text-slate-300">
+                    {book.pages}
                   </span>
-                  <div className="space-y-1 text-[11px] text-slate-300">
-                    {book.highlights.slice(0, 3).map((h, hIdx) => (
-                      <div key={hIdx} className="flex items-start space-x-1.5">
-                        <Check className="w-3 h-3 text-emerald-400 shrink-0 mt-0.5 stroke-[3]" />
-                        <span className="line-clamp-1">{h}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <span className="px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-bold text-emerald-400">
+                    HD Color PDF
+                  </span>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px]">
-                <span className="text-emerald-400 font-bold">100% Hindi PDF</span>
-                <span className="text-slate-400">Included in ₹{activeBundle.price} Combo</span>
+              <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+                {book.desc}
+              </p>
+
+              <div className="p-3.5 rounded-2xl bg-[#090d16] border border-white/[0.06] space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 block">
+                  Key Topics & Practical Workflows Covered:
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300">
+                  {book.highlights.map((h, hIdx) => (
+                    <div key={hIdx} className="flex items-start space-x-2">
+                      <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5 stroke-[3]" />
+                      <span>{h}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 6. TARGET AUDIENCE: HORIZONTAL 4-COLUMN CARDS */}
-      <section id="who-is-this-for" className="py-10 md:py-12 px-4 md:px-8 max-w-5xl mx-auto space-y-6">
-        <div className="text-center space-y-1">
+      {/* 6. WHO IS THIS FOR SECTION */}
+      <section id="who-is-this-for" className="py-12 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
+        <div className="text-center space-y-2">
           <span className="text-xs font-black uppercase tracking-widest text-indigo-400">
             Target Audience
           </span>
           <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
             Ye 4-in-1 Bundle Kiske Liye Hai?
           </h2>
-          <p className="text-xs text-slate-400 max-w-lg mx-auto">
-            Chahe aap student ho, job karte ho ya creator — ye bundle aapka 80% daily time bachayega.
+          <p className="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">
+            Chahe aap student ho, job karte ho ya apna kaam karte ho — ye bundle aapka 80% daily time bachayega.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {targetAudiences.map((aud, aIdx) => {
             const Icon = aud.icon;
             return (
               <div
                 key={aIdx}
-                className="p-4 sm:p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-2.5 hover:border-emerald-500/30 transition-all shadow-lg flex flex-col justify-between"
+                className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-3 hover:border-emerald-500/30 transition-all shadow-lg"
               >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/[0.06] text-slate-300">
-                      {aud.tag}
-                    </span>
-                  </div>
-                  <h3 className="text-xs sm:text-sm font-black text-white">
-                    {aud.title}
-                  </h3>
-                  <p className="text-[11px] text-slate-300 leading-relaxed">
-                    {aud.desc}
-                  </p>
+                <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                  <Icon className="w-5 h-5" />
                 </div>
+                <h3 className="text-sm font-black text-white">
+                  {aud.title}
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {aud.desc}
+                </p>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* 7. FREE MEGA BONUSES: HORIZONTAL 3-CARD GRID */}
-      <section id="free-bonuses" className="py-10 md:py-12 px-4 md:px-8 max-w-5xl mx-auto space-y-6">
+      {/* 7. FREE MEGA BONUSES (WORTH ₹4,999) */}
+      <section id="free-bonuses" className="py-12 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
         <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-[#162235] via-[#131724] to-[#0c0f1d] border-2 border-emerald-500/40 shadow-2xl shadow-emerald-500/10 space-y-6">
-          <div className="text-center space-y-1.5">
+          <div className="text-center space-y-2">
             <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 inline-block shadow-md">
               🎁 FREE MEGA BONUSES INCLUDED (VALUE ₹4,999)
             </span>
             <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
               Aaj Enroll Karne Par Ye 3 Bonuses Bilkul FREE Milenge
             </h2>
-            <p className="text-xs text-slate-300 max-w-lg mx-auto">
-              Main 4 E-books ke sath aapko niche diye gaye 3 bonus assets bina kisi extra charge ke unlock honge:
+            <p className="text-xs md:text-sm text-slate-300 max-w-lg mx-auto">
+              Main 4 E-books ke sath aapko niche diye gaye 3 high-value bonus assets bina kisi extra charge ke unlock honge:
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {bonuses.map((b) => (
               <div
                 key={b.id}
@@ -710,9 +617,8 @@ export default function AiMasteryLandingPage({
                       {b.val}
                     </span>
                   </div>
-                  <h4 className="text-xs font-black text-white flex items-center space-x-1.5">
-                    <span>{b.icon}</span>
-                    <span>{b.title}</span>
+                  <h4 className="text-xs font-black text-white">
+                    {b.title}
                   </h4>
                   <p className="text-[11px] text-slate-300 leading-tight">
                     {b.desc}
@@ -725,7 +631,7 @@ export default function AiMasteryLandingPage({
             ))}
           </div>
 
-          <div className="text-center pt-1">
+          <div className="text-center pt-2">
             <button
               onClick={() => onEnroll(activeBundle)}
               className="w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/30 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center space-x-2"
@@ -738,7 +644,7 @@ export default function AiMasteryLandingPage({
       </section>
 
       {/* 8. SPECIAL ORDER BUMP PREVIEW */}
-      <section className="py-6 px-4 md:px-8 max-w-5xl mx-auto">
+      <section className="py-6 px-4 md:px-8 max-w-4xl mx-auto">
         <div className="p-5 md:p-6 rounded-3xl bg-gradient-to-br from-[#182333] via-[#131724] to-[#0d101d] border border-emerald-500/30 shadow-2xl space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-3">
             <div className="flex items-center space-x-2.5">
@@ -753,7 +659,7 @@ export default function AiMasteryLandingPage({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-            <div className="md:col-span-6 rounded-2xl overflow-hidden border border-white/10 shadow-lg group bg-slate-950">
+            <div className="md:col-span-6 rounded-2xl overflow-hidden border border-white/10 shadow-lg group">
               <img
                 src="/bump-offer-banner.jpg"
                 alt="15,000+ AI Prompts Vault"
@@ -776,49 +682,25 @@ export default function AiMasteryLandingPage({
         </div>
       </section>
 
-      {/* 9. VERIFIED REVIEWS: HORIZONTAL SWIPEABLE CAROUSEL */}
-      <section id="reviews" className="py-10 md:py-14 px-4 md:px-8 max-w-5xl mx-auto space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div className="space-y-1">
-            <span className="text-xs font-black uppercase tracking-widest text-emerald-400">
-              Real Feedback
-            </span>
-            <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-              Readers & Students Kya Kehte Hain
-            </h2>
-            <p className="text-xs text-slate-400 max-w-lg">
-              18,900+ readers ne is bundle se apne study aur office work ko 10x fast kiya hai.
-            </p>
-          </div>
-
-          {/* Carousel Left/Right Controls */}
-          <div className="flex items-center space-x-2 self-start sm:self-auto">
-            <button
-              onClick={() => scrollReviews('left')}
-              className="p-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
-              title="Previous Reviews"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => scrollReviews('right')}
-              className="p-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white border border-white/10 active:scale-95 transition-all cursor-pointer"
-              title="Next Reviews"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+      {/* 9. VERIFIED REVIEWS */}
+      <section id="reviews" className="py-12 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
+        <div className="text-center space-y-2">
+          <span className="text-xs font-black uppercase tracking-widest text-emerald-400">
+            Real Feedback
+          </span>
+          <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+            Readers & Students Kya Kehte Hain
+          </h2>
+          <p className="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">
+            18,900+ se zyada readers ne is AI bundle ko padhkar apne daily work aur study me implement kiya hai.
+          </p>
         </div>
 
-        {/* Horizontal Swipeable Track */}
-        <div 
-          ref={reviewsScrollRef}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 px-1 scrollbar-none"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {reviews.map((rev, rIdx) => (
             <div
               key={rIdx}
-              className="snap-center shrink-0 w-[85%] sm:w-[350px] p-5 rounded-3xl bg-[#131724] border border-white/[0.08] hover:border-emerald-500/30 transition-all shadow-lg flex flex-col justify-between space-y-3"
+              className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-3 shadow-lg flex flex-col justify-between"
             >
               <div className="space-y-2">
                 <div className="flex text-amber-400 text-xs">
@@ -848,8 +730,8 @@ export default function AiMasteryLandingPage({
       </section>
 
       {/* 10. FAQ SECTION */}
-      <section id="faq" className="py-10 md:py-12 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
-        <div className="text-center space-y-1">
+      <section id="faq" className="py-12 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
+        <div className="text-center space-y-2">
           <span className="text-xs font-black uppercase tracking-widest text-indigo-400">
             Frequently Asked Questions
           </span>
@@ -858,7 +740,7 @@ export default function AiMasteryLandingPage({
           </h2>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {faqs.map((faq, fIdx) => {
             const isOpen = openFaqIdx === fIdx;
             return (
@@ -872,9 +754,9 @@ export default function AiMasteryLandingPage({
               >
                 <button
                   onClick={() => setOpenFaqIdx(isOpen ? null : fIdx)}
-                  className="w-full p-4 text-left flex items-center justify-between space-x-3 cursor-pointer"
+                  className="w-full p-4 md:p-5 text-left flex items-center justify-between space-x-3 cursor-pointer"
                 >
-                  <span className="text-xs sm:text-sm font-bold text-white">
+                  <span className="text-xs md:text-sm font-bold text-white">
                     {faq.q}
                   </span>
                   {isOpen ? (
@@ -884,7 +766,7 @@ export default function AiMasteryLandingPage({
                   )}
                 </button>
                 {isOpen && (
-                  <div className="px-4 pb-4 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-white/[0.06] pt-2.5">
+                  <div className="px-4 md:px-5 pb-4 text-xs md:text-sm text-slate-300 leading-relaxed border-t border-white/[0.06] pt-3">
                     {faq.a}
                   </div>
                 )}
@@ -895,17 +777,17 @@ export default function AiMasteryLandingPage({
       </section>
 
       {/* 11. FINAL BOTTOM CTA STRIP */}
-      <section className="py-10 md:py-12 px-4 md:px-8 max-w-4xl mx-auto">
-        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-emerald-950/60 via-[#131724] to-[#0c0f1d] border border-emerald-500/30 text-center space-y-3.5 shadow-2xl">
+      <section className="py-12 px-4 md:px-8 max-w-4xl mx-auto">
+        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-emerald-950/60 via-[#131724] to-[#0c0f1d] border border-emerald-500/30 text-center space-y-4 shadow-2xl">
           <h3 className="text-xl md:text-2xl font-black text-white">
             Ready to Master AI with India's #1 Hindi E-Book Combo?
           </h3>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto">
+          <p className="text-xs md:text-sm text-slate-300 max-w-lg mx-auto">
             Get instant Google Drive access to all 4 E-Books + 3 Free Bonuses for just ₹{activeBundle.price} (Flat 90% Launch Discount).
           </p>
           <button
             onClick={() => onEnroll(activeBundle)}
-            className="w-full sm:w-auto px-10 py-3.5 sm:py-4 rounded-full font-black text-xs sm:text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/40 hover:shadow-emerald-500/60 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center space-x-2 btn-shine-effect"
+            className="w-full sm:w-auto px-10 py-4 rounded-full font-black text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 shadow-xl shadow-emerald-500/40 hover:shadow-emerald-500/60 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center space-x-2 btn-shine-effect"
           >
             <Zap className="w-4 h-4 fill-slate-950" />
             <span>PAY ₹{activeBundle.price} & GET INSTANT ACCESS 🚀</span>
