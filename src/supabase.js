@@ -28,10 +28,21 @@ const getStoredProducts = () => {
     // Filter out system records from stored products
     prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
 
-    // Guarantee that prod-ai-mastery-hindi is present
+    // Guarantee that prod-ai-mastery-hindi is present and updated with official drive links
     const aiMastery = initialProducts.find(p => p.id === 'prod-ai-mastery-hindi');
-    if (aiMastery && !prods.some(p => p.id === 'prod-ai-mastery-hindi')) {
-      prods.unshift(aiMastery);
+    if (aiMastery) {
+      const aIdx = prods.findIndex(p => p.id === 'prod-ai-mastery-hindi');
+      if (aIdx >= 0) {
+        prods[aIdx] = {
+          ...prods[aIdx],
+          drive_download_url: aiMastery.drive_download_url,
+          bump_drive_url: aiMastery.bump_drive_url,
+          bump_image: aiMastery.bump_image,
+          cover_image: aiMastery.cover_image
+        };
+      } else {
+        prods.unshift(aiMastery);
+      }
     }
 
     // Guarantee that prod-course-ai defaults to App & Website Development with AI course while preserving user edits
@@ -110,7 +121,14 @@ export async function getProducts() {
               : { ...latestWebDev, ...p };
           }
           if (p.id === 'prod-ai-mastery-hindi' && aiMastery) {
-            return { ...aiMastery, ...p };
+            return {
+              ...aiMastery,
+              ...p,
+              drive_download_url: p.drive_download_url && !p.drive_download_url.includes('demo') ? p.drive_download_url : aiMastery.drive_download_url,
+              bump_drive_url: p.bump_drive_url && !p.bump_drive_url.includes('demo') ? p.bump_drive_url : aiMastery.bump_drive_url,
+              bump_image: p.bump_image || aiMastery.bump_image,
+              cover_image: p.cover_image || aiMastery.cover_image
+            };
           }
           return p;
         });

@@ -17,7 +17,7 @@ export const initialProducts = [
     bump_price: 49,
     bump_desc: "3,000+ ChatGPT, 2,000+ Gemini, 2,500+ AI Image Prompts, Marketing, Ads, SEO & Business Growth Vault.",
     bump_image: "/bump-offer-banner.jpg",
-    bump_drive_url: "https://drive.google.com/drive/folders/bazara-15k-prompts-vault-access-demo",
+    bump_drive_url: "https://drive.google.com/drive/folders/1oasuoPFBKL5JUpBKahxeRwlKQK4n8X4P?usp=drive_link",
     cover_image: "/ai-mastery-banner.jpg",
     gallery_images: [
       "/ai-mastery-banner.jpg",
@@ -62,7 +62,7 @@ export const initialProducts = [
     rating: 4.97,
     reviews_count: 2450,
     downloads_count: 18900,
-    drive_download_url: "https://drive.google.com/drive/folders/bazara-ai-mastery-hindi-4-books-access-demo",
+    drive_download_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
     short_desc: "Aapki apni Hindi bhasha me 4 powerful practical e-books ka master combo: AI Mastermind, Smart Office, AI For Students aur AI Money Maker. Step-by-step guides, prompts aur tools to master AI for study, work & online earning.",
     ebook_details: {
       pages_count: "380+ Pages (4 Full Color PDF eBooks)",

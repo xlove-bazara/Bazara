@@ -69,9 +69,11 @@ export default function AiMasteryLandingPage({
     reviews_count: 2450,
     downloads_count: 18900,
     short_desc: "Aapki apni Hindi bhasha me 4 powerful practical e-books ka master combo: AI Mastermind, Smart Office, AI For Students aur AI Money Maker. Step-by-step guides, prompts aur tools to master AI for study, work & online earning.",
-    drive_download_url: "https://drive.google.com/drive/folders/bazara-ai-mastery-hindi-4-books-access-demo",
-    bump_title: "5,000+ Viral ChatGPT Prompts Bank & Canva AI Templates",
-    bump_price: 49
+    drive_download_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
+    bump_title: "15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)",
+    bump_price: 49,
+    bump_image: "/bump-offer-banner.jpg",
+    bump_drive_url: "https://drive.google.com/drive/folders/1oasuoPFBKL5JUpBKahxeRwlKQK4n8X4P?usp=drive_link"
   };
 
   const activeBundle = {
