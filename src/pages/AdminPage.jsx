@@ -1950,12 +1950,17 @@ export default function AdminPage({
                   </p>
                 </div>
 
-                {/* Big Switch */}
+                {/* Big Switch (Instant Auto-Save) */}
                 <button
                   type="button"
-                  onClick={() => setIsMaintenanceMode(!isMaintenanceMode)}
+                  disabled={savingStoreLock}
+                  onClick={() => {
+                    const next = !isMaintenanceMode;
+                    setIsMaintenanceMode(next);
+                    handleSaveStoreLock(next);
+                  }}
                   className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out cursor-pointer focus:outline-none ${
-                    isMaintenanceMode ? 'bg-amber-500' : 'bg-slate-700'
+                    isMaintenanceMode ? 'bg-amber-500 shadow-lg shadow-amber-500/30' : 'bg-slate-700'
                   }`}
                 >
                   <div className={`w-6 h-6 rounded-full bg-white shadow-md transform transition-transform duration-300 ease-in-out ${
@@ -2095,13 +2100,14 @@ export default function AdminPage({
                 <button
                   type="button"
                   onClick={() => {
+                    sessionStorage.setItem('bazara_view_as_visitor', 'true');
                     localStorage.removeItem('bazara_admin_preview_active');
                     window.location.href = '/';
                   }}
                   className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 font-bold text-xs uppercase tracking-wider border border-white/10 active:scale-95 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
                 >
                   <Eye className="w-4 h-4 text-amber-400" />
-                  <span>View As Public Visitor</span>
+                  <span>View As Public Visitor 👁️</span>
                 </button>
               </div>
             </div>

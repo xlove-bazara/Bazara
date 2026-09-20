@@ -26,7 +26,7 @@ const getStoredProducts = () => {
       prods = JSON.parse(raw);
     }
     // Filter out system records from stored products
-    prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
+    prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons' && p.id !== 'system-settings');
 
     // Guarantee that prod-ai-mastery-hindi is present and updated with official drive links and active pricing
     const aiMastery = initialProducts.find(p => p.id === 'prod-ai-mastery-hindi');
@@ -102,7 +102,7 @@ export async function getProducts() {
         .order('created_at', { ascending: false });
       if (!error && data && data.length > 0) {
         // Filter out system internal config records
-        const userProducts = data.filter(p => p.category !== 'system' && p.id !== 'system-coupons');
+        const userProducts = data.filter(p => p.category !== 'system' && p.id !== 'system-coupons' && p.id !== 'system-settings');
 
         // Guarantee AI mastery and course masterclass are available
         let prods = [...userProducts];
@@ -396,12 +396,32 @@ export async function deleteProduct(productId) {
 export async function getSettings() {
   if (isSupabaseConfigured && supabase) {
     try {
+      // 1. Try to fetch from products table (system-settings)
       const { data, error } = await supabase
+        .from('products')
+        .select('short_desc')
+        .eq('id', 'system-settings')
+        .maybeSingle();
+      if (!error && data && data.short_desc) {
+        try {
+          const parsed = JSON.parse(data.short_desc);
+          const merged = { ...defaultSiteSettings, ...parsed };
+          localStorage.setItem(SETTINGS_KEY, JSON.stringify(merged));
+          return merged;
+        } catch (pe) {}
+      }
+
+      // 2. Fallback to site_settings table if configured
+      const { data: siteData, error: siteError } = await supabase
         .from('site_settings')
         .select('*')
         .limit(1)
-        .single();
-      if (!error && data) return data;
+        .maybeSingle();
+      if (!siteError && siteData) {
+        const merged = { ...defaultSiteSettings, ...siteData };
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(merged));
+        return merged;
+      }
     } catch (e) {
       console.warn('Supabase settings fetch error:', e);
     }
@@ -410,15 +430,32 @@ export async function getSettings() {
 }
 
 export async function updateSettings(newSettings) {
+  const merged = { ...defaultSiteSettings, ...newSettings };
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('site_settings').upsert([newSettings]);
+      // Upsert into products table as system-settings
+      const payload = {
+        id: 'system-settings',
+        title: 'Global Site Configuration',
+        price: 0,
+        drive_download_url: 'system',
+        cover_image: 'system',
+        category: 'system',
+        short_desc: JSON.stringify(merged)
+      };
+      const { error } = await supabase
+        .from('products')
+        .upsert(payload, { onConflict: 'id' });
+      if (error) {
+        console.warn('Supabase updateSettings product error, trying site_settings table:', error);
+        await supabase.from('site_settings').upsert([merged]);
+      }
     } catch (e) {
       console.warn('Supabase settings update error:', e);
     }
   }
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
-  return newSettings;
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(merged));
+  return merged;
 }
 
 export async function createOrder(orderPayload) {

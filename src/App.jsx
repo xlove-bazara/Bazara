@@ -274,15 +274,31 @@ export default function App() {
     initialProducts[0];
 
   const isMaintenanceActive = Boolean(settings?.is_maintenance_mode);
-  const isAuthorizedPreview = isAdminPreviewActive || checkAdminSession();
+  let isViewingAsVisitor = false;
+  try {
+    isViewingAsVisitor = sessionStorage.getItem('bazara_view_as_visitor') === 'true';
+  } catch (e) {}
+
+  const isAuthorizedPreview = !isViewingAsVisitor && (isAdminPreviewActive || checkAdminSession());
 
   // If Store is Locked and Visitor is NOT authorized with admin passcode -> show Maintenance Screen
   if (isMaintenanceActive && !isAuthorizedPreview && currentPage !== 'admin' && currentPage !== 'crm') {
     return (
       <MaintenanceModePage
         settings={settings}
-        onUnlockPreview={() => setIsAdminPreviewActive(true)}
-        onAdminLogin={() => navigateTo('admin', '/admin')}
+        onUnlockPreview={() => {
+          try {
+            sessionStorage.removeItem('bazara_view_as_visitor');
+            localStorage.setItem('bazara_admin_preview_active', 'true');
+          } catch (e) {}
+          setIsAdminPreviewActive(true);
+        }}
+        onAdminLogin={() => {
+          try {
+            sessionStorage.removeItem('bazara_view_as_visitor');
+          } catch (e) {}
+          navigateTo('admin', '/admin');
+        }}
       />
     );
   }
