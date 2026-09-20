@@ -86,13 +86,8 @@ export const resetTrackedPurchases = () => {
 export const trackPageView = (pageName = '') => {
   if (!isFbqAvailable()) return;
   try {
-    window.fbq('track', 'PageView', {
-      page_name: pageName,
-      page_path: typeof window !== 'undefined' ? window.location.pathname : ''
-    });
-    if (import.meta.env?.DEV) {
-      console.log(`[Meta Pixel] PageView tracked (${pageName || window.location.pathname})`);
-    }
+    window.fbq('track', 'PageView');
+    console.log(`[Meta Pixel 946148641877992] PageView fired (${pageName || (typeof window !== 'undefined' ? window.location.pathname : '')})`);
   } catch (err) {
     console.warn('[Meta Pixel] PageView tracking failed:', err);
   }
@@ -122,10 +117,7 @@ export const trackViewContent = (product) => {
     };
 
     window.fbq('track', 'ViewContent', params);
-
-    if (import.meta.env?.DEV) {
-      console.log('[Meta Pixel] ViewContent tracked:', params);
-    }
+    console.log('[Meta Pixel 946148641877992] ViewContent fired:', params);
   } catch (err) {
     console.warn('[Meta Pixel] ViewContent tracking failed:', err);
   }
@@ -157,10 +149,7 @@ export const trackInitiateCheckout = (product, totalAmount) => {
     };
 
     window.fbq('track', 'InitiateCheckout', params);
-
-    if (import.meta.env?.DEV) {
-      console.log('[Meta Pixel] InitiateCheckout tracked:', params);
-    }
+    console.log('[Meta Pixel 946148641877992] InitiateCheckout fired:', params);
   } catch (err) {
     console.warn('[Meta Pixel] InitiateCheckout tracking failed:', err);
   }
