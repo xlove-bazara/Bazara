@@ -61,9 +61,9 @@ export default function AiMasteryLandingPage({
     id: "prod-ai-mastery-hindi",
     slug: "ai-mastery-hindi-ebook-bundle",
     title: "AI Mastery in Hindi (4-in-1 Complete Practical E-Book Bundle)",
-    price: 1,
+    price: 99,
     original_price: 999,
-    discount_percentage: 99,
+    discount_percentage: 90,
     badge: "📚 4 E-Books Combo in Hindi",
     rating: 4.97,
     reviews_count: 2450,
@@ -71,7 +71,7 @@ export default function AiMasteryLandingPage({
     short_desc: "Aapki apni Hindi bhasha me 4 powerful practical e-books ka master combo: AI Mastermind, Smart Office, AI For Students aur AI Money Maker. Step-by-step guides, prompts aur tools to master AI for study, work & online earning.",
     drive_download_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
     bump_title: "15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)",
-    bump_price: 1,
+    bump_price: 49,
     bump_image: "/bump-offer-banner.jpg",
     bump_drive_url: "https://drive.google.com/drive/folders/1oasuoPFBKL5JUpBKahxeRwlKQK4n8X4P?usp=drive_link"
   };
