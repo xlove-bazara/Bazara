@@ -5,10 +5,26 @@ export const META_PIXEL_ID = '946148178341992';
 const TRACKED_PURCHASES_KEY = 'bazara_tracked_meta_purchases_v1';
 
 /**
- * Check if window.fbq is available
+ * Check if window.fbq is available or initialize fallback queue
  */
 const isFbqAvailable = () => {
-  return typeof window !== 'undefined' && typeof window.fbq === 'function';
+  if (typeof window === 'undefined') return false;
+  if (typeof window.fbq === 'function') return true;
+  try {
+    const n = function() {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!window._fbq) window._fbq = n;
+    n.push = n;
+    n.loaded = true;
+    n.version = '2.0';
+    n.queue = [];
+    window.fbq = n;
+    window.fbq('init', META_PIXEL_ID);
+    return true;
+  } catch (e) {
+    return false;
+  }
 };
 
 /**
