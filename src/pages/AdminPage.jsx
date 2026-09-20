@@ -328,6 +328,7 @@ export default function AdminPage({
     bump_title: '',
     bump_price: 99,
     bump_desc: '',
+    bump_image: '',
     bump_drive_url: ''
   };
 
@@ -2367,6 +2368,17 @@ export default function AdminPage({
                               value={formData.bump_desc || ''}
                               onChange={(e) => setFormData({ ...formData, bump_desc: e.target.value })}
                               placeholder="e.g. Pre-configured cinematic animations & sound effects..."
+                              className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white focus:border-amber-400 focus:outline-none text-[11px]"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-semibold text-slate-300 block mb-1">Bump Offer Image / Banner URL</label>
+                            <input
+                              type="text"
+                              value={formData.bump_image || ''}
+                              onChange={(e) => setFormData({ ...formData, bump_image: e.target.value })}
+                              placeholder="/bump-offer-banner.jpg or https://..."
                               className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-white focus:border-amber-400 focus:outline-none text-[11px]"
                             />
                           </div>

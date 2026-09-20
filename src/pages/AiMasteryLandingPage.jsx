@@ -645,21 +645,40 @@ export default function AiMasteryLandingPage({
 
       {/* 8. SPECIAL ORDER BUMP PREVIEW */}
       <section className="py-6 px-4 md:px-8 max-w-4xl mx-auto">
-        <div className="p-5 rounded-3xl bg-[#131724] border border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
-              <h3 className="text-xs font-black text-white uppercase tracking-wider">
-                Special Order Bump Available at Checkout
-              </h3>
+        <div className="p-5 md:p-6 rounded-3xl bg-gradient-to-br from-[#182333] via-[#131724] to-[#0d101d] border border-emerald-500/30 shadow-2xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-3">
+            <div className="flex items-center space-x-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-500/20">
+                EXCLUSIVE CHECKOUT ORDER BUMP
+              </span>
             </div>
-            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
-              Optional Add-on (+₹49)
+            <span className="text-xs font-black px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 self-start sm:self-auto">
+              Optional Add-on (+₹49 ONLY)
             </span>
           </div>
-          <p className="text-xs text-slate-300">
-            Checkout karte waqt aap <strong>5,000+ Viral ChatGPT Prompts Bank + Canva AI Templates</strong> ko sirf +₹49 me 1-click me add kar sakte hain!
-          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            <div className="md:col-span-6 rounded-2xl overflow-hidden border border-white/10 shadow-lg group">
+              <img
+                src="/bump-offer-banner.jpg"
+                alt="15,000+ AI Prompts Vault"
+                className="w-full aspect-[16/9] object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="md:col-span-6 space-y-2">
+              <h3 className="text-base font-black text-white leading-snug">
+                15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                3,000+ ChatGPT, 2,000+ Gemini, 2,500+ AI Image Prompts, Marketing, Ads, SEO & Business Growth Prompts worth ₹999 — Checkout par sirf <strong>+₹49</strong> me 1-click me add kar sakte hain!
+              </p>
+              <div className="pt-2 flex items-center space-x-2 text-[11px] text-emerald-400 font-bold">
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                <span>Available inside 1-Click Fast Checkout</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

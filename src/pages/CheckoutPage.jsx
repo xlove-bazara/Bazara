@@ -65,9 +65,10 @@ export default function CheckoutPage({
   }, []);
 
   const basePrice = product.price;
-  const upsellPrice = product.bump_price || 99;
-  const upsellTitle = product.bump_title || "500+ CapCut XML Presets & Viral SFX Vault";
-  const upsellDesc = product.bump_desc || "Pre-configured cinematic text animations, transitions & 300+ viral sound effects.";
+  const upsellPrice = product.bump_price || 49;
+  const upsellTitle = product.bump_title || "15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)";
+  const upsellDesc = product.bump_desc || "3,000+ ChatGPT, 2,000+ Gemini, 2,500+ AI Image Prompts, Marketing, Ads, SEO & Business Growth Vault.";
+  const upsellImage = product.bump_image || "/bump-offer-banner.jpg";
   const subtotal = basePrice + (hasBumpOffer && addUpsell ? upsellPrice : 0);
   const total = Math.max(0, subtotal - discountAmount);
 
@@ -337,18 +338,18 @@ export default function CheckoutPage({
         {hasBumpOffer && (
           <section 
             onClick={() => setAddUpsell(!addUpsell)}
-            className={`relative overflow-hidden p-4 rounded-3xl transition-all duration-300 cursor-pointer shadow-2xl select-none animate-fade-in-up [animation-delay:80ms] ${
+            className={`relative overflow-hidden p-4 sm:p-5 rounded-3xl transition-all duration-300 cursor-pointer shadow-2xl select-none animate-fade-in-up [animation-delay:80ms] ${
               addUpsell 
-                ? 'bg-gradient-to-br from-emerald-950/40 via-[#131724] to-[#0d101d] border-2 border-emerald-500 shadow-emerald-500/15 ring-2 ring-emerald-500/20 scale-[1.01]' 
-                : 'bg-[#131724]/80 border border-white/10 hover:border-white/20 hover:scale-[1.005]'
+                ? 'bg-gradient-to-br from-emerald-950/50 via-[#131724] to-[#0d101d] border-2 border-emerald-500 shadow-emerald-500/20 ring-2 ring-emerald-500/30 scale-[1.01]' 
+                : 'bg-[#131724]/90 border border-white/10 hover:border-white/25 hover:scale-[1.005]'
             }`}
           >
             {/* Subtle Ambient Radial Glow when selected */}
             {addUpsell && (
-              <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
             )}
 
-            <div className="space-y-3 relative z-10">
+            <div className="space-y-3.5 relative z-10">
               {/* Header: Limited Time Offer Badge + Non-breaking Price Tag */}
               <div className="flex items-center justify-between gap-2">
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-slate-950 flex items-center space-x-1 shrink-0 shadow-sm">
@@ -357,47 +358,52 @@ export default function CheckoutPage({
                 </span>
 
                 {/* Price Tag with NO line break */}
-                <div className="flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-white/[0.04] px-2.5 py-1 rounded-xl border border-white/[0.08]">
+                <div className="flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-white/[0.06] px-2.5 py-1 rounded-xl border border-white/[0.1]">
                   <span className="text-sm font-black text-emerald-400">+₹{upsellPrice}</span>
-                  <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400">
+                  <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
                     SPECIAL OFFER
                   </span>
                 </div>
               </div>
 
-              {/* Product Title & Visual Preview Row */}
-              <div className="flex items-start space-x-3">
-                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-lg transition-all ${
-                  addUpsell 
-                    ? 'bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 shadow-emerald-500/20' 
-                    : 'bg-white/10 text-slate-400 border border-white/10'
-                }`}>
-                  <Sparkles className="w-5 h-5" />
+              {/* High-Converting Bump Banner Photo */}
+              {upsellImage && (
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-lg group bg-slate-950">
+                  <img
+                    src={upsellImage}
+                    alt={upsellTitle}
+                    className="w-full aspect-[16/9] object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-black text-amber-300 border border-white/10 flex items-center space-x-1 shadow-md">
+                    <Sparkles className="w-3 h-3 text-amber-400" />
+                    <span>WORTH ₹999 • TODAY ONLY ₹{upsellPrice}</span>
+                  </div>
                 </div>
+              )}
 
-                <div className="space-y-1 min-w-0 flex-1">
-                  <h4 className="text-xs font-black text-white leading-snug">
-                    {upsellTitle}
-                  </h4>
-                  <p className="text-[11px] text-slate-300 leading-tight">
-                    {upsellDesc}
-                  </p>
-                </div>
+              {/* Product Title & Visual Preview Row */}
+              <div className="space-y-1">
+                <h4 className="text-xs sm:text-sm font-black text-white leading-snug">
+                  {upsellTitle}
+                </h4>
+                <p className="text-[11px] text-slate-300 leading-tight">
+                  {upsellDesc}
+                </p>
               </div>
 
               {/* Micro Benefits Checklist */}
-              <div className="grid grid-cols-1 gap-1.5 py-1 text-[11px] text-slate-300 border-t border-white/[0.06]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 py-1 text-[11px] text-slate-300 border-t border-white/[0.06]">
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
                     <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
                   </div>
-                  <span>1-Click direct Google Drive delivery</span>
+                  <span>Instant 1-Click G-Drive Access</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
                     <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
                   </div>
-                  <span>Instant access along with your main purchase</span>
+                  <span>Ready to Copy & Paste Prompts</span>
                 </div>
               </div>
 
