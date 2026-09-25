@@ -30,7 +30,10 @@ import {
   Sliders,
   ExternalLink,
   Tag,
-  ArrowUpRight
+  ArrowUpRight,
+  ZoomIn,
+  ZoomOut,
+  RotateCw
 } from 'lucide-react';
 
 export default function VideoEditingLandingPage({ 
@@ -72,8 +75,29 @@ export default function VideoEditingLandingPage({
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState(0);
 
-  // Modal State for "View Details"
+  // Modal State for "View Details" Poster Lightbox
   const [modalProduct, setModalProduct] = useState(null);
+  const [lightboxZoom, setLightboxZoom] = useState(100);
+  const [lightboxRotation, setLightboxRotation] = useState(0);
+
+  // Lock body scroll and listen for Escape key when lightbox is open
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setModalProduct(null);
+      }
+    };
+    if (modalProduct) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [modalProduct]);
 
   // Live Toast Notification
   const [toastNotification, setToastNotification] = useState(null);
@@ -584,39 +608,19 @@ export default function VideoEditingLandingPage({
                       </span>
                     </div>
 
-                    {/* Product Poster Preview on Card */}
-                    {prod.image && (
-                      <div 
-                        onClick={() => setModalProduct(prod)}
-                        className="relative my-3 rounded-2xl overflow-hidden aspect-[9/13] bg-slate-950/90 border border-white/[0.08] group/img cursor-pointer shadow-lg"
-                      >
-                        <img 
-                          src={prod.image} 
-                          alt={prod.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end justify-center pb-3">
-                          <span className="text-[11px] font-bold text-white bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow-lg">
-                            <Eye className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>View Full Poster</span>
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
                     {/* Product Title & Subtitle */}
-                    <h3 className="text-lg font-black text-white leading-snug">
+                    <h3 className="text-xl font-black text-white leading-snug">
                       {prod.title}
                     </h3>
-                    <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                    <p className="text-xs text-slate-400 mt-1.5 font-medium leading-relaxed">
                       {prod.subtitle}
                     </p>
 
                     {/* Features Checklist */}
                     <ul className="mt-5 space-y-2.5">
                       {prod.features.slice(0, isCombo ? 6 : 4).map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-xs text-slate-300 leading-snug">
-                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                        <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-300 leading-snug">
+                          <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                           <span>{feat}</span>
                         </li>
                       ))}
@@ -634,24 +638,28 @@ export default function VideoEditingLandingPage({
                           ₹{prod.originalPrice}
                         </span>
                       </div>
-                      <span className="text-[10.5px] font-semibold text-emerald-300/80">
+                      <span className="text-xs font-semibold text-slate-400">
                         Save ₹{prod.saveAmount}
                       </span>
                     </div>
 
                     {/* View Details Button */}
                     <button
-                      onClick={() => setModalProduct(prod)}
-                      className="w-full mb-2 py-2 px-3 rounded-xl border border-white/10 hover:border-emerald-500/40 bg-white/[0.03] text-xs font-semibold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5"
+                      onClick={() => {
+                        setLightboxZoom(100);
+                        setLightboxRotation(0);
+                        setModalProduct(prod);
+                      }}
+                      className="w-full mb-2.5 py-2.5 px-3 rounded-xl border border-white/15 hover:border-emerald-500/50 bg-white/[0.04] hover:bg-white/[0.08] text-xs font-bold text-slate-200 hover:text-white transition-all flex items-center justify-center gap-2"
                     >
-                      <Eye className="w-3.5 h-3.5 text-emerald-400" />
+                      <Eye className="w-4 h-4 text-emerald-400" />
                       <span>View Details</span>
                     </button>
 
                     {/* Buy Now Button with Shimmer Sweep */}
                     <button
                       onClick={() => onBuyProduct(prod)}
-                      className={`btn-shine-effect w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+                      className={`btn-shine-effect w-full py-3.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 active:scale-95 ${
                         isCombo
                           ? 'bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 shadow-lg shadow-emerald-500/30'
                           : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/10'
@@ -914,72 +922,135 @@ export default function VideoEditingLandingPage({
         </div>
       )}
 
-      {/* 15. "VIEW DETAILS" PRODUCT MODAL */}
+      {/* 15. "VIEW DETAILS" FULL POSTER LIGHTBOX MODAL */}
       {modalProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="bg-slate-900 border border-white/20 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setModalProduct(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full bg-white/10 z-10"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div 
+          className="fixed inset-0 z-[100] flex flex-col justify-between bg-black/95 backdrop-blur-xl animate-fade-in select-none"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setModalProduct(null);
+            }
+          }}
+        >
+          {/* Top Header & Toolbar Controls */}
+          <div className="w-full bg-slate-950/90 border-b border-white/10 px-4 py-3 flex items-center justify-between gap-3 z-30 shrink-0">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0">
+                {modalProduct.badge || "OFFICIAL POSTER"}
+              </span>
+              <h3 className="text-xs sm:text-sm font-bold text-white truncate">
+                {modalProduct.title}
+              </h3>
+            </div>
 
-            {/* Full High-Res Official Poster in Modal */}
-            {modalProduct.image && (
-              <div className="relative mb-4 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+            {/* Lightbox Controls */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {/* Zoom Out */}
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(prev => Math.max(50, prev - 25))}
+                title="Zoom Out"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-slate-200 hover:text-white transition"
+              >
+                <ZoomOut className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+
+              {/* Zoom Percentage / Reset */}
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(100)}
+                title="Click to reset zoom to 100%"
+                className="px-2.5 py-1 text-xs font-bold text-slate-300 hover:text-white rounded-xl bg-white/10 hover:bg-white/20 transition min-w-[52px] text-center"
+              >
+                {lightboxZoom}%
+              </button>
+
+              {/* Zoom In */}
+              <button
+                type="button"
+                onClick={() => setLightboxZoom(prev => Math.min(250, prev + 25))}
+                title="Zoom In"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-slate-200 hover:text-white transition"
+              >
+                <ZoomIn className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+
+              {/* Rotate 90deg */}
+              <button
+                type="button"
+                onClick={() => setLightboxRotation(prev => (prev + 90) % 360)}
+                title="Rotate 90°"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-slate-200 hover:text-white transition"
+              >
+                <RotateCw className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setModalProduct(null)}
+                title="Close Lightbox"
+                className="p-2 ml-1 rounded-xl bg-white/10 hover:bg-rose-600 active:scale-95 text-slate-200 hover:text-white transition"
+              >
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Central Image Viewport (Scrollable & Zoomable) */}
+          <div 
+            className="flex-1 w-full overflow-auto flex items-center justify-center p-3 sm:p-6"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setModalProduct(null);
+            }}
+          >
+            <div 
+              className="transition-transform duration-200 ease-out origin-center flex items-center justify-center max-w-full max-h-full"
+              style={{
+                transform: `scale(${lightboxZoom / 100}) rotate(${lightboxRotation}deg)`
+              }}
+            >
+              {modalProduct.image ? (
                 <img 
                   src={modalProduct.image} 
                   alt={modalProduct.title}
-                  className="w-full h-auto max-h-[460px] object-contain mx-auto"
+                  className="max-h-[72vh] w-auto max-w-[92vw] sm:max-w-xl md:max-w-2xl object-contain rounded-2xl shadow-2xl border border-white/10 select-none"
+                  draggable={false}
                 />
-              </div>
-            )}
-
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">
-              {modalProduct.badge}
-            </span>
-
-            <h3 className="text-xl font-black text-white mt-2">
-              {modalProduct.title}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              {modalProduct.tagline}
-            </p>
-
-            <div className="my-5 p-4 rounded-2xl bg-slate-950/60 border border-white/[0.06]">
-              <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                What's Included in This Pack:
-              </div>
-              <ul className="space-y-2 text-xs text-slate-300">
-                {modalProduct.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+              ) : (
+                <div className="text-slate-400 text-sm">No poster image available</div>
+              )}
             </div>
+          </div>
 
-            <div className="flex items-baseline justify-between mb-5">
-              <div>
-                <span className="text-2xl font-black text-emerald-400">₹{modalProduct.price}</span>
-                <span className="text-xs text-slate-500 line-through ml-2">₹{modalProduct.originalPrice}</span>
+          {/* Bottom Sticky Action / Pricing Bar for High Conversions */}
+          <div className="w-full bg-slate-950/95 border-t border-white/10 px-4 py-3 z-30 shrink-0">
+            <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-emerald-400">
+                  ₹{modalProduct.price}
+                </span>
+                <span className="text-xs text-slate-500 line-through">
+                  ₹{modalProduct.originalPrice}
+                </span>
+                <span className="hidden sm:inline-block text-[11px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                  Save ₹{modalProduct.saveAmount} ({modalProduct.discount})
+                </span>
               </div>
-              <span className="text-xs font-semibold text-emerald-300">Save ₹{modalProduct.saveAmount} (96% OFF)</span>
-            </div>
 
-            <button
-              onClick={() => {
-                const p = modalProduct;
-                setModalProduct(null);
-                onBuyProduct(p);
-              }}
-              className="btn-shine-effect w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 active:scale-95"
-            >
-              <Zap className="w-4 h-4 fill-slate-950" />
-              <span>Proceed to Instant Checkout · ₹{modalProduct.price}</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const p = modalProduct;
+                  setModalProduct(null);
+                  onBuyProduct(p);
+                }}
+                className="btn-shine-effect py-2.5 px-6 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-95"
+              >
+                <Zap className="w-4 h-4 fill-slate-950" />
+                <span>Buy Now · ₹{modalProduct.price}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
