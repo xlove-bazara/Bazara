@@ -317,15 +317,20 @@ export default function VideoEditingLandingPage({
       <header className="border-b border-white/[0.08] bg-[#090b12]/80 backdrop-blur-xl sticky top-[37px] z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Sparkles className="w-5 h-5 text-black" />
-            </div>
+            <img
+              src="/logo.png?v=2"
+              alt="bazara.in"
+              className="w-9 h-9 rounded-xl object-contain shadow-lg shadow-emerald-500/20"
+            />
             <div>
-              <span className="text-lg font-black tracking-tight text-white flex items-center gap-1">
-                EditPro <span className="text-emerald-400">Store</span>
-              </span>
+              <div className="flex items-baseline space-x-0.5">
+                <span className="text-lg font-black tracking-tight text-white uppercase">
+                  bazara
+                </span>
+                <span className="text-sm font-black text-emerald-400">.in</span>
+              </div>
               <span className="hidden xs:block text-[9.5px] uppercase font-bold tracking-widest text-slate-400 -mt-1">
-                Pro Editing Vault
+                Video Editing Hub
               </span>
             </div>
           </div>
@@ -687,7 +692,7 @@ export default function VideoEditingLandingPage({
                 <tr>
                   <th className="p-3.5 sm:p-4 font-bold">Feature</th>
                   <th className="p-3.5 sm:p-4 text-slate-400 font-semibold">Envato / MotionArray</th>
-                  <th className="p-3.5 sm:p-4 text-emerald-400 font-black bg-emerald-500/10">EditPro Store Combo</th>
+                  <th className="p-3.5 sm:p-4 text-emerald-400 font-black bg-emerald-500/10">Bazara.in Combo</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.06] text-slate-300">
@@ -862,13 +867,16 @@ export default function VideoEditingLandingPage({
       <footer className="border-t border-white/[0.08] bg-black py-8 text-center text-xs text-slate-400">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <span className="font-bold text-white">EditPro Store</span>
-            <span>• Instant Digital Delivery</span>
+            <img src="/logo.png?v=2" alt="bazara.in" className="w-5 h-5 rounded-lg object-contain opacity-90" />
+            <span className="font-bold text-white uppercase tracking-wider">
+              bazara<span className="text-emerald-400">.in</span>
+            </span>
+            <span className="text-slate-500">•</span>
+            <span>Instant Digital Delivery</span>
           </div>
 
           <p className="text-slate-400 text-[11px]">
-            © {new Date().getFullYear()} EditPro Store. All Rights Reserved. Not affiliated with Adobe or ByteDance.
+            © {new Date().getFullYear()} Bazara.in. All Rights Reserved. Instant Digital Product Delivery Platform.
           </p>
         </div>
       </footer>
