@@ -35,7 +35,17 @@ const getStoredProducts = () => {
       if (match) {
         const existIdx = prods.findIndex(p => p.id === id);
         if (existIdx >= 0) {
-          prods[existIdx] = { ...match, ...prods[existIdx] };
+          prods[existIdx] = { 
+            ...prods[existIdx], 
+            ...match,
+            cover_image: match.cover_image,
+            enable_bump_offer: match.enable_bump_offer,
+            bump_title: match.bump_title,
+            bump_price: match.bump_price,
+            bump_desc: match.bump_desc,
+            bump_image: match.bump_image,
+            bump_drive_url: match.bump_drive_url
+          };
         } else {
           prods.unshift(match);
         }

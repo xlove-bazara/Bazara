@@ -110,6 +110,14 @@ export default function VideoEditingLandingPage({
       originalPrice: 2499,
       saveAmount: 2400,
       isCombo: false,
+      image: "/poster-editing-assets.jpg",
+      cover_image: "/poster-editing-assets.jpg",
+      enable_bump_offer: true,
+      bump_title: "AI Mastery in Hindi: 4 Powerful E-Books to Master ChatGPT, Office Automation & Online Earning",
+      bump_price: 49,
+      bump_desc: "⚡ SPECIAL ADD-ON (90% OFF): Video editing ke viral scripts generate karne, Excel/office automation aur ChatGPT se earning karne ke 4 practical Hindi E-Books + 15,000+ Ready Prompts Vault!",
+      bump_image: "/ai-mastery-banner.jpg",
+      bump_drive_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
       tagline: "Instant cinematic glow for all your videos & reels",
       features: [
         "1,000+ Cinematic 3D LUTs (Teal-Orange, Moody, Wedding, Vintage, Film)",
@@ -132,6 +140,14 @@ export default function VideoEditingLandingPage({
       originalPrice: 1999,
       saveAmount: 1900,
       isCombo: false,
+      image: "/poster-editing-course.jpg",
+      cover_image: "/poster-editing-course.jpg",
+      enable_bump_offer: true,
+      bump_title: "AI Mastery in Hindi: 4 Powerful E-Books to Master ChatGPT, Office Automation & Online Earning",
+      bump_price: 49,
+      bump_desc: "⚡ SPECIAL ADD-ON (90% OFF): Video editing ke viral scripts generate karne, Excel/office automation aur ChatGPT se earning karne ke 4 practical Hindi E-Books + 15,000+ Ready Prompts Vault!",
+      bump_image: "/ai-mastery-banner.jpg",
+      bump_drive_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
       tagline: "From beginner to high-paid freelance video editor",
       features: [
         "5 Complete Step-by-Step Editing Courses in 1 Master Bundle",
@@ -154,6 +170,14 @@ export default function VideoEditingLandingPage({
       originalPrice: 2999,
       saveAmount: 2800,
       isCombo: false,
+      image: "/poster-capcut-pro.jpg",
+      cover_image: "/poster-capcut-pro.jpg",
+      enable_bump_offer: true,
+      bump_title: "AI Mastery in Hindi: 4 Powerful E-Books to Master ChatGPT, Office Automation & Online Earning",
+      bump_price: 49,
+      bump_desc: "⚡ SPECIAL ADD-ON (90% OFF): Video editing ke viral scripts generate karne, Excel/office automation aur ChatGPT se earning karne ke 4 practical Hindi E-Books + 15,000+ Ready Prompts Vault!",
+      bump_image: "/ai-mastery-banner.jpg",
+      bump_drive_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
       tagline: "Unlock 100% VIP effects, transitions & no watermark export",
       features: [
         "All CapCut Pro Transitions, 3D Effects & AI Filters Unlocked",
@@ -176,6 +200,14 @@ export default function VideoEditingLandingPage({
       originalPrice: 7497,
       saveAmount: 7198,
       isCombo: true,
+      image: "/poster-editor-combo.jpg",
+      cover_image: "/poster-editor-combo.jpg",
+      enable_bump_offer: true,
+      bump_title: "AI Mastery in Hindi: 4 Powerful E-Books to Master ChatGPT, Office Automation & Online Earning",
+      bump_price: 49,
+      bump_desc: "⚡ SPECIAL ADD-ON (90% OFF): Video editing ke viral scripts generate karne, Excel/office automation aur ChatGPT se earning karne ke 4 practical Hindi E-Books + 15,000+ Ready Prompts Vault!",
+      bump_image: "/ai-mastery-banner.jpg",
+      bump_drive_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
       tagline: "Everything you will ever need to edit viral videos in one master vault",
       features: [
         "Everything in Video Editing Mega Course (All 5 Full Courses)",
@@ -552,6 +584,26 @@ export default function VideoEditingLandingPage({
                       </span>
                     </div>
 
+                    {/* Product Poster Preview on Card */}
+                    {prod.image && (
+                      <div 
+                        onClick={() => setModalProduct(prod)}
+                        className="relative my-3 rounded-2xl overflow-hidden aspect-[9/13] bg-slate-950/90 border border-white/[0.08] group/img cursor-pointer shadow-lg"
+                      >
+                        <img 
+                          src={prod.image} 
+                          alt={prod.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end justify-center pb-3">
+                          <span className="text-[11px] font-bold text-white bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow-lg">
+                            <Eye className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>View Full Poster</span>
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Product Title & Subtitle */}
                     <h3 className="text-lg font-black text-white leading-snug">
                       {prod.title}
@@ -868,10 +920,21 @@ export default function VideoEditingLandingPage({
           <div className="bg-slate-900 border border-white/20 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setModalProduct(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full bg-white/10"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full bg-white/10 z-10"
             >
               <X className="w-5 h-5" />
             </button>
+
+            {/* Full High-Res Official Poster in Modal */}
+            {modalProduct.image && (
+              <div className="relative mb-4 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+                <img 
+                  src={modalProduct.image} 
+                  alt={modalProduct.title}
+                  className="w-full h-auto max-h-[460px] object-contain mx-auto"
+                />
+              </div>
+            )}
 
             <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">
               {modalProduct.badge}
