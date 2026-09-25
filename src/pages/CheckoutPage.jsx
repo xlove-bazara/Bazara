@@ -341,119 +341,79 @@ export default function CheckoutPage({
           )}
         </section>
 
-        {/* ================= 2. ULTRA-HIGH CONVERTING ADD-ON BUMP (ONLY IF ENABLED) ================= */}
-
+        {/* ================= 2. ULTRA-COMPACT HIGH-CONVERTING ADD-ON BUMP ================= */}
         {hasBumpOffer && (
           <section 
             onClick={() => setAddUpsell(!addUpsell)}
-            className={`relative overflow-hidden p-4 sm:p-5 rounded-3xl transition-all duration-300 cursor-pointer select-none animate-fade-in-up [animation-delay:80ms] ${
+            className={`relative overflow-hidden p-3.5 sm:p-4 rounded-2xl transition-all duration-300 cursor-pointer select-none animate-fade-in-up [animation-delay:80ms] ${
               addUpsell 
-                ? 'bg-gradient-to-br from-emerald-950/60 via-[#101524] to-[#0c0f1a] border-2 border-emerald-400 shadow-2xl shadow-emerald-500/25 ring-2 ring-emerald-400/40 scale-[1.01]' 
-                : 'bg-[#101422] border-2 border-dashed border-emerald-500/40 hover:border-emerald-400/80 hover:bg-[#13192b]'
+                ? 'bg-gradient-to-r from-emerald-950/80 via-[#101928] to-[#0c121e] border-2 border-emerald-400 shadow-xl shadow-emerald-500/20 ring-1 ring-emerald-400/40' 
+                : 'bg-[#101422]/90 border-2 border-dashed border-emerald-500/40 hover:border-emerald-400 hover:bg-[#13192b]'
             }`}
           >
-            {/* Subtle Ambient Radial Glow when selected */}
-            {addUpsell && (
-              <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
-            )}
+            {/* Top Micro Badges Row */}
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <span className="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase tracking-wider bg-rose-500 text-white flex items-center gap-1 shadow-sm">
+                <Clock className="w-2.5 h-2.5" />
+                <span>ONE-TIME SPECIAL OFFER</span>
+              </span>
+              <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-md border border-emerald-500/30">
+                SAVE 90% (WORTH ₹999)
+              </span>
+            </div>
 
-            <div className="space-y-3.5 relative z-10">
-              {/* Header: Limited Time Offer Badge + Non-breaking Price Tag */}
-              <div className="flex items-center justify-between gap-2">
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500 text-white flex items-center space-x-1 shrink-0 shadow-sm">
-                  <Clock className="w-3 h-3" />
-                  <span>ONE-TIME SPECIAL OFFER</span>
-                </span>
-
-                {/* Savings Pill */}
-                <div className="flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-emerald-500/15 px-2.5 py-1 rounded-full border border-emerald-500/30">
-                  <Sparkles className="w-3 h-3 text-emerald-400" />
-                  <span className="text-[10px] font-black text-emerald-300 uppercase tracking-wider">
-                    SAVE ₹950 (90% OFF)
-                  </span>
-                </div>
+            {/* Main Compact Content: Checkbox + Thumbnail + Details */}
+            <div className="flex items-center gap-3">
+              {/* Checkbox Box */}
+              <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                addUpsell 
+                  ? 'bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/30 ring-2 ring-emerald-300' 
+                  : 'border-2 border-emerald-400/80 bg-black/50'
+              }`}>
+                {addUpsell ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" /> : null}
               </div>
 
-              {/* High-Converting Bump Banner Photo */}
+              {/* Small Thumbnail */}
               {upsellImage && (
-                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-lg group bg-slate-950">
-                  <img
-                    src={upsellImage}
-                    alt={upsellTitle}
-                    className="w-full aspect-[16/9] object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[10px] font-black text-amber-300 border border-white/10 flex items-center space-x-1 shadow-md">
-                    <Sparkles className="w-3 h-3 text-amber-400" />
-                    <span>WORTH ₹999 • TODAY ONLY ₹{upsellPrice}</span>
-                  </div>
-                </div>
+                <img
+                  src={upsellImage}
+                  alt={upsellTitle}
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shrink-0 border border-white/10 shadow-md"
+                />
               )}
 
-              {/* Product Title & Visual Preview Row */}
-              <div className="space-y-1.5">
-                <h4 className="text-sm sm:text-base font-black text-white leading-snug">
-                  Unlock 15,000+ Ready-to-Use AI Prompts Vault
+              {/* Title & Price */}
+              <div className="flex-1 min-w-0">
+                <h4 className="text-xs sm:text-sm font-black text-white leading-snug line-clamp-2">
+                  {upsellTitle}
                 </h4>
-                <p className="text-xs text-amber-200/90 leading-relaxed font-medium">
-                  ⚡ ChatGPT & AI का पूरा फायदा तभी मिलता है जब आपके पास सही Prompts हों। 1-Click में Copy-Paste करें और अपने काम को 10x Fast बनाएं!
+                <p className="text-[11px] text-amber-200/90 line-clamp-1 mt-0.5 font-medium">
+                  {upsellDesc}
                 </p>
-              </div>
-
-              {/* Micro Benefits Checklist */}
-              <div className="space-y-1.5 py-2 text-xs text-slate-300 border-t border-b border-white/[0.08]">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                    <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
-                  </div>
-                  <span>3,000+ ChatGPT & 2,000+ Gemini Master Prompts</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                    <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
-                  </div>
-                  <span>Marketing, Sales, Ads, SEO & Social Media Vault</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                    <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3]" />
-                  </div>
-                  <span>Instant Lifetime Google Drive Access</span>
-                </div>
-              </div>
-
-              {/* Price Row */}
-              <div className="flex items-baseline space-x-2">
-                <span className="text-xl font-black text-white">₹{upsellPrice}</span>
-                <span className="text-sm line-through text-slate-500 font-bold">₹499</span>
-                <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  Save ₹450 Today
-                </span>
-              </div>
-
-              {/* High-Converting Action Checkbox Box (Never truncated) */}
-              <div className={`w-full p-3.5 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-between transition-all select-none ${
-                addUpsell 
-                  ? 'bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 text-slate-950 shadow-xl shadow-emerald-500/30' 
-                  : 'bg-white/[0.05] hover:bg-emerald-500/10 border border-emerald-500/40 text-white'
-              }`}>
-                <div className="flex items-center space-x-2.5">
-                  <div className={`w-5 h-5 rounded-lg flex items-center justify-center shrink-0 transition-all ${
-                    addUpsell 
-                      ? 'bg-slate-950 text-emerald-400 shadow-sm' 
-                      : 'border-2 border-emerald-400/80 bg-black/40'
-                  }`}>
-                    {addUpsell ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
-                  </div>
-                  <span className="tracking-tight">
-                    {addUpsell ? '✅ Yes! 15,000+ Prompts Vault Added' : '👉 Yes! Add 15,000+ Prompts Vault'}
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-sm sm:text-base font-black text-emerald-400">
+                    +₹{upsellPrice}
+                  </span>
+                  <span className="text-xs text-slate-500 line-through">
+                    ₹999
+                  </span>
+                  <span className="text-[9.5px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">
+                    90% OFF
                   </span>
                 </div>
-                <span className={`shrink-0 whitespace-nowrap ml-2 text-xs font-black ${
-                  addUpsell ? 'bg-slate-950/20 px-2 py-0.5 rounded-md text-slate-950' : 'text-emerald-400'
-                }`}>
-                  {addUpsell ? `+₹${upsellPrice} Included ✓` : `+₹${upsellPrice}`}
-                </span>
               </div>
+            </div>
+
+            {/* Micro Toggle Status Footer */}
+            <div className="mt-2.5 pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-bold">
+              <span className={addUpsell ? 'text-emerald-300 flex items-center gap-1' : 'text-slate-400'}>
+                {addUpsell ? '✓ Added to your checkout order' : '👉 Click to add this special deal'}
+              </span>
+              <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
+                addUpsell ? 'bg-emerald-400 text-slate-950' : 'bg-white/10 text-emerald-300'
+              }`}>
+                {addUpsell ? 'ADDED' : `+₹${upsellPrice}`}
+              </span>
             </div>
           </section>
         )}
