@@ -170,7 +170,7 @@ export default function VideoEditingLandingPage({
       slug: "complete-editor-combo",
       title: "Complete All-In-One Editor Combo",
       subtitle: "Mega Course + 10,000+ Assets + CapCut Pro + VIP Bonuses",
-      badge: "★ MOST RECOMMENDED / BEST VALUE",
+      badge: "ALL 3 IN 1 PACK",
       discount: "96% OFF",
       price: 299,
       originalPrice: 7497,
@@ -218,7 +218,7 @@ export default function VideoEditingLandingPage({
     {
       name: "Rohan Verma",
       role: "Freelance Video Editor & YouTuber",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80",
+      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&auto=format&fit=crop&q=80",
       rating: 5,
       comment: "Bhai ₹299 me itna saara content milna impossible lagta tha! LUTs aur SFX pack ne meri editing speed 3x badha di hai. Clients ab meri color grading ki tareef karte hain.",
       pack: "Verified Buyer · Complete Combo"
@@ -226,7 +226,7 @@ export default function VideoEditingLandingPage({
     {
       name: "Sameer Shaikh",
       role: "Instagram Reel Creator (140k Followers)",
-      avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=120&auto=format&fit=crop&q=80",
+      avatar: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=200&auto=format&fit=crop&q=80",
       rating: 5,
       comment: "CapCut Pro features aur sound design packs are pure gold! Jo reels pehle dull lagti thi, ab cinema quality lagti hain. Ek hi din me 2 reels viral ho gayi.",
       pack: "Verified Buyer · Complete Combo"
@@ -234,7 +234,7 @@ export default function VideoEditingLandingPage({
     {
       name: "Ananya Deshmukh",
       role: "Content Creator & Agency Owner",
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80",
+      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80",
       rating: 5,
       comment: "Mega Course beginner friendly hai aur practice raw footage bhi included hai. Kisi aur course pe ₹5,000 kharch karne ki zaroorat hi nahi padi. Best investment!",
       pack: "Verified Buyer · Mega Course"
@@ -294,7 +294,7 @@ export default function VideoEditingLandingPage({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onBuyProduct(comboProduct)}
-              className="relative group overflow-hidden bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm shadow-md shadow-emerald-500/25 transition-all active:scale-95 flex items-center gap-1.5"
+              className="btn-shine-effect relative group overflow-hidden bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm shadow-md shadow-emerald-500/25 transition-all active:scale-95 flex items-center gap-1.5"
             >
               <Zap className="w-4 h-4 fill-slate-950" />
               <span>Get Combo ₹299</span>
@@ -365,7 +365,7 @@ export default function VideoEditingLandingPage({
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
             <button
               onClick={() => onBuyProduct(comboProduct)}
-              className="w-full sm:w-auto relative group overflow-hidden bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl shadow-emerald-500/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
+              className="btn-shine-effect w-full sm:w-auto relative group overflow-hidden bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl shadow-emerald-500/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
             >
               <Zap className="w-5 h-5 fill-slate-950" />
               <span>Claim All-In-One Combo · ₹299</span>
@@ -520,26 +520,34 @@ export default function VideoEditingLandingPage({
                   key={prod.id}
                   className={`relative flex flex-col justify-between rounded-3xl p-6 transition-all duration-300 ${
                     isCombo 
-                      ? 'bg-gradient-to-b from-slate-900 via-[#0d1622] to-slate-950 border-2 border-emerald-400 shadow-2xl shadow-emerald-500/20 ring-2 ring-emerald-500/20 lg:-translate-y-2' 
+                      ? 'pt-8 bg-gradient-to-b from-slate-900 via-[#0d1622] to-slate-950 border-2 border-emerald-400 shadow-2xl shadow-emerald-500/20 ring-2 ring-emerald-500/20 lg:-translate-y-2' 
                       : 'bg-slate-900/60 hover:bg-slate-900/80 border border-white/[0.08] hover:border-white/20'
                   }`}
                 >
                   {/* Combo Recommended Ribbon */}
                   {isCombo && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 text-[10.5px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full shadow-lg">
-                      ★ MOST RECOMMENDED / BEST VALUE
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 text-slate-950 text-[10.5px] font-black uppercase tracking-wider px-4 py-1 rounded-full shadow-lg shadow-emerald-500/30 border border-white/40">
+                        <Star className="w-3 h-3 fill-slate-950 text-slate-950 shrink-0" />
+                        <span>MOST RECOMMENDED</span>
+                      </span>
                     </div>
                   )}
 
                   <div>
                     {/* Top Badges */}
-                    <div className="flex items-center justify-between gap-2 mb-3 mt-1">
-                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md ${
-                        isCombo ? 'bg-emerald-400 text-slate-950' : 'bg-emerald-500/10 text-emerald-300'
-                      }`}>
-                        {prod.badge}
-                      </span>
-                      <span className="text-[10.5px] font-black text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md">
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      {isCombo ? (
+                        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1">
+                          <Flame className="w-3 h-3 text-emerald-400 fill-emerald-400 shrink-0" />
+                          <span>ALL 3 IN 1 PACK</span>
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                          {prod.badge}
+                        </span>
+                      )}
+                      <span className="text-[10.5px] font-black text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">
                         {prod.discount}
                       </span>
                     </div>
@@ -588,16 +596,16 @@ export default function VideoEditingLandingPage({
                       <span>View Details</span>
                     </button>
 
-                    {/* Buy Now Button */}
+                    {/* Buy Now Button with Shimmer Sweep */}
                     <button
                       onClick={() => onBuyProduct(prod)}
-                      className={`w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+                      className={`btn-shine-effect w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
                         isCombo
                           ? 'bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 shadow-lg shadow-emerald-500/30'
-                          : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
+                          : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/10'
                       }`}
                     >
-                      <Zap className="w-4 h-4 fill-slate-950" />
+                      <Zap className="w-4 h-4 fill-slate-950 shrink-0" />
                       <span>Buy Now · ₹{prod.price}</span>
                     </button>
                   </div>
@@ -782,7 +790,7 @@ export default function VideoEditingLandingPage({
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={() => onBuyProduct(comboProduct)}
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black px-8 py-4 rounded-2xl text-base shadow-xl shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                className="btn-shine-effect w-full sm:w-auto bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black px-8 py-4 rounded-2xl text-base shadow-xl shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
               >
                 <Zap className="w-5 h-5 fill-slate-950" />
                 <span>Get Complete Combo · ₹299 (96% OFF)</span>
@@ -828,7 +836,7 @@ export default function VideoEditingLandingPage({
 
           <button
             onClick={() => onBuyProduct(comboProduct)}
-            className="flex-1 bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-black py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/25 active:scale-95"
+            className="btn-shine-effect flex-1 bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-black py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/25 active:scale-95"
           >
             <Zap className="w-4 h-4 fill-slate-950" />
             <span>Instant Buy Now</span>
@@ -904,7 +912,7 @@ export default function VideoEditingLandingPage({
                 setModalProduct(null);
                 onBuyProduct(p);
               }}
-              className="w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 active:scale-95"
+              className="btn-shine-effect w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 active:scale-95"
             >
               <Zap className="w-4 h-4 fill-slate-950" />
               <span>Proceed to Instant Checkout · ₹{modalProduct.price}</span>

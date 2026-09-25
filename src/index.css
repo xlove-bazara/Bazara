@@ -67,7 +67,7 @@
   0% {
     left: -130%;
   }
-  30% {
+  35% {
     left: 130%;
   }
   100% {
@@ -85,17 +85,20 @@
   position: absolute;
   top: 0;
   left: -130%;
-  width: 50%;
+  width: 55%;
   height: 100%;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.2) 25%,
+    rgba(255, 255, 255, 0.75) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
     transparent 100%
   );
-  transform: skewX(-22deg);
-  animation: btn-shine 2.6s infinite ease-in-out;
+  transform: skewX(-25deg);
+  animation: btn-shine 2.4s infinite ease-in-out;
   pointer-events: none;
+  z-index: 10;
 }
 
 
