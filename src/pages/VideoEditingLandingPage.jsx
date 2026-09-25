@@ -514,18 +514,56 @@ export default function VideoEditingLandingPage({
 
 
       {/* 6. PRICING & PRODUCTS SECTION (Direct Competitor Style but 10x More Premium) */}
-      <section id="products" className="py-14 sm:py-24 relative">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
-              Pick Your Pack
+      <section id="products" className="py-14 sm:py-24 relative overflow-hidden">
+        {/* Massive Ambient Radial Spotlight Glows */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] max-w-[95vw] h-[340px] bg-gradient-to-b from-emerald-500/25 via-teal-500/15 to-transparent blur-[110px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[400px] h-[180px] bg-cyan-400/20 blur-[85px] rounded-full pointer-events-none -z-10" />
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+          
+          {/* Header Container with Frosted Halo Spotlight Frame */}
+          <div className="relative max-w-3xl mx-auto text-center mb-12 sm:mb-16 py-6 sm:py-8 px-4 rounded-3xl bg-gradient-to-b from-white/[0.04] via-emerald-950/20 to-transparent border border-white/[0.08] backdrop-blur-xl shadow-2xl shadow-emerald-950/40">
+            {/* Top Glowing Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/40 bg-gradient-to-r from-emerald-500/20 via-teal-500/15 to-cyan-500/20 text-emerald-300 text-xs font-black uppercase tracking-widest mb-3 shadow-lg shadow-emerald-500/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              </span>
+              <span>PICK YOUR PACK • LIFETIME ACCESS</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-white">
-              4 Products. <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">All Worth Grabbing.</span>
-            </h2>
-            <p className="text-slate-400 text-sm max-w-xl mx-auto mt-2">
-              Hand-picked, lifetime access, instant Google Drive delivery. Buy individually or grab the complete combo to save 96%.
+
+            {/* Glowing Headline with Underline Glow */}
+            <div className="relative inline-block my-1">
+              <div className="absolute -inset-x-8 -inset-y-4 bg-gradient-to-r from-emerald-500/30 via-teal-400/25 to-cyan-500/30 blur-2xl rounded-full pointer-events-none -z-10 opacity-70" />
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-tight">
+                4 Products.{' '}
+                <span className="relative inline-block">
+                  <span className="bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(52,211,153,0.5)]">
+                    All Worth Grabbing.
+                  </span>
+                  <span className="absolute -bottom-1.5 left-0 right-0 h-[3.5px] bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.9)]" />
+                </span>
+              </h2>
+            </div>
+
+            {/* Subtitle */}
+            <p className="text-slate-300 text-xs sm:text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed font-medium">
+              Hand-picked, lifetime access, instant Google Drive delivery.{' '}
+              <span className="text-emerald-400 font-bold">Buy individually or grab the complete combo to save 96%.</span>
             </p>
+
+            {/* Micro Feature Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-[11px] font-bold text-slate-300">
+              <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                <Zap className="w-3 h-3 text-emerald-400" /> Instant Drive Link
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                <Check className="w-3 h-3 text-emerald-400" /> 100% Commercial PLR
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-white/10 flex items-center gap-1.5 shadow-sm">
+                <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> 4.97 Creator Rated
+              </span>
+            </div>
           </div>
 
           {/* Products Grid (4 Cards) */}
