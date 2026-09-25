@@ -69,9 +69,6 @@ export default function VideoEditingLandingPage({
   const [sliderPos, setSliderPos] = useState(55);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Active Asset Preview Tab
-  const [activeAssetTab, setActiveAssetTab] = useState('luts');
-
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState(0);
 
@@ -194,41 +191,6 @@ export default function VideoEditingLandingPage({
 
   const comboProduct = products.find(p => p.isCombo);
 
-  const assetCategories = [
-    {
-      id: 'luts',
-      name: '1,000+ 3D LUTs',
-      count: '1,000+',
-      icon: Film,
-      desc: 'Cinematic color grading for flat footage. Hollywood Teal-Orange, Moody Dark, Film Warm, Wedding & Vintage aesthetics.',
-      items: ['Teal & Orange Blockbuster', 'Moody Vintage Film', 'Cyberpunk Neon Glow', 'Clean Wedding Pastel', 'Golden Hour Glow', 'Black & White Cinema']
-    },
-    {
-      id: 'sfx',
-      name: '2,000+ Sound FX',
-      count: '2,000+',
-      icon: Volume2,
-      desc: 'High dynamic range SFX to make your cuts punchy. Whooshes, cinematic risers, deep 808 bass drops & reel impact hits.',
-      items: ['Fast Cinematic Whooshes', 'Deep Sub Bass Drops', 'Tension Riser Buildups', 'Mechanical & UI Clicks', 'Ambient Atmospheric Drones', 'Gunshots & Metal Hits']
-    },
-    {
-      id: 'overlays',
-      name: '500+ 4K Overlays',
-      count: '500+',
-      icon: Layers,
-      desc: 'Drag & drop blending overlays to give your footage vintage grain, organic light flares and stylish glitches.',
-      items: ['Real 35mm Film Grain', 'Organic Golden Light Leaks', 'Film Burn Transitions', 'Retro VHS Static', 'Anamorphic Lens Flares', 'Dust & Scratch Textures']
-    },
-    {
-      id: 'motion',
-      name: 'Motion Graphics',
-      count: '350+',
-      icon: Sparkles,
-      desc: 'Plug-and-play animated lower thirds, viral subscribe buttons, text popups and kinetic callouts.',
-      items: ['Viral Reel Captions & Titles', 'Instagram Follow & Like Popups', 'Animated Neon Arrows', 'Sound Waveform Visualizers', 'Smooth Split-Screen Templates', 'Modern Glassmorphic Boxes']
-    }
-  ];
-
   const faqs = [
     {
       q: "Payment ke baad mujhe assets aur course kaise milenge?",
@@ -324,7 +286,6 @@ export default function VideoEditingLandingPage({
           <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
             <a href="#products" className="hover:text-emerald-400 transition-colors">Products & Bundles</a>
             <a href="#preview" className="hover:text-emerald-400 transition-colors">Before & After</a>
-            <a href="#assets" className="hover:text-emerald-400 transition-colors">What's Inside</a>
             <a href="#reviews" className="hover:text-emerald-400 transition-colors">Reviews</a>
             <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQs</a>
           </nav>
@@ -535,79 +496,7 @@ export default function VideoEditingLandingPage({
         </div>
       </section>
 
-      {/* 6. WHAT'S INSIDE THE VAULT (CATEGORIES TAB) */}
-      <section id="assets" className="py-14 sm:py-20 bg-slate-950/60 border-t border-white/[0.06]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10">
-            <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest">
-              Production-Grade Creative Assets
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mt-1">
-              Everything Needed to Produce 10x Better Videos
-            </h2>
-            <p className="text-slate-400 text-sm max-w-xl mx-auto mt-2">
-              Cleanly sorted into organized Google Drive folders with easy thumbnails & instant 1-click downloads.
-            </p>
-          </div>
-
-          {/* Category Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-            {assetCategories.map(tab => {
-              const Icon = tab.icon;
-              const isActive = activeAssetTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveAssetTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                    isActive 
-                      ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' 
-                      : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800 border border-white/[0.06]'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.name}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Active Tab Content Card */}
-          {(() => {
-            const current = assetCategories.find(c => c.id === activeAssetTab);
-            const Icon = current.icon;
-            return (
-              <div className="bg-slate-900/70 border border-white/[0.08] rounded-3xl p-6 sm:p-8 backdrop-blur-xl max-w-4xl mx-auto">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                      {current.name}
-                      <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full font-mono">
-                        {current.count} Files
-                      </span>
-                    </h3>
-                    <p className="text-slate-300 text-sm mt-1 leading-relaxed">{current.desc}</p>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 border-t border-white/[0.06]">
-                  {current.items.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs sm:text-sm text-slate-200 bg-slate-950/60 p-3 rounded-xl border border-white/[0.04]">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })()}
-        </div>
-      </section>
-
-      {/* 7. PRICING & PRODUCTS SECTION (Direct Competitor Style but 10x More Premium) */}
+      {/* 6. PRICING & PRODUCTS SECTION (Direct Competitor Style but 10x More Premium) */}
       <section id="products" className="py-14 sm:py-24 relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
