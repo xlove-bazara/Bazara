@@ -68,58 +68,86 @@ export default function App() {
 
 
   const refreshData = async () => {
-    const prods = await getProducts();
-    const sett = await getSettings();
-    setProducts(prods);
-    setSettings(sett);
+    try {
+      const prods = await getProducts();
+      const sett = await getSettings();
+      if (prods && Array.isArray(prods)) setProducts(prods);
+      if (sett) setSettings(sett);
+    } catch (err) {
+      console.warn('refreshData error:', err);
+    }
   };
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
-      setLoading(true);
-      await refreshData();
-      const currentUser = await getCurrentUser();
-      if (currentUser) setUser(currentUser);
-      setLoading(false);
+      try {
+        setLoading(true);
+        // Guarantee max 2.5s wait time so loading screen never hangs on network latency or Supabase failure
+        const dataPromise = refreshData();
+        const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 2500));
+        await Promise.race([dataPromise, timeoutPromise]);
+
+        const currentUser = await getCurrentUser();
+        if (isMounted && currentUser) setUser(currentUser);
+      } catch (e) {
+        console.warn('Initialization error:', e);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     })();
 
-    if (supabase) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user) {
-          const formattedUser = {
-            id: session.user.id,
-            email: session.user.email,
-            phone: session.user.phone,
-            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-            avatar: session.user.user_metadata?.avatar_url
-          };
-          setUser(formattedUser);
-          localStorage.setItem('bazara_current_user', JSON.stringify(formattedUser));
+    if (supabase && supabase.auth) {
+      const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+        try {
+          if (session?.user) {
+            const formattedUser = {
+              id: session.user.id,
+              email: session.user.email,
+              phone: session.user.phone,
+              name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+              avatar: session.user.user_metadata?.avatar_url
+            };
+            if (isMounted) setUser(formattedUser);
+            localStorage.setItem('bazara_current_user', JSON.stringify(formattedUser));
 
-          // Clean up hash (#access_token=...) and navigate back to original page (e.g. /home)
-          try {
-            const returnUrl = localStorage.getItem('bazara_auth_return_url');
-            if (returnUrl) {
-              localStorage.removeItem('bazara_auth_return_url');
-              window.history.replaceState({}, '', returnUrl);
-              const cleanPath = returnUrl.split('?')[0].toLowerCase();
-              if (cleanPath === '/home') setCurrentPage('home');
-              else if (cleanPath === '/checkout') setCurrentPage('checkout');
-              else if (cleanPath === '/access') setCurrentPage('access');
-              else if (cleanPath === '/profile') setCurrentPage('profile');
-              else if (cleanPath === '/admin') setCurrentPage('admin');
-            } else if (window.location.hash && window.location.hash.includes('access_token')) {
-              window.history.replaceState({}, '', window.location.pathname + window.location.search);
-            }
-          } catch (e) {}
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null);
-          localStorage.removeItem('bazara_current_user');
+            // Clean up hash (#access_token=...) and navigate back to original page (e.g. /home)
+            try {
+              const returnUrl = localStorage.getItem('bazara_auth_return_url');
+              if (returnUrl) {
+                localStorage.removeItem('bazara_auth_return_url');
+                window.history.replaceState({}, '', returnUrl);
+                const cleanPath = returnUrl.split('?')[0].toLowerCase();
+                if (cleanPath === '/home') setCurrentPage('home');
+                else if (cleanPath === '/checkout') setCurrentPage('checkout');
+                else if (cleanPath === '/access') setCurrentPage('access');
+                else if (cleanPath === '/profile') setCurrentPage('profile');
+                else if (cleanPath === '/admin') setCurrentPage('admin');
+              } else if (window.location.hash && window.location.hash.includes('access_token')) {
+                window.history.replaceState({}, '', window.location.pathname + window.location.search);
+              }
+            } catch (e) {}
+          } else if (event === 'SIGNED_OUT') {
+            if (isMounted) setUser(null);
+            localStorage.removeItem('bazara_current_user');
+          }
+        } catch (authErr) {
+          console.warn('Auth change handler error:', authErr);
         }
       });
-      return () => subscription.unsubscribe();
-
+      return () => {
+        isMounted = false;
+        if (data?.subscription) {
+          try {
+            data.subscription.unsubscribe();
+          } catch (e) {}
+        }
+      };
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
 

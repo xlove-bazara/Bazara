@@ -29,8 +29,8 @@ import {
 } from 'lucide-react';
 
 export default function HomePage({ 
-  products, 
-  settings, 
+  products = [], 
+  settings = {}, 
   onSelectProduct, 
   onInstantBuy, 
   onNavigate, 
@@ -46,19 +46,19 @@ export default function HomePage({
   const [openFaq, setOpenFaq] = useState(null);
   const [policyModal, setPolicyModal] = useState({ isOpen: false, tab: 'terms' });
 
-
-
+  const safeProducts = Array.isArray(products) ? products : [];
 
   // Live root course that appears on bazara.in
   const featuredCourseId = settings?.featured_course_id || 'prod-course-ai';
   const featuredCourse = 
-    products.find(p => p.id === featuredCourseId) ||
-    products.find(p => p.category === 'course' || p.product_type === 'course') ||
-    products[0];
-
+    safeProducts.find(p => p && p.id === featuredCourseId) ||
+    safeProducts.find(p => p && (p.category === 'course' || p.product_type === 'course')) ||
+    safeProducts[0] ||
+    null;
 
   // Filter products based on Category & Search
-  const filteredProducts = products.filter((p) => {
+  const filteredProducts = safeProducts.filter((p) => {
+    if (!p) return false;
     const isVideoEditing = 
       p.id === 'prod-editor-combo' || 
       p.id === 'prod-editing-assets' || 
@@ -74,9 +74,10 @@ export default function HomePage({
       p.category === selectedCategory ||
       p.product_type === selectedCategory;
 
-    const matchesSearch = searchQuery === '' || 
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.short_desc?.toLowerCase().includes(searchQuery.toLowerCase());
+    const query = searchQuery ? searchQuery.toLowerCase() : '';
+    const titleMatch = p.title ? p.title.toLowerCase().includes(query) : false;
+    const descMatch = p.short_desc ? p.short_desc.toLowerCase().includes(query) : false;
+    const matchesSearch = query === '' || titleMatch || descMatch;
 
     return matchesCategory && matchesSearch;
   });

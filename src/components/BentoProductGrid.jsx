@@ -2,19 +2,20 @@ import React, { useState, useRef } from 'react';
 import { ArrowRight, Star, ChevronLeft, ChevronRight, ShieldCheck, Zap } from 'lucide-react';
 
 export default function BentoProductGrid({ 
-  products, 
+  products = [], 
   title = "Trending Bundles", 
   onProductClick 
 }) {
   const scrollRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const safeProducts = Array.isArray(products) ? products : [];
 
   const handleScroll = () => {
-    if (scrollRef.current) {
+    if (scrollRef.current && safeProducts.length > 0) {
       const scrollPosition = scrollRef.current.scrollLeft;
       const cardWidth = scrollRef.current.offsetWidth * 0.86;
       const index = Math.round(scrollPosition / cardWidth);
-      setActiveIndex(Math.min(products.length - 1, Math.max(0, index)));
+      setActiveIndex(Math.min(safeProducts.length - 1, Math.max(0, index)));
     }
   };
 
@@ -71,7 +72,7 @@ export default function BentoProductGrid({
           className="flex space-x-3.5 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2"
           style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
         >
-          {products.map((product) => {
+          {safeProducts.map((product) => {
             const rating = product.rating || 4.9;
             const reviews = product.reviews_count ? product.reviews_count.toLocaleString() : '1,250';
 
@@ -144,7 +145,7 @@ export default function BentoProductGrid({
 
         {/* Mobile Pagination Dots */}
         <div className="flex items-center justify-center space-x-1.5 pt-2">
-          {products.map((_, idx) => (
+          {safeProducts.map((_, idx) => (
             <div
               key={idx}
               className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -159,7 +160,7 @@ export default function BentoProductGrid({
 
       {/* ================= 2. DESKTOP ONLY (>= 768px): Spacious 3-Column Glass Grid ================= */}
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => {
+        {safeProducts.map((product) => {
           const rating = product.rating || 4.9;
           const reviews = product.reviews_count ? product.reviews_count.toLocaleString() : '1,250';
 
