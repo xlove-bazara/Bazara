@@ -59,11 +59,20 @@ export default function HomePage({
 
   // Filter products based on Category & Search
   const filteredProducts = products.filter((p) => {
+    const isVideoEditing = 
+      p.id === 'prod-editor-combo' || 
+      p.id === 'prod-editing-assets' || 
+      p.id === 'prod-editing-course' || 
+      p.id === 'prod-capcut-pro';
+
     const matchesCategory = 
       selectedCategory === 'all' || 
+      (selectedCategory === 'video-editing' && isVideoEditing) ||
+      (selectedCategory === 'course' && (p.category === 'course' || p.product_type === 'course' || p.id === 'prod-editor-combo' || p.id === 'prod-editing-course')) ||
+      (selectedCategory === 'reels' && (p.category === 'reels' || p.product_type === 'reels' || p.id === 'prod-editing-assets' || p.id === 'prod-editor-combo')) ||
+      (selectedCategory === 'software' && (p.category === 'software' || p.product_type === 'software' || p.id === 'prod-capcut-pro' || p.id === 'prod-editor-combo')) ||
       p.category === selectedCategory ||
       p.product_type === selectedCategory;
-
 
     const matchesSearch = searchQuery === '' || 
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -186,7 +195,13 @@ export default function HomePage({
         {/* 3. Instagram-Style Story Categories Slider */}
         <StoryCategories
           selectedCategory={selectedCategory}
-          onSelectCategory={(cat) => setSelectedCategory(cat)}
+          onSelectCategory={(cat) => {
+            if (cat === 'video-editing' && onNavigate) {
+              onNavigate('video-editing');
+            } else {
+              setSelectedCategory(cat);
+            }
+          }}
         />
 
         {/* 4. Hero Conversion Section */}

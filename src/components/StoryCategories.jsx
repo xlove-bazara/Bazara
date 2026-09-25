@@ -3,6 +3,7 @@ import { Flame, Film, GraduationCap, Laptop, BookOpen, Crown } from 'lucide-reac
 
 const categories = [
   { id: 'all', label: 'All Assets', icon: Flame, color: 'from-amber-500 to-rose-600' },
+  { id: 'video-editing', label: 'Video Editing', icon: Film, color: 'from-cyan-400 to-blue-500', isHot: true },
   { id: 'reels', label: 'Reel Bundle', icon: Film, color: 'from-emerald-400 to-cyan-500' },
   { id: 'course', label: 'Video Course', icon: GraduationCap, color: 'from-indigo-500 to-purple-600' },
   { id: 'subscription', label: 'Subscription', icon: Crown, color: 'from-amber-400 to-yellow-600' },

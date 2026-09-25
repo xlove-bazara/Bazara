@@ -137,6 +137,32 @@ export async function getProducts() {
           prods.push(latestWebDev);
         }
 
+        // Guarantee all video editing products are also present
+        const editingProductIds = ['prod-editor-combo', 'prod-editing-assets', 'prod-editing-course', 'prod-capcut-pro'];
+        editingProductIds.forEach(id => {
+          const match = initialProducts.find(p => p.id === id);
+          if (match) {
+            const existIdx = prods.findIndex(p => p.id === id);
+            if (existIdx >= 0) {
+              prods[existIdx] = { 
+                ...prods[existIdx], 
+                ...match,
+                category: match.category,
+                product_type: match.product_type,
+                cover_image: match.cover_image,
+                enable_bump_offer: match.enable_bump_offer,
+                bump_title: match.bump_title,
+                bump_price: match.bump_price,
+                bump_desc: match.bump_desc,
+                bump_image: match.bump_image,
+                bump_drive_url: match.bump_drive_url
+              };
+            } else {
+              prods.unshift(match);
+            }
+          }
+        });
+
         const mapped = prods.map(p => {
           if (p.id === 'prod-course-ai' && latestWebDev) {
             const isStale = !p.title || 

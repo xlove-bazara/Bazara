@@ -187,6 +187,17 @@ export default function App() {
     setSelectedProduct(product);
     if (product.id === 'prod-ai-mastery-hindi' || product.slug === 'ai-mastery-hindi-ebook-bundle') {
       navigateTo('ai-mastery', `/ai-mastery-hindi`);
+    } else if (
+      product.id === 'prod-editor-combo' || 
+      product.id === 'prod-editing-assets' || 
+      product.id === 'prod-editing-course' || 
+      product.id === 'prod-capcut-pro' ||
+      product.slug === 'complete-editor-combo' ||
+      product.slug === 'premium-editing-assets' ||
+      product.slug === 'video-editing-mega-course' ||
+      product.slug === 'capcut-pro-software'
+    ) {
+      navigateTo('video-editing', '/video-editing');
     } else {
       navigateTo('product', `/product?id=${product.slug || product.id}`);
     }
@@ -251,6 +262,10 @@ export default function App() {
       navigateTo('landing', '/');
     } else if (tab === 'home' || tab === 'deals') {
       navigateTo('home', '/home');
+    } else if (tab === 'video-editing' || tab === 'editing') {
+      navigateTo('video-editing', '/video-editing');
+    } else if (tab === 'ai-mastery' || tab === 'ebook') {
+      navigateTo('ai-mastery', '/ai-mastery-hindi');
     } else if (tab === 'library') {
       if (completedOrder) {
         navigateTo('access', '/access');
@@ -470,12 +485,10 @@ export default function App() {
                 product={selectedProduct}
                 user={user}
                 onBack={() => {
-                  if (selectedProduct.id === 'prod-ai-mastery-hindi' || selectedProduct.slug === 'ai-mastery-hindi-ebook-bundle') {
+                  if (selectedProduct?.id === 'prod-ai-mastery-hindi' || selectedProduct?.slug === 'ai-mastery-hindi-ebook-bundle') {
                     navigateTo('ai-mastery', '/ai-mastery-hindi');
-                  } else if (selectedProduct.category === 'course') {
-                    navigateTo('landing', '/');
                   } else {
-                    navigateTo('home', '/home');
+                    navigateTo('video-editing', '/video-editing');
                   }
                 }}
                 onPaymentComplete={handlePaymentComplete}
