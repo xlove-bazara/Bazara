@@ -552,16 +552,19 @@ export default function VideoEditingLandingPage({
               <span className="text-emerald-400 font-bold">Buy individually or grab the complete combo to save 96%.</span>
             </p>
 
-            {/* Micro Feature Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-[11px] font-bold text-slate-300">
-              <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-white/10 flex items-center gap-1.5 shadow-sm">
-                <Zap className="w-3 h-3 text-emerald-400" /> Instant Drive Link
+            {/* Micro Feature Pills (Horizontal Single Line) */}
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 mt-4 text-[10px] sm:text-xs font-bold text-slate-300 w-full overflow-x-auto no-scrollbar py-0.5">
+              <span className="px-2 sm:px-3 py-1 rounded-lg bg-slate-900/90 border border-white/10 flex items-center gap-1 sm:gap-1.5 shadow-sm whitespace-nowrap shrink-0">
+                <Zap className="w-3 h-3 text-emerald-400 shrink-0" />
+                <span>Instant Drive Link</span>
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-white/10 flex items-center gap-1.5 shadow-sm">
-                <Check className="w-3 h-3 text-emerald-400" /> 100% Commercial PLR
+              <span className="px-2 sm:px-3 py-1 rounded-lg bg-slate-900/90 border border-white/10 flex items-center gap-1 sm:gap-1.5 shadow-sm whitespace-nowrap shrink-0">
+                <Check className="w-3 h-3 text-emerald-400 shrink-0" />
+                <span>100% Commercial PLR</span>
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-white/10 flex items-center gap-1.5 shadow-sm">
-                <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> 4.97 Creator Rated
+              <span className="px-2 sm:px-3 py-1 rounded-lg bg-slate-900/90 border border-white/10 flex items-center gap-1 sm:gap-1.5 shadow-sm whitespace-nowrap shrink-0">
+                <Star className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
+                <span>4.97 Creator Rated</span>
               </span>
             </div>
           </div>
