@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import HomePage from './pages/HomePage';
 import CourseLandingPage from './pages/CourseLandingPage';
 import AiMasteryLandingPage from './pages/AiMasteryLandingPage';
+import VideoEditingLandingPage from './pages/VideoEditingLandingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
@@ -43,6 +44,7 @@ export default function App() {
     if (path === '/profile') return 'profile';
     if (path === '/product') return 'product';
     if (path === '/ai-mastery-hindi' || path === '/ai-mastery' || path === '/bundle' || path === '/ebooks') return 'ai-mastery';
+    if (path === '/video-editing' || path === '/editpro' || path === '/editing' || path === '/assets' || path === '/combo') return 'video-editing';
     return 'landing'; // Default root '/'
   };
 
@@ -374,7 +376,18 @@ export default function App() {
       </div>
 
       <div className="relative z-10">
-        {/* 1. DEDICATED AI MASTERY HINDI LANDING PAGE */}
+        {/* 1. DEDICATED VIDEO EDITING / EDITPRO LANDING PAGE */}
+        {currentPage === 'video-editing' && (
+          <div key="video-editing" className="animate-page-enter">
+            <VideoEditingLandingPage
+              onBuyProduct={(prod) => handleInstantBuy(prod)}
+              onNavigateToStore={() => navigateTo('home', '/home')}
+              settings={settings}
+            />
+          </div>
+        )}
+
+        {/* 2. DEDICATED AI MASTERY HINDI LANDING PAGE */}
         {currentPage === 'ai-mastery' && (
           <div key="ai-mastery" className="animate-page-enter">
             <AiMasteryLandingPage
@@ -386,7 +399,7 @@ export default function App() {
           </div>
         )}
 
-        {/* 2. ROOT LANDING PAGE (bazara.in /): Single Course Landing Page with About bazara & FAQs */}
+        {/* 3. ROOT LANDING PAGE (/): Defaults to Video Editing / EditPro Store */}
         {currentPage === 'landing' && (
           <div key="landing" className="animate-page-enter">
             {settings?.featured_course_id === 'prod-ai-mastery-hindi' ? (
@@ -396,10 +409,16 @@ export default function App() {
                 onNavigateToStore={() => navigateTo('home', '/home')}
                 settings={settings}
               />
-            ) : (
+            ) : settings?.featured_course_id === 'prod-course-ai' ? (
               <CourseLandingPage
                 course={featuredCourse}
                 onEnroll={(courseToBuy) => handleInstantBuy(courseToBuy || featuredCourse)}
+                onNavigateToStore={() => navigateTo('home', '/home')}
+                settings={settings}
+              />
+            ) : (
+              <VideoEditingLandingPage
+                onBuyProduct={(prod) => handleInstantBuy(prod)}
                 onNavigateToStore={() => navigateTo('home', '/home')}
                 settings={settings}
               />

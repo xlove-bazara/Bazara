@@ -28,6 +28,20 @@ const getStoredProducts = () => {
     // Filter out system records from stored products
     prods = prods.filter(p => p.category !== 'system' && p.id !== 'system-coupons' && p.id !== 'system-settings');
 
+    // Guarantee that video editing products are present in prods
+    const editingProductIds = ['prod-editor-combo', 'prod-editing-assets', 'prod-editing-course', 'prod-capcut-pro'];
+    editingProductIds.forEach(id => {
+      const match = initialProducts.find(p => p.id === id);
+      if (match) {
+        const existIdx = prods.findIndex(p => p.id === id);
+        if (existIdx >= 0) {
+          prods[existIdx] = { ...match, ...prods[existIdx] };
+        } else {
+          prods.unshift(match);
+        }
+      }
+    });
+
     // Guarantee that prod-ai-mastery-hindi is present and updated with official drive links and active pricing
     const aiMastery = initialProducts.find(p => p.id === 'prod-ai-mastery-hindi');
     if (aiMastery) {
