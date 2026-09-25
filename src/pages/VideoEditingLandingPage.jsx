@@ -356,18 +356,18 @@ export default function VideoEditingLandingPage({
         </div>
       </header>
 
-      {/* 3. HERO SECTION */}
-      <section className="relative pt-8 pb-14 sm:pt-14 sm:pb-20 overflow-hidden">
+      {/* 3. HERO SECTION WITH INTERACTIVE QUALITY TRANSFORMATION SLIDER */}
+      <section id="preview" className="relative pt-6 pb-12 sm:pt-12 sm:pb-16 overflow-hidden">
         {/* Subtle Ambient Glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute top-10 right-10 w-[350px] h-[350px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10">
           
           {/* Hero Tag Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md mb-5 shadow-sm shadow-emerald-500/10 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md mb-4 shadow-sm shadow-emerald-500/10 animate-fade-in">
             <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Complete Video Editing Arsenal for Indian Creators</span>
+            <span>Live Quality Transformation • Complete Video Editing Arsenal</span>
           </div>
 
           {/* Main Hero Headline */}
@@ -383,9 +383,64 @@ export default function VideoEditingLandingPage({
           </h1>
 
           {/* Hero Subheadline */}
-          <p className="mt-4 sm:mt-6 text-slate-300 text-sm sm:text-lg max-w-2xl mx-auto leading-relaxed font-normal">
-            5 Complete Masterclasses (CapCut, Premiere Pro, After Effects, DaVinci & Filmora) + 10,000+ 4K Cinematic LUTs, Sound Effects & CapCut Pro. Instant 1-Click Google Drive download. No monthly subscriptions, ever.
+          <p className="mt-3 sm:mt-5 text-slate-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            Drag the interactive slider below to see how flat, dull raw footage turns into a Hollywood cinematic masterpiece. 10,000+ 4K LUTs, Sound Effects, CapCut Pro & 5 Masterclasses.
           </p>
+
+          {/* Interactive Before/After Visual Card */}
+          <div className="mt-6 max-w-3xl mx-auto relative rounded-3xl overflow-hidden border-2 border-emerald-500/30 shadow-2xl shadow-emerald-500/15 bg-slate-900 aspect-video select-none group">
+            {/* "After" Image (Right Layer / Background) */}
+            <img 
+              src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&auto=format&fit=crop&q=85" 
+              alt="After Pro Color Grading"
+              className="absolute inset-0 w-full h-full object-cover filter contrast-125 saturate-150"
+            />
+            
+            {/* "Before" Image (Left Layer / Clipped via clipPath) */}
+            <img 
+              src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&auto=format&fit=crop&q=85" 
+              alt="Before Flat Raw Footage"
+              className="absolute inset-0 w-full h-full object-cover filter grayscale contrast-75 brightness-90"
+              style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
+            />
+
+            {/* "Before" Label */}
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-black/75 backdrop-blur-md px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold text-slate-200 border border-white/20 shadow-md">
+              RAW / FLAT LOG (BEFORE)
+            </div>
+
+            {/* "After" Label */}
+            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-black px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] shadow-lg">
+              ✨ PRO CINEMATIC LUT (AFTER)
+            </div>
+
+            {/* Divider Line & Handle */}
+            <div 
+              className="absolute inset-y-0 w-0.5 bg-white shadow-[0_0_15px_rgba(52,211,153,0.8)] cursor-ew-resize flex items-center justify-center pointer-events-none"
+              style={{ left: `${sliderPos}%` }}
+            >
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-950 text-white shadow-xl flex items-center justify-center border-2 border-emerald-400 ring-2 ring-emerald-500/40">
+                <Sliders className="w-4 h-4 text-emerald-400" />
+              </div>
+            </div>
+
+            {/* Slider Range Input (Touch/Mouse Controller) */}
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value={sliderPos}
+              onChange={(e) => setSliderPos(Number(e.target.value))}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20"
+              aria-label="Before and after comparison slider"
+            />
+          </div>
+
+          {/* Drag Left/Right Micro Guide */}
+          <div className="mt-3 flex items-center justify-between text-[11px] sm:text-xs text-slate-400 max-w-3xl mx-auto px-2">
+            <span>👈 Drag Left: Reveal More After Grade</span>
+            <span>Drag Right: Compare With Raw Clip 👉</span>
+          </div>
 
           {/* Urgency Pill */}
           <div className="mt-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs font-medium">
@@ -395,7 +450,7 @@ export default function VideoEditingLandingPage({
           </div>
 
           {/* 4 Trust Badges */}
-          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-2xl mx-auto text-xs font-medium text-slate-300">
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-2xl mx-auto text-xs font-medium text-slate-300">
             <div className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-900/60 border border-white/[0.06] backdrop-blur-sm">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>100% Safe UPI</span>
@@ -414,28 +469,8 @@ export default function VideoEditingLandingPage({
             </div>
           </div>
 
-          {/* Dual Action CTA Buttons */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-            <button
-              onClick={() => onBuyProduct(comboProduct)}
-              className="btn-shine-effect w-full sm:w-auto relative group overflow-hidden bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl shadow-emerald-500/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
-            >
-              <Zap className="w-5 h-5 fill-slate-950" />
-              <span>Claim All-In-One Combo · ₹299</span>
-              <span className="bg-black/20 text-slate-950 text-xs px-2 py-0.5 rounded-full font-bold ml-1">96% OFF</span>
-            </button>
-
-            <a
-              href="#products"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-slate-200 text-sm font-semibold transition-all hover:border-emerald-500/40 flex items-center justify-center gap-2"
-            >
-              <span>Explore Individual Packs (₹99)</span>
-              <ArrowRight className="w-4 h-4 text-emerald-400" />
-            </a>
-          </div>
-
           {/* Software Compatibility Bar */}
-          <div className="mt-10 pt-7 border-t border-white/[0.06]">
+          <div className="mt-8 pt-6 border-t border-white/[0.06]">
             <p className="text-[11px] uppercase font-bold tracking-widest text-slate-400 mb-3">
               100% Compatible With Your Favorite Software & Apps
             </p>
@@ -476,78 +511,7 @@ export default function VideoEditingLandingPage({
         </div>
       </section>
 
-      {/* 5. INTERACTIVE BEFORE VS AFTER PREVIEW SLIDER (Conversion Anchor) */}
-      <section id="preview" className="py-14 sm:py-20 relative">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-8">
-            <span className="text-emerald-400 text-xs font-bold uppercase tracking-widest">
-              Live Quality Transformation
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
-              See What 1-Click Pro LUTs & Effects Do To Your Video
-            </h2>
-            <p className="text-slate-400 text-sm max-w-xl mx-auto mt-2">
-              Drag the interactive slider below to see how flat, dull raw footage turns into a Hollywood cinematic masterpiece.
-            </p>
-          </div>
 
-          {/* Interactive Before/After Visual Card */}
-          <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 aspect-video select-none group">
-            {/* "After" Image (Right Layer / Background) */}
-            <img 
-              src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&auto=format&fit=crop&q=85" 
-              alt="After Pro Color Grading"
-              className="absolute inset-0 w-full h-full object-cover filter contrast-125 saturate-150"
-            />
-            
-            {/* "Before" Image (Left Layer / Clipped) */}
-            <div 
-              className="absolute inset-y-0 left-0 overflow-hidden"
-              style={{ width: `${sliderPos}%` }}
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&auto=format&fit=crop&q=85" 
-                alt="Before Flat Raw Footage"
-                className="absolute inset-0 w-full h-full object-cover filter grayscale contrast-75 brightness-90"
-                style={{ width: '100%', maxWidth: 'none' }}
-              />
-              <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-slate-300 border border-white/20">
-                RAW / FLAT LOG (BEFORE)
-              </div>
-            </div>
-
-            {/* "After" Label */}
-            <div className="absolute top-4 right-4 bg-emerald-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-black text-black shadow-lg">
-              ✨ PRO CINEMATIC LUT (AFTER)
-            </div>
-
-            {/* Divider Line & Handle */}
-            <div 
-              className="absolute inset-y-0 w-1 bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] cursor-ew-resize flex items-center justify-center"
-              style={{ left: `${sliderPos}%` }}
-            >
-              <div className="w-8 h-8 rounded-full bg-white text-slate-900 shadow-xl flex items-center justify-center font-bold text-xs border-2 border-emerald-400">
-                <Sliders className="w-4 h-4 text-emerald-600" />
-              </div>
-            </div>
-
-            {/* Slider Range Input (Touch/Mouse Controller) */}
-            <input 
-              type="range" 
-              min="0" 
-              max="100" 
-              value={sliderPos}
-              onChange={(e) => setSliderPos(e.target.value)}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20"
-            />
-          </div>
-
-          <div className="mt-4 flex items-center justify-between text-xs text-slate-400 px-2">
-            <span>👈 Drag Left: Reveal More After Grade</span>
-            <span>Drag Right: Compare With Raw Clip 👉</span>
-          </div>
-        </div>
-      </section>
 
       {/* 6. PRICING & PRODUCTS SECTION (Direct Competitor Style but 10x More Premium) */}
       <section id="products" className="py-14 sm:py-24 relative">
