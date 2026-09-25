@@ -2,16 +2,16 @@ export const initialProducts = [
   {
     id: "prod-editor-combo",
     slug: "complete-editor-combo",
-    title: "Complete All-In-One Pro Editor Combo Pack",
+    title: "Complete Editor Combo",
     category: "combo",
     product_type: "combo",
     price: 299,
     original_price: 7497,
     discount_percentage: 96,
-    tag: "★ MOST RECOMMENDED / BEST VALUE",
+    tag: "★ MOST RECOMMENDED",
     is_trending: true,
     is_flash_sale: true,
-    badge: "👑 ALL 3 PRODUCTS INCLUDED",
+    badge: "MOST VALUE",
     enable_bump_offer: true,
     bump_title: "AI Mastery in Hindi: 4 Powerful E-Books to Master ChatGPT, Office Automation & Online Earning",
     bump_price: 49,
@@ -29,14 +29,12 @@ export const initialProducts = [
     reviews_count: 4890,
     downloads_count: 38400,
     drive_download_url: "https://drive.google.com/drive/folders/bazara-complete-editor-combo-master",
-    short_desc: "The Ultimate Editing Master Bundle: 5 Video Courses, 10,000+ Cinematic Assets (LUTs, SFX, Overlays) and CapCut Software Pro unlocked in one single master Drive link.",
+    short_desc: "All 3 products together — biggest savings. Everything in Mega Course, Asset Bundle & CapCut Software.",
     features: [
-      "Everything in Video Editing Mega Course (5 Complete Courses)",
-      "Everything in 10,000+ Premium Asset Bundle (LUTs, SFX, Overlays)",
-      "CapCut Software Pro (PC + Mobile VIP Unlocked Edition)",
-      "5,000+ Viral Reels Templates & Trending Beats",
-      "Client-Getting DM Scripts & Video Editing Freelancing Blueprint",
-      "1-Click Instant Google Drive Access with Lifetime Free Updates"
+      "Everything in Mega Course",
+      "Everything in Asset Bundle",
+      "CapCut Software included",
+      "Priority access & support"
     ]
   },
   {

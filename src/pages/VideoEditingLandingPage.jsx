@@ -144,12 +144,10 @@ export default function VideoEditingLandingPage({
       bump_drive_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
       tagline: "Instant cinematic glow for all your videos & reels",
       features: [
-        "1,000+ Cinematic 3D LUTs (Teal-Orange, Moody, Wedding, Vintage, Film)",
-        "2,000+ Studio Sound Effects (SFX, Whooshes, Risers, Impacts & Beats)",
-        "500+ 4K Overlays (Dust, Film Burns, Light Leaks, Glitches & Textures)",
-        "Motion Graphics, Lower Thirds & Animated Title Presets",
-        "Works with Premiere Pro, CapCut, DaVinci Resolve, AE & Filmora",
-        "Instant 1-Click Google Drive Link with Lifetime Access"
+        "1000+ premium LUTs & presets",
+        "VFX, overlays, transitions",
+        "Sound effects & background music",
+        "Works with all editing software like Premiere Pro, CapCut, AE & Filmora"
       ],
       drive_download_url: "https://drive.google.com/drive/folders/bazara-video-editing-assets"
     },
@@ -177,9 +175,7 @@ export default function VideoEditingLandingPage({
         "5 Complete Step-by-Step Editing Courses in 1 Master Bundle",
         "Beginner to Advanced Masterclass Lessons (Zero to Pro)",
         "Hindi + English Clear Audio Explanations",
-        "Includes Practice Raw Clips, Project Files & Shortcut Sheets",
-        "Viral Reel Hooks, Velocity Curves & Sound Design Formulas",
-        "Lifetime Access with Free Future Updates"
+        "Includes Practice Raw Clips, Project Files & Shortcut Sheets"
       ],
       drive_download_url: "https://drive.google.com/drive/folders/bazara-video-editing-course"
     },
@@ -207,18 +203,16 @@ export default function VideoEditingLandingPage({
         "All CapCut Pro Transitions, 3D Effects & AI Filters Unlocked",
         "Automatic Subtitles / Captions with Viral Animation Emojis",
         "Ultra HD 4K 60FPS Exports with Zero Watermark",
-        "PC (Windows 10/11 & Mac) + Android/iOS Installation Setup",
-        "Speed Velocity Curves, Motion Blur & Smooth Slow Motion",
-        "Step-by-Step 2-Minute Installation Video Guide Included"
+        "PC (Windows 10/11 & Mac) + Android/iOS Installation Setup"
       ],
       drive_download_url: "https://drive.google.com/drive/folders/bazara-capcut-pro-software"
     },
     {
       id: "prod-editor-combo",
       slug: "complete-editor-combo",
-      title: "Complete All-In-One Editor Combo",
-      subtitle: "Mega Course + 10,000+ Assets + CapCut Pro + VIP Bonuses",
-      badge: "ALL 3 IN 1 PACK",
+      title: "Complete Editor Combo",
+      subtitle: "All 3 products together — biggest savings",
+      badge: "MOST VALUE",
       discount: "96% OFF",
       price: 299,
       originalPrice: 7497,
@@ -232,14 +226,12 @@ export default function VideoEditingLandingPage({
       bump_desc: "⚡ SPECIAL ADD-ON (90% OFF): Video editing ke viral scripts generate karne, Excel/office automation aur ChatGPT se earning karne ke 4 practical Hindi E-Books + 15,000+ Ready Prompts Vault!",
       bump_image: "/ai-mastery-banner.jpg",
       bump_drive_url: "https://drive.google.com/drive/folders/1ffXXiSYbwjXJByDDGeYGIH1HEeeqaM9i?usp=drive_link",
-      tagline: "Everything you will ever need to edit viral videos in one master vault",
+      tagline: "All 3 products together in one master pack — biggest savings",
       features: [
-        "Everything in Video Editing Mega Course (All 5 Full Courses)",
-        "Everything in 10,000+ Premium Asset Bundle (LUTs, SFX, Overlays)",
-        "CapCut Software Pro (PC + Mobile VIP Unlocked Edition)",
-        "BONUS 1: 5,000+ Viral Ready-to-Post Reels Clips & Trending Beats (Worth ₹999)",
-        "BONUS 2: High-Paying Freelancing & Client-Getting DM Scripts (Worth ₹1,499)",
-        "Single 1-Click Master Google Drive Access + Lifetime VIP WhatsApp Support"
+        "Everything in Mega Course",
+        "Everything in Asset Bundle",
+        "CapCut Software included",
+        "Priority access & support"
       ],
       drive_download_url: "https://drive.google.com/drive/folders/bazara-complete-editor-combo-master"
     }
@@ -595,8 +587,7 @@ export default function VideoEditingLandingPage({
                     <div className="flex items-center justify-between gap-2 mb-3">
                       {isCombo ? (
                         <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1">
-                          <Flame className="w-3 h-3 text-emerald-400 fill-emerald-400 shrink-0" />
-                          <span>ALL 3 IN 1 PACK</span>
+                          <span>MOST VALUE</span>
                         </span>
                       ) : (
                         <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
@@ -618,9 +609,11 @@ export default function VideoEditingLandingPage({
 
                     {/* Features Checklist */}
                     <ul className="mt-5 space-y-2.5">
-                      {prod.features.slice(0, isCombo ? 6 : 4).map((feat, idx) => (
+                      {prod.features.slice(0, 4).map((feat, idx) => (
                         <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-300 leading-snug">
-                          <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                          <span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                          </span>
                           <span>{feat}</span>
                         </li>
                       ))}
