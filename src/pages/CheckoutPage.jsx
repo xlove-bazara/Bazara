@@ -74,8 +74,8 @@ export default function CheckoutPage({
 
   const basePrice = product.price;
   const upsellPrice = product.bump_price || 49;
-  const upsellTitle = product.bump_title || "15,000+ AI Prompts Vault (ChatGPT, Gemini, Claude & More)";
-  const upsellDesc = product.bump_desc || "3,000+ ChatGPT, 2,000+ Gemini, 2,500+ AI Image Prompts, Marketing, Ads, SEO & Business Growth Vault.";
+  const upsellTitle = product.bump_title || "Unlock 15,000+ Ready-to-Use AI Prompts Vault";
+  const upsellDesc = product.bump_desc || "⚡ ChatGPT & AI का पूरा फायदा तभी मिलता है जब सही Prompts हों! 1-Click में Copy-Paste करें और अपने काम को 10x Fast बनाएं!";
   const upsellImage = product.bump_image || "/bump-offer-banner.jpg";
   const subtotal = basePrice + (hasBumpOffer && addUpsell ? upsellPrice : 0);
   const total = Math.max(0, subtotal - discountAmount);
@@ -358,7 +358,7 @@ export default function CheckoutPage({
                 <span>ONE-TIME SPECIAL OFFER</span>
               </span>
               <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-md border border-emerald-500/30">
-                SAVE 90% (WORTH ₹999)
+                SAVE ₹450 (90% OFF)
               </span>
             </div>
 
@@ -390,15 +390,23 @@ export default function CheckoutPage({
                 <p className="text-[11px] text-amber-200/90 line-clamp-1 mt-0.5 font-medium">
                   {upsellDesc}
                 </p>
-                <div className="flex items-baseline gap-2 mt-1">
+                
+                {/* Micro Key Features Row */}
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[9.5px] font-semibold text-slate-300">
+                  <span className="text-emerald-400">✓ 3,000+ ChatGPT & 2,000+ Gemini</span>
+                  <span className="text-slate-400">• Marketing, Sales & Ads</span>
+                  <span className="text-slate-400">• Instant G-Drive</span>
+                </div>
+
+                <div className="flex items-baseline gap-2 mt-1.5">
                   <span className="text-sm sm:text-base font-black text-emerald-400">
                     +₹{upsellPrice}
                   </span>
                   <span className="text-xs text-slate-500 line-through">
-                    ₹999
+                    ₹499
                   </span>
-                  <span className="text-[9.5px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">
-                    90% OFF
+                  <span className="text-[9.5px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                    SAVE ₹450 TODAY
                   </span>
                 </div>
               </div>
@@ -406,13 +414,13 @@ export default function CheckoutPage({
 
             {/* Micro Toggle Status Footer */}
             <div className="mt-2.5 pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-bold">
-              <span className={addUpsell ? 'text-emerald-300 flex items-center gap-1' : 'text-slate-400'}>
-                {addUpsell ? '✓ Added to your checkout order' : '👉 Click to add this special deal'}
+              <span className={addUpsell ? 'text-emerald-300 flex items-center gap-1 font-bold' : 'text-slate-400'}>
+                {addUpsell ? '✅ Yes! 15,000+ Prompts Vault Added' : '👉 Click to add 15,000+ Prompts Vault'}
               </span>
               <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
                 addUpsell ? 'bg-emerald-400 text-slate-950' : 'bg-white/10 text-emerald-300'
               }`}>
-                {addUpsell ? 'ADDED' : `+₹${upsellPrice}`}
+                {addUpsell ? '+₹49 Included ✓' : `+₹${upsellPrice}`}
               </span>
             </div>
           </section>
