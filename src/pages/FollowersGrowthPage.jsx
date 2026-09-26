@@ -6,23 +6,14 @@ import {
   CheckCircle2, 
   Star, 
   Lock, 
+  Clock,
   ArrowRight, 
   MessageCircle, 
   ChevronDown, 
   ChevronUp, 
-  Users, 
-  Heart, 
-  Play, 
   AlertCircle,
   X,
-  CreditCard,
-  ShieldAlert,
-  KeyRound,
-  Check,
-  Globe,
-  Tv,
-  Send,
-  ThumbsUp
+  CreditCard
 } from 'lucide-react';
 
 const InstagramIcon = ({ className = "w-5 h-5" }) => (
