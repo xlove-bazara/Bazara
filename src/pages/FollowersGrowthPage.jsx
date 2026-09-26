@@ -13,7 +13,8 @@ import {
   ChevronUp, 
   AlertCircle,
   X,
-  CreditCard
+  CreditCard,
+  Crown
 } from 'lucide-react';
 
 const InstagramIcon = ({ className = "w-5 h-5" }) => (
@@ -71,8 +72,8 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       { name: "Anand K. from Jaipur", action: "ordered Insta ID Recovery (₹299)", time: "Just now", type: "unban" },
       { name: "Priya M. from Mumbai", action: "bought 1M Followers + Blue Tick (₹600)", time: "2 mins ago", type: "insta" },
       { name: "Vikram K. from Bangalore", action: "purchased 100k Indian Views (₹50)", time: "3 mins ago", type: "insta" },
-      { name: "Sneha G. from Ahmedabad", action: "ordered YouTube 1k Subs Pack (₹299)", time: "4 mins ago", type: "yt" },
-      { name: "Suresh P. from Ludhiana", action: "bought 30k Followers + Blue Tick (₹250)", time: "5 mins ago", type: "insta" }
+      { name: "Amit V. from Bangalore", action: "bought 20k Telegram Members (₹299)", time: "4 mins ago", type: "tg" },
+      { name: "Pooja P. from Ahmedabad", action: "bought 15k Facebook Likes (₹350)", time: "5 mins ago", type: "fb" }
     ];
 
     let index = 0;
@@ -85,7 +86,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     return () => clearInterval(toastInterval);
   }, []);
 
-  // Instagram Followers Packages
+  // 1. Instagram Followers Packages (Exact)
   const followerPackages = [
     {
       id: "prod-insta-100",
@@ -168,12 +169,16 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       badgeColor: "bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black font-black",
       isVvip: true,
       desc: "Is 1 Million Super Pack me 10 Lakh Real Followers aur Mega Online Status Milta Hai.",
-      bonus: "CLAIM VVIP CELEBRITY STATUS NOW",
-      features: ["1,000,000 (10 Lakh) Real Followers", "Official Meta Blue Tick Badge Request", "VIP Dedicated WhatsApp Support"]
+      features: [
+        "1,000,000 (10 Lakh) Real Active Followers",
+        "Official Meta Blue Tick Badge Request Support",
+        "100k Bonus Likes + 500k Reel Views Included",
+        "VIP Dedicated WhatsApp Manager (24/7 Priority)"
+      ]
     }
   ];
 
-  // Likes Packages
+  // 2. Likes Packages (Exact)
   const likesPackages = [
     {
       id: "prod-likes-100",
@@ -234,7 +239,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
   ];
 
-  // Views Packages
+  // 3. Views Packages (Exact)
   const viewsPackages = [
     {
       id: "prod-views-1k",
@@ -306,7 +311,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
   ];
 
-  // Instagram ID Unban & Recovery Packages (Dedicated Premium Section)
+  // 4. Instagram ID Unban & Recovery Packages
   const unbanPackages = [
     {
       id: "prod-unban-pro",
@@ -345,7 +350,132 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
   ];
 
-  // YouTube Packages
+  // 5. Facebook Packages (Exact Matching Screenshot 4)
+  const facebookPackages = [
+    {
+      id: "prod-fb-5k",
+      slug: "5k-facebook-likes-followers",
+      title: "5k Facebook Likes + Followers 🇮🇳",
+      price: 180,
+      originalPrice: 999,
+      tag: "Starter",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-amber-400",
+      btnColor: "bg-blue-600 hover:bg-blue-700",
+      desc: "5k Indian Facebook Page likes and followers for building your page audience and social presence.",
+      features: ["🇮🇳 Indian Audience", "Safe Delivery", "Trusted Service"]
+    },
+    {
+      id: "prod-fb-10k",
+      slug: "10k-facebook-likes-followers",
+      title: "10k Facebook Likes + Followers 🇮🇳",
+      price: 250,
+      originalPrice: 1499,
+      tag: "Popular",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-emerald-500",
+      btnColor: "bg-blue-600 hover:bg-blue-700",
+      desc: "10k Indian Facebook Page likes and followers with fast and reliable delivery.",
+      features: ["🇮🇳 Indian Audience", "Fast Delivery", "Secure"]
+    },
+    {
+      id: "prod-fb-15k",
+      slug: "15k-facebook-likes-followers",
+      title: "15k Facebook Likes + Followers 🇮🇳",
+      price: 350,
+      originalPrice: 1999,
+      tag: "Hot",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-sky-500",
+      btnColor: "bg-blue-600 hover:bg-blue-700",
+      desc: "15k Indian Facebook Page likes and followers for stronger page reach and social presence.",
+      features: ["🇮🇳 Indian Audience", "Safe Delivery", "Trusted"]
+    },
+    {
+      id: "prod-fb-100k",
+      slug: "100k-facebook-likes-followers",
+      title: "100k Facebook Likes + Followers 🇮🇳",
+      price: 500,
+      originalPrice: 3999,
+      tag: "Best Deal",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-purple-600",
+      btnColor: "bg-blue-600 hover:bg-blue-700",
+      desc: "100k Indian Facebook Page likes and followers for high-volume page growth.",
+      features: ["🇮🇳 Indian Audience", "Fast Delivery", "Trusted"]
+    },
+    {
+      id: "prod-fb-1m",
+      slug: "1m-facebook-likes-followers",
+      title: "1M Facebook Likes + Followers 🇮🇳",
+      price: 599,
+      originalPrice: 7999,
+      tag: "🔥 OFFER",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-rose-600",
+      btnColor: "bg-blue-600 hover:bg-blue-700",
+      desc: "Special offer on 1 million Indian Facebook Page likes and followers. High-volume package at an offer price.",
+      features: ["🇮🇳 Indian Audience", "Fast Delivery", "Special Offer"]
+    }
+  ];
+
+  // 6. Telegram Packages (Exact Matching Screenshot 3)
+  const telegramPackages = [
+    {
+      id: "prod-tg-10k",
+      slug: "10k-telegram-members",
+      title: "10k Telegram Members 🇮🇳",
+      price: 199,
+      originalPrice: 999,
+      tag: "Starter",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-amber-400",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "10k Indian Telegram members for building a stronger community presence and channel reach.",
+      features: ["🇮🇳 Indian Members", "Safe Delivery", "Trusted Service"]
+    },
+    {
+      id: "prod-tg-20k",
+      slug: "20k-telegram-members",
+      title: "20k Telegram Members 🇮🇳",
+      price: 299,
+      originalPrice: 1499,
+      tag: "Popular",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-emerald-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "20k Indian Telegram members with fast delivery for growing your channel or group.",
+      features: ["🇮🇳 Indian Members", "Fast Delivery", "Secure"]
+    },
+    {
+      id: "prod-tg-50k",
+      slug: "50k-telegram-members",
+      title: "50k Telegram Members 🇮🇳",
+      price: 499,
+      originalPrice: 2499,
+      tag: "Hot",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-sky-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "50k Indian Telegram members for high-volume community growth and stronger social presence.",
+      features: ["🇮🇳 Indian Members", "Safe Delivery", "Trusted"]
+    },
+    {
+      id: "prod-tg-100k",
+      slug: "100k-telegram-members",
+      title: "100k Telegram Members 🇮🇳",
+      price: 799,
+      originalPrice: 4999,
+      tag: "Best Deal",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-rose-600",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "100k Indian Telegram members for large-scale channel or group growth.",
+      features: ["🇮🇳 Indian Members", "Fast Delivery", "Trusted"]
+    }
+  ];
+
+  // 7. YouTube Packages
   const youtubePackages = [
     {
       id: "prod-yt-monetization",
@@ -355,41 +485,76 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       originalPrice: 3999,
       tag: "🔴 MONETIZATION PACK",
       badgeColor: "bg-red-600 text-white font-extrabold",
+      cardBorder: "border-red-500",
+      btnColor: "bg-red-600 hover:bg-red-700",
       desc: "1,000 Real Subscribers + 4,000 Watch Hours to unlock YouTube Partner Program and start earning revenue.",
       features: ["1,000 Genuine Subscribers", "4,000 Real Watch Hours", "Safe for Monetization Audit", "Lifetime Guarantee"]
     }
   ];
 
-  // Facebook & Telegram Packages
-  const otherPackages = [
+  // Verified Buyer Reviews for Auto-Scrolling Marquee
+  const testimonials = [
     {
-      id: "prod-fb-followers",
-      slug: "facebook-page-followers",
-      title: "10,000 Facebook Page Followers & Likes",
-      price: 199,
-      originalPrice: 1999,
-      tag: "🔵 FB BOOST",
-      badgeColor: "bg-blue-600 text-white font-extrabold",
-      desc: "Boost your Facebook Page authority with 10,000 genuine Followers & Page Likes.",
-      features: ["10,000 Real Facebook Followers", "Instant Page Boost", "100% Non-Drop"]
+      id: 1,
+      name: "Rohan Mehta",
+      city: "Delhi",
+      badge: "Verified Buyer",
+      service: "50k Followers Combo",
+      rating: 5,
+      review: "Bhai ₹199 wale 50k pack me 10 mins ke andar sare followers aur 5k bonus likes aagaye! Organic reach bhi badh gayi."
     },
     {
-      id: "prod-tg-members",
-      slug: "telegram-channel-members",
-      title: "5,000 Telegram Channel Members",
-      price: 149,
-      originalPrice: 1499,
-      tag: "✈️ TELEGRAM BOOST",
-      badgeColor: "bg-sky-500 text-white font-extrabold",
-      desc: "Add 5,000 active Telegram members to your channel or group instantly.",
-      features: ["5,000 Active Members", "Instant Member Join", "Post Impression Boost"]
+      id: 2,
+      name: "Anand K.",
+      city: "Jaipur",
+      badge: "Verified ID Recovery",
+      service: "Insta ID Unban (₹299)",
+      rating: 5,
+      review: "Mera Instagram account 2 hafte se suspended tha. Bazara ₹299 Unban service buy karne ke 24 ghante ke andar ID recover ho gayi!"
+    },
+    {
+      id: 3,
+      name: "Sneha Sharma",
+      city: "Mumbai",
+      badge: "Verified Creator",
+      service: "100k Reels Views (₹50)",
+      rating: 5,
+      review: "Maine 100k Views pack liya tha. Meri Reel viral ho gayi aur explore page se 10k naye genuine followers mile!"
+    },
+    {
+      id: 4,
+      name: "Amit Verma",
+      city: "Bangalore",
+      badge: "Community Admin",
+      service: "20k Telegram Members",
+      rating: 5,
+      review: "Trading channel ke liye 20k Telegram members order kiye the. Same day full active members deliver ho gaye."
+    },
+    {
+      id: 5,
+      name: "Pooja Patel",
+      city: "Ahmedabad",
+      badge: "Brand Owner",
+      service: "15k Facebook Likes (₹350)",
+      rating: 5,
+      review: "E-commerce page ka trust badhane ke liye 15k Likes best package tha. Fast delivery and 100% active audience."
+    },
+    {
+      id: 6,
+      name: "Deepak Gill",
+      city: "Chandigarh",
+      badge: "Verified VVIP",
+      service: "1M Followers + Blue Tick",
+      rating: 5,
+      review: "1 Million VVIP pack best investment tha! WhatsApp dedicated manager ne Blue Tick request submit karne me poora guide kiya."
     }
   ];
 
   const getDisplayedPackages = () => {
     if (activePlatform === 'unban') return unbanPackages;
     if (activePlatform === 'youtube') return youtubePackages;
-    if (activePlatform === 'facebook' || activePlatform === 'telegram') return otherPackages;
+    if (activePlatform === 'facebook') return facebookPackages;
+    if (activePlatform === 'telegram') return telegramPackages;
     
     // Instagram Growth
     if (selectedCategory === 'followers') return followerPackages;
@@ -414,6 +579,12 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       setModalError(
         activePack?.isUnban 
           ? 'Please enter your Banned Instagram Handle or Email!'
+          : activePlatform === 'telegram'
+          ? 'Please enter your Telegram Channel / Group Link!'
+          : activePlatform === 'facebook'
+          ? 'Please enter your Facebook Page Link!'
+          : activePlatform === 'youtube'
+          ? 'Please enter your YouTube Channel Link!'
           : 'Please enter your Instagram Username or Profile Link!'
       );
       return;
@@ -430,7 +601,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         amount: Math.round(activePack.price * 100),
         currency: 'INR',
         name: 'bazara.in SMM',
-        description: `${activePack.title} - Handle: ${modalInstaHandle.trim()}`,
+        description: `${activePack.title} - Target: ${modalInstaHandle.trim()}`,
         image: typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/logo.png?v=2` : 'https://bazara.in/logo.png?v=2',
         prefill: {
           contact: '9876543210',
@@ -448,7 +619,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
           setIsModalOpen(false);
           onBuyProduct({
             ...activePack,
-            customNote: `${activePack?.isUnban ? 'Banned Account' : 'Instagram Handle'}: ${modalInstaHandle.trim()}`,
+            customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}`,
             razorpayPaymentId: response.razorpay_payment_id
           });
         }
@@ -460,7 +631,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       setIsModalOpen(false);
       onBuyProduct({
         ...activePack,
-        customNote: `${activePack?.isUnban ? 'Banned Account' : 'Instagram Handle'}: ${modalInstaHandle.trim()}`
+        customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}`
       });
     }
   };
@@ -485,9 +656,9 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
   ];
 
   return (
-    <div className="min-h-screen bg-[#fcfdfd] text-slate-900 font-sans selection:bg-rose-500 selection:text-white pb-20">
+    <div className="min-h-screen bg-[#fcfdfd] text-slate-900 font-sans selection:bg-rose-500 selection:text-white pb-24">
       
-      {/* 1. SINGLE ELEGANT TOP ANNOUNCEMENT BANNER (Replaced 3 cluttered bars with 1 ultra-sleek bar) */}
+      {/* 1. SINGLE ELEGANT TOP ANNOUNCEMENT BANNER */}
       <div className="bg-gradient-to-r from-rose-600 via-pink-600 to-rose-700 text-white text-xs font-bold py-2.5 px-4 shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center justify-between text-center sm:text-left">
           <div className="flex items-center space-x-2">
@@ -504,7 +675,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         </div>
       </div>
 
-      {/* 2. STICKY CLEAN HEADER (Branded bazara.in — Stays on /follower page) */}
+      {/* 2. STICKY CLEAN HEADER */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xs">
         <div className="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <div 
@@ -550,11 +721,11 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
             }}
             className={`py-3 px-3 rounded-2xl text-xs font-black flex items-center justify-center space-x-1.5 transition-all cursor-pointer ${
               activePlatform === 'instagram' 
-                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20 ring-2 ring-rose-500/30' 
+                ? 'bg-[#ff2b7d] text-white shadow-md shadow-rose-600/20 ring-2 ring-rose-500/30' 
                 : 'bg-white text-slate-700 border border-slate-200/80 hover:bg-slate-50'
             }`}
           >
-            <span>💖 Instagram Growth</span>
+            <span>💖 Instagram</span>
           </button>
           
           <button
@@ -606,13 +777,13 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
 
       {/* 4. INSTAGRAM SUB-CATEGORY TABS (Followers / Likes / Views) */}
       {activePlatform === 'instagram' && (
-        <section className="pt-4 pb-4 px-4 max-w-xl mx-auto">
+        <section className="pt-4 pb-2 px-4 max-w-xl mx-auto">
           <div className="bg-white p-1.5 rounded-full border border-slate-200 shadow-xs flex items-center justify-between gap-1">
             <button
               onClick={() => setSelectedCategory('followers')}
               className={`flex-1 py-2.5 rounded-full text-xs font-black transition-all cursor-pointer flex items-center justify-center space-x-1 ${
                 selectedCategory === 'followers'
-                  ? 'bg-slate-900 text-white shadow-sm'
+                  ? 'bg-[#ff2b7d] text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -622,7 +793,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
               onClick={() => setSelectedCategory('likes')}
               className={`flex-1 py-2.5 rounded-full text-xs font-black transition-all cursor-pointer flex items-center justify-center space-x-1 ${
                 selectedCategory === 'likes'
-                  ? 'bg-slate-900 text-white shadow-sm'
+                  ? 'bg-[#ff2b7d] text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -632,7 +803,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
               onClick={() => setSelectedCategory('views')}
               className={`flex-1 py-2.5 rounded-full text-xs font-black transition-all cursor-pointer flex items-center justify-center space-x-1 ${
                 selectedCategory === 'views'
-                  ? 'bg-slate-900 text-white shadow-sm'
+                  ? 'bg-[#ff2b7d] text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -642,7 +813,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         </section>
       )}
 
-      {/* 5. INSTAGRAM ID UNBAN HEADER BANNER (When ID Unban Tab Selected) */}
+      {/* 5. DEDICATED HEADER BANNERS (FOR UNBAN, FACEBOOK, TELEGRAM) */}
       {activePlatform === 'unban' && (
         <section className="pt-4 pb-2 px-4 max-w-xl mx-auto">
           <div className="bg-gradient-to-br from-purple-900 via-slate-900 to-indigo-950 text-white p-6 rounded-3xl border border-purple-500/30 shadow-xl space-y-3">
@@ -651,14 +822,38 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
               <span className="uppercase tracking-wider">100% Guaranteed Account Recovery</span>
             </div>
             <h2 className="text-2xl font-black text-white leading-tight">
-              🔒 Instagram ID Unban & Recovery Service
+              🔒 Instagram ID Unban & Recovery
             </h2>
             <p className="text-xs text-slate-300 font-medium leading-relaxed">
-              Got your Instagram account disabled, suspended, or banned? Don't worry! We offer a 100% account recovery service with complete trust, safety, and rapid turnaround time. Let our experts handle the technical appeal process to bring your account back safely.
+              Got your Instagram account disabled, suspended, or banned? Don't worry! We offer a 100% account recovery service with complete trust, safety, and rapid turnaround time.
             </p>
-            <div className="pt-1 flex items-center space-x-4 text-[11px] font-bold text-slate-300">
-              <span className="flex items-center space-x-1"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> <span>No Password Needed</span></span>
-              <span className="flex items-center space-x-1"><ShieldCheck className="w-3.5 h-3.5 text-purple-400" /> <span>Full Money Back Guarantee</span></span>
+          </div>
+        </section>
+      )}
+
+      {activePlatform === 'facebook' && (
+        <section className="pt-4 pb-2 px-4 max-w-xl mx-auto">
+          <div className="bg-white p-5 rounded-3xl border border-blue-200 shadow-sm text-center space-y-2">
+            <h2 className="text-xl font-black text-slate-900">Facebook Services 📘</h2>
+            <p className="text-xs text-slate-600 font-medium">
+              Grow your Facebook Page with Indian likes and followers. Choose a package below for fast delivery and reliable service.
+            </p>
+            <div className="inline-block py-1 px-3 bg-blue-50 text-blue-700 text-xs font-black rounded-full border border-blue-200">
+              👍 Page Likes + Followers
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activePlatform === 'telegram' && (
+        <section className="pt-4 pb-2 px-4 max-w-xl mx-auto">
+          <div className="bg-white p-5 rounded-3xl border border-sky-200 shadow-sm text-center space-y-2">
+            <h2 className="text-xl font-black text-slate-900">Telegram Services 📱</h2>
+            <p className="text-xs text-slate-600 font-medium">
+              Grow your Telegram channel or group with Indian members. Choose a package below for quick delivery and reliable service.
+            </p>
+            <div className="inline-block py-1 px-3 bg-sky-50 text-sky-700 text-xs font-black rounded-full border border-sky-200">
+              👥 Indian Members
             </div>
           </div>
         </section>
@@ -666,122 +861,184 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
 
       {/* 6. PACKAGE CARDS GRID */}
       <section className="px-4 max-w-md mx-auto space-y-6 pt-4">
-        {displayedPackages.map((pkg) => (
-          <div
-            key={pkg.id}
-            className={`relative bg-white rounded-3xl p-6 text-center transition-all duration-300 border ${
-              pkg.isVvip 
-                ? 'bg-gradient-to-b from-slate-900 via-slate-950 to-black text-white border-2 border-amber-400 shadow-2xl' 
-                : pkg.isUnban
-                ? 'border-2 border-purple-500 bg-gradient-to-b from-purple-50/20 to-white shadow-xl shadow-purple-500/10'
-                : pkg.popular
-                ? 'border-2 border-amber-400 bg-white shadow-xl shadow-amber-500/10'
-                : 'border border-slate-200/90 shadow-md hover:shadow-lg'
-            }`}
-          >
-            {/* Tag Badge */}
-            {pkg.tag && (
-              <div className={`absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap ${pkg.badgeColor}`}>
-                {pkg.tag}
-              </div>
-            )}
+        {displayedPackages.map((pkg) => {
+          // Special Luxury Styling for 1M VVIP Card
+          if (pkg.isVvip) {
+            return (
+              <div
+                key={pkg.id}
+                className="relative bg-gradient-to-b from-[#090d16] via-[#0d1322] to-black rounded-[32px] p-7 text-center border-2 border-amber-400 shadow-2xl shadow-amber-500/15 overflow-hidden"
+              >
+                {/* Background Ambient Glow */}
+                <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Title */}
-            <h3 className={`text-2xl font-black pt-2 ${pkg.isVvip ? 'text-amber-300' : 'text-slate-900'}`}>
-              {pkg.title}
-            </h3>
+                {/* VVIP Badge */}
+                <div className="inline-flex items-center space-x-1 px-4 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black shadow-md mb-3">
+                  <Crown className="w-3.5 h-3.5 fill-black" />
+                  <span>💎 VVIP EXCLUSIVE</span>
+                </div>
 
-            {/* Price */}
-            <div className="my-3">
-              <span className={`text-5xl font-black tracking-tight ${pkg.isVvip ? 'text-amber-400' : pkg.isUnban ? 'text-purple-600' : 'text-rose-600'}`}>
-                ₹{pkg.price}
-              </span>
-              <span className="text-xs text-slate-400 line-through ml-2">₹{pkg.originalPrice}</span>
-            </div>
+                {/* Title */}
+                <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  {pkg.title}
+                </h3>
 
-            {/* Description */}
-            <p className={`text-xs font-medium leading-relaxed px-2 ${pkg.isVvip ? 'text-slate-300' : 'text-slate-600'}`}>
-              {pkg.desc}
-            </p>
+                {/* Price */}
+                <div className="my-4 flex items-baseline justify-center space-x-2">
+                  <span className="text-5xl font-black tracking-tight bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent">
+                    ₹{pkg.price}
+                  </span>
+                  <span className="text-sm text-slate-500 line-through font-bold">₹{pkg.originalPrice}</span>
+                </div>
 
-            {/* Features Bullet List */}
-            {pkg.features && pkg.features.length > 0 && (
-              <div className="mt-4 pt-3 border-t border-slate-100 text-left space-y-2">
-                {pkg.features.map((feat, idx) => (
-                  <div key={idx} className="flex items-center space-x-2 text-xs font-semibold text-slate-700">
-                    <CheckCircle2 className={`w-4 h-4 shrink-0 ${pkg.isVvip ? 'text-amber-400' : pkg.isUnban ? 'text-purple-600' : 'text-emerald-500'}`} />
-                    <span>{feat}</span>
+                {/* Description */}
+                <p className="text-xs text-slate-300 font-medium leading-relaxed px-2">
+                  {pkg.desc}
+                </p>
+
+                {/* Features Bullet List */}
+                {pkg.features && (
+                  <div className="mt-5 pt-4 border-t border-white/10 text-left space-y-2.5">
+                    {pkg.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-center space-x-2.5 text-xs font-semibold text-slate-200">
+                        <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
+                )}
 
-            {/* Bonus Pill */}
-            {pkg.bonus && (
-              <div className={`mt-3.5 py-2 px-3 rounded-2xl text-xs font-extrabold ${
-                pkg.isVvip ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30' : 'bg-rose-50 text-rose-600 border border-rose-200'
-              }`}>
-                {pkg.bonus}
+                {/* 1M VVIP BUTTON WITH CONTINUOUS LIGHT REFLECTION SWEEP ANIMATION */}
+                <button
+                  onClick={() => handleOpenCheckoutModal(pkg)}
+                  className="w-full mt-6 py-4 px-6 rounded-2xl font-black text-lg uppercase tracking-wider bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-black shadow-xl shadow-amber-400/30 flex items-center justify-center space-x-2 transition-all transform active:scale-95 cursor-pointer relative overflow-hidden group btn-shine-effect"
+                >
+                  <span className="relative z-10 font-extrabold tracking-wide">CLAIM VVIP STATUS NOW</span>
+                  <ArrowRight className="w-5 h-5 relative z-10" />
+                </button>
               </div>
-            )}
+            );
+          }
 
-            {/* BUY NOW ANIMATED BUTTON */}
-            <button
-              onClick={() => handleOpenCheckoutModal(pkg)}
-              className={`w-full mt-6 py-4 px-6 rounded-2xl font-black text-lg uppercase tracking-wider shadow-xl flex items-center justify-center space-x-2 transition-all transform active:scale-95 cursor-pointer relative overflow-hidden group ${
-                pkg.isVvip
-                  ? 'bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black shadow-amber-400/30 animate-pulse'
-                  : pkg.isUnban
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-purple-600/30 hover:brightness-110'
-                  : 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-600/30 hover:shadow-rose-600/50'
-              }`}
+          // Standard Package Cards (Followers, Likes, Views, FB, TG)
+          const customCardBorder = pkg.cardBorder || (pkg.isUnban ? 'border-purple-500' : pkg.popular ? 'border-amber-400' : 'border-slate-200/90');
+          const customBtnColor = pkg.btnColor || (pkg.isUnban ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110' : 'bg-[#ff2b7d] hover:bg-rose-600');
+
+          return (
+            <div
+              key={pkg.id}
+              className={`relative bg-white rounded-3xl p-6 text-center transition-all duration-300 border-2 ${customCardBorder} shadow-md hover:shadow-lg`}
             >
-              <span className="relative z-10">
-                {pkg.isVvip ? 'CLAIM VVIP STATUS NOW' : pkg.isUnban ? 'RECOVER ACCOUNT NOW' : 'Buy Now'}
-              </span>
-              <ArrowRight className="w-5 h-5 relative z-10" />
-            </button>
+              {/* Tag Badge */}
+              {pkg.tag && (
+                <div className={`absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap ${pkg.badgeColor}`}>
+                  {pkg.tag}
+                </div>
+              )}
 
-          </div>
-        ))}
+              {/* Title */}
+              <h3 className="text-2xl font-black pt-2 text-slate-900">
+                {pkg.title}
+              </h3>
+
+              {/* Price */}
+              <div className="my-3">
+                <span className={`text-5xl font-black tracking-tight ${pkg.isUnban ? 'text-purple-600' : 'text-[#ff2b7d]'}`}>
+                  ₹{pkg.price}
+                </span>
+                <span className="text-xs text-slate-400 line-through ml-2">₹{pkg.originalPrice}</span>
+              </div>
+
+              {/* Description */}
+              <p className="text-xs font-medium leading-relaxed px-2 text-slate-600">
+                {pkg.desc}
+              </p>
+
+              {/* Features Bullet List */}
+              {pkg.features && pkg.features.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-slate-100 text-left space-y-2">
+                  {pkg.features.map((feat, idx) => (
+                    <div key={idx} className="flex items-center space-x-2 text-xs font-semibold text-slate-700">
+                      <CheckCircle2 className={`w-4 h-4 shrink-0 ${pkg.isUnban ? 'text-purple-600' : 'text-emerald-500'}`} />
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Bonus Pill */}
+              {pkg.bonus && (
+                <div className="mt-3.5 py-2 px-3 rounded-2xl text-xs font-extrabold bg-rose-50 text-rose-600 border border-rose-200">
+                  {pkg.bonus}
+                </div>
+              )}
+
+              {/* BUY NOW BUTTON WITH SHINE REFLECTION EFFECT */}
+              <button
+                onClick={() => handleOpenCheckoutModal(pkg)}
+                className={`w-full mt-6 py-4 px-6 rounded-2xl font-black text-lg uppercase tracking-wider text-white shadow-lg shadow-rose-500/25 flex items-center justify-center space-x-2 transition-all transform active:scale-95 cursor-pointer relative overflow-hidden group btn-shine-effect ${customBtnColor}`}
+              >
+                <span className="relative z-10">
+                  {pkg.isUnban ? 'RECOVER ACCOUNT NOW' : 'Buy Now'}
+                </span>
+                <ArrowRight className="w-5 h-5 relative z-10" />
+              </button>
+
+            </div>
+          );
+        })}
       </section>
 
-      {/* 7. CUSTOMER REVIEWS & FEEDBACK SECTION */}
-      <section className="py-12 px-4 max-w-md mx-auto border-t border-slate-200/60 mt-10">
-        <div className="text-center mb-6">
-          <span className="text-[11px] font-black uppercase tracking-widest text-rose-600">⭐ Customer Proof & Ratings</span>
-          <h3 className="text-xl font-black text-slate-900 mt-1">Verified Buyer Testimonials</h3>
+      {/* 7. HORIZONTAL AUTO-SCROLLING MARQUEE TESTIMONIALS CAROUSEL (6 Verified Reviews) */}
+      <section className="py-12 border-t border-slate-200/60 mt-12 overflow-hidden bg-slate-50/50">
+        <div className="text-center mb-6 px-4">
+          <span className="text-[11px] font-black uppercase tracking-widest text-[#ff2b7d]">⭐ Customer Proof & Live Ratings</span>
+          <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">Verified Buyer Testimonials</h3>
+          <p className="text-xs text-slate-500 font-medium">Real experiences from creators, brands, and influencers</p>
         </div>
 
-        <div className="space-y-4">
-          <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs space-y-2">
-            <div className="flex text-amber-400 space-x-1">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-amber-400" />)}
-            </div>
-            <p className="text-xs text-slate-700 font-semibold italic">
-              "Mera Instagram account 2 hafte se suspended tha. Bazara ₹299 Unban service buy karne ke 24 ghante ke andar meri ID recover ho gayi!"
-            </p>
-            <p className="text-[11px] font-extrabold text-slate-900 pt-1 border-t border-slate-100">
-              — Anand K., Jaipur (Verified ID Recovery)
-            </p>
-          </div>
+        {/* Smooth Infinite Marquee Carousel Container */}
+        <div className="relative w-full overflow-hidden py-3">
+          <div className="flex space-x-4 animate-marquee hover:[animation-play-state:paused] w-max cursor-grab">
+            {/* Duplicated list for seamless infinite loop */}
+            {[...testimonials, ...testimonials].map((t, index) => (
+              <div
+                key={`${t.id}-${index}`}
+                className="w-[300px] sm:w-[340px] bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between shrink-0 space-y-3"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex text-amber-400 space-x-0.5">
+                      {[...Array(t.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
+                      ✔ {t.badge}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-700 font-medium leading-relaxed italic">
+                    "{t.review}"
+                  </p>
+                </div>
 
-          <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs space-y-2">
-            <div className="flex text-amber-400 space-x-1">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-amber-400" />)}
-            </div>
-            <p className="text-xs text-slate-700 font-semibold italic">
-              "Bhai ₹199 wale 10k pack ka delivery 2 mins me start ho gaya! Organic reach bhi badh gayi."
-            </p>
-            <p className="text-[11px] font-extrabold text-slate-900 pt-1 border-t border-slate-100">
-              — Vikas S., Mumbai (Verified Buyer)
-            </p>
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-black text-slate-900">{t.name}</p>
+                    <p className="text-[10px] text-slate-400 font-medium">{t.city} • {t.service}</p>
+                  </div>
+                  <div className="w-7 h-7 rounded-full bg-rose-50 text-rose-600 font-black text-xs flex items-center justify-center">
+                    {t.name.charAt(0)}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* 8. FAQ ACCORDION */}
-      <section className="py-8 px-4 max-w-md mx-auto">
+      <section className="py-10 px-4 max-w-md mx-auto">
         <h3 className="text-lg font-black text-slate-900 text-center mb-4">Frequently Asked Questions</h3>
         <div className="space-y-2">
           {faqs.map((faq, idx) => (
@@ -791,7 +1048,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                 className="w-full px-4 py-3 text-left flex items-center justify-between font-bold text-xs text-slate-900 cursor-pointer"
               >
                 <span>{faq.q}</span>
-                {activeFaq === idx ? <ChevronUp className="w-4 h-4 text-rose-600" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                {activeFaq === idx ? <ChevronUp className="w-4 h-4 text-[#ff2b7d]" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
               </button>
               {activeFaq === idx && (
                 <div className="px-4 pb-3 text-xs text-slate-600 border-t border-slate-100 pt-2 font-medium">
@@ -803,7 +1060,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         </div>
       </section>
 
-      {/* 9. LIGHT GLASSMORPHIC LIVE SALES TOAST NOTIFICATION (Clean White Theme Match) */}
+      {/* 9. LIGHT GLASSMORPHIC LIVE SALES TOAST NOTIFICATION */}
       {toastNotification && (
         <div className="fixed bottom-6 left-4 z-50 bg-white/95 backdrop-blur-md text-slate-900 p-3.5 rounded-2xl shadow-xl border border-slate-200 flex items-center space-x-3 max-w-xs animate-slide-up">
           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
@@ -819,7 +1076,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         </div>
       )}
 
-      {/* 10. ULTRA-COMPACT 1-STEP CHECKOUT MODAL (No Name, Email, or Phone required) */}
+      {/* 10. ULTRA-COMPACT 1-STEP CHECKOUT MODAL */}
       {isModalOpen && activePack && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white text-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 overflow-hidden relative p-6 space-y-4 animate-scale-up">
@@ -843,18 +1100,26 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                 {activePack.title}
               </h2>
               <div className="flex items-baseline space-x-2 mt-1">
-                <span className={`text-3xl font-black ${activePack.isUnban ? 'text-purple-600' : 'text-rose-600'}`}>
+                <span className={`text-3xl font-black ${activePack.isUnban ? 'text-purple-600' : 'text-[#ff2b7d]'}`}>
                   ₹{activePack.price}
                 </span>
                 <span className="text-xs text-slate-400 line-through">₹{activePack.originalPrice}</span>
               </div>
             </div>
 
-            {/* Single Input Field: Instagram Username / Link or Banned ID */}
+            {/* Single Input Field */}
             <form onSubmit={handleExecutePayment} className="space-y-4 pt-2">
               <div>
                 <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                  {activePack.isUnban ? 'Banned Instagram Profile Handle or Email' : 'Instagram Profile Username or Reel Link'} <span className="text-rose-600">*</span>
+                  {activePack.isUnban 
+                    ? 'Banned Instagram Handle or Email' 
+                    : activePlatform === 'telegram'
+                    ? 'Telegram Channel / Group Link'
+                    : activePlatform === 'facebook'
+                    ? 'Facebook Page URL'
+                    : activePlatform === 'youtube'
+                    ? 'YouTube Channel URL'
+                    : 'Instagram Profile Username or Reel Link'} <span className="text-rose-600">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-black">
@@ -868,7 +1133,15 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                       setModalInstaHandle(e.target.value);
                       if (modalError) setModalError('');
                     }}
-                    placeholder={activePack.isUnban ? "e.g. banned_username or registered email" : "e.g. virat.kohli or insta profile URL"}
+                    placeholder={
+                      activePack.isUnban 
+                        ? "e.g. banned_username or registered email" 
+                        : activePlatform === 'telegram'
+                        ? "e.g. t.me/yourchannel or username"
+                        : activePlatform === 'facebook'
+                        ? "e.g. facebook.com/yourpage"
+                        : "e.g. virat.kohli or profile link"
+                    }
                     className="w-full pl-9 pr-4 py-3.5 bg-slate-50 text-slate-900 placeholder-slate-400 font-semibold text-sm rounded-2xl border border-slate-200 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
                   />
                 </div>
@@ -896,10 +1169,10 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
               <button
                 type="submit"
                 disabled={isProcessingPayment}
-                className={`w-full py-4 px-6 rounded-2xl text-white font-black text-base uppercase tracking-wider shadow-lg transition-all transform active:scale-95 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 ${
+                className={`w-full py-4 px-6 rounded-2xl text-white font-black text-base uppercase tracking-wider shadow-lg transition-all transform active:scale-95 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 btn-shine-effect ${
                   activePack.isUnban
                     ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-purple-600/30 hover:brightness-110'
-                    : 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/30'
+                    : 'bg-[#ff2b7d] hover:bg-rose-600 shadow-rose-500/30'
                 }`}
               >
                 {isProcessingPayment ? (
