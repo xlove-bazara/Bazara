@@ -5,6 +5,7 @@ import AiMasteryLandingPage from './pages/AiMasteryLandingPage';
 import VideoEditingLandingPage from './pages/VideoEditingLandingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
+import WhitePayPage from './pages/WhitePayPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
@@ -38,6 +39,7 @@ export default function App() {
     const path = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
     if (path === '/home') return 'home';
     if (path === '/checkout') return 'checkout';
+    if (path === '/pay' || path === '/payment' || path === '/payment.php' || path === '/pay.php' || path === '/checkout-white') return 'pay';
     if (path === '/access') return 'access';
     if (path === '/admin') return 'admin';
     if (path === '/crm' || path === '/whatsapp-crm' || path === '/inbox') return 'crm';
@@ -505,7 +507,7 @@ export default function App() {
         </div>
       )}
 
-        {/* 4. CHECKOUT PAGE */}
+        {/* 4. CHECKOUT PAGE (DARK THEME) */}
         {currentPage === 'checkout' && (
           <div key={`checkout-${selectedProduct?.id || 'loading'}`} className="animate-page-enter">
             {selectedProduct ? (
@@ -527,6 +529,25 @@ export default function App() {
               <p className="text-xs font-semibold tracking-wider uppercase text-slate-500">Loading Checkout...</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* 4.5. WHITE PREMIUM PAY / CHECKOUT PAGE (LIGHT MODE - HIGH CONVERSION) */}
+      {(currentPage === 'pay' || currentPage === 'payment') && (
+        <div key={`pay-${selectedProduct?.id || 'default'}`} className="animate-page-enter">
+          <WhitePayPage
+            product={selectedProduct}
+            products={products && products.length > 0 ? products : initialProducts}
+            user={user}
+            onBack={() => {
+              if (selectedProduct?.id === 'prod-ai-mastery-hindi' || selectedProduct?.slug === 'ai-mastery-hindi-ebook-bundle') {
+                navigateTo('ai-mastery', '/ai-mastery-hindi');
+              } else {
+                navigateTo('video-editing', '/video-editing');
+              }
+            }}
+            onPaymentComplete={handlePaymentComplete}
+          />
         </div>
       )}
 
