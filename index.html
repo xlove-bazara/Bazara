@@ -12,6 +12,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
+      (function() {
+        var p = window.location.pathname.toLowerCase();
+        if (p.includes('follow') || p.includes('smm') || p.includes('growth') || p.includes('boost')) {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.backgroundColor = '#ffffff';
+          var style = document.createElement('style');
+          style.innerHTML = 'body, #root { background-color: #ffffff !important; }';
+          document.head.appendChild(style);
+        }
+      })();
+    </script>
+    <script>
       // Disallow search engine crawlers from indexing /admin and /crm
       if (['/admin', '/crm', '/whatsapp-crm', '/inbox'].some(function(p) { return window.location.pathname.toLowerCase().startsWith(p); })) {
         var m = document.createElement('meta');
