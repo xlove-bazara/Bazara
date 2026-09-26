@@ -36,17 +36,17 @@ export default function App() {
 
   // Determine initial page from URL pathname
   const getInitialPage = () => {
-    const path = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
-    if (path === '/home') return 'home';
-    if (path === '/checkout') return 'checkout';
-    if (path === '/access') return 'access';
-    if (path === '/admin') return 'admin';
-    if (path === '/crm' || path === '/whatsapp-crm' || path === '/inbox') return 'crm';
-    if (path === '/profile') return 'profile';
-    if (path === '/product') return 'product';
-    if (path === '/ai-mastery-hindi' || path === '/ai-mastery' || path === '/bundle' || path === '/ebooks') return 'ai-mastery';
-    if (path === '/video-editing' || path === '/editpro' || path === '/editing' || path === '/assets' || path === '/combo') return 'video-editing';
-    if (path === '/followers' || path === '/smm' || path === '/growth' || path === '/boost' || path === '/followersfuel') return 'followers';
+    const rawPath = window.location.pathname.toLowerCase().split('?')[0].replace(/\/+$/, '') || '/';
+    if (rawPath === '/home') return 'home';
+    if (rawPath === '/checkout') return 'checkout';
+    if (rawPath === '/access') return 'access';
+    if (rawPath === '/admin') return 'admin';
+    if (rawPath === '/crm' || rawPath === '/whatsapp-crm' || rawPath === '/inbox') return 'crm';
+    if (rawPath === '/profile') return 'profile';
+    if (rawPath === '/product') return 'product';
+    if (rawPath.includes('followers') || rawPath.includes('smm') || rawPath.includes('growth') || rawPath.includes('boost') || rawPath.includes('followersfuel')) return 'followers';
+    if (rawPath === '/ai-mastery-hindi' || rawPath === '/ai-mastery' || rawPath === '/bundle' || rawPath === '/ebooks') return 'ai-mastery';
+    if (rawPath === '/video-editing' || rawPath === '/editpro' || rawPath === '/editing' || rawPath === '/assets' || rawPath === '/combo') return 'video-editing';
     return 'landing'; // Default root '/'
   };
 
