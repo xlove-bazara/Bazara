@@ -14,7 +14,8 @@ import {
   AlertCircle,
   X,
   CreditCard,
-  Crown
+  Crown,
+  Play
 } from 'lucide-react';
 
 const InstagramIcon = ({ className = "w-5 h-5" }) => (
@@ -28,6 +29,7 @@ const InstagramIcon = ({ className = "w-5 h-5" }) => (
 export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, settings }) {
   const [activePlatform, setActivePlatform] = useState('instagram'); // 'instagram' | 'unban' | 'youtube' | 'facebook' | 'telegram'
   const [selectedCategory, setSelectedCategory] = useState('followers'); // 'followers' | 'likes' | 'views'
+  const [selectedYtCategory, setSelectedYtCategory] = useState('subscribers'); // 'subscribers' | 'watchtime' | 'views' | 'likes'
   const [toastNotification, setToastNotification] = useState(null);
   const [activeFaq, setActiveFaq] = useState(null);
 
@@ -70,10 +72,10 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     const notifications = [
       { name: "Rahul S. from Delhi", action: "bought 10k Indian Followers (₹199)", time: "1 min ago", type: "insta" },
       { name: "Anand K. from Jaipur", action: "ordered Insta ID Recovery (₹299)", time: "Just now", type: "unban" },
-      { name: "Priya M. from Mumbai", action: "bought 1M Followers + Blue Tick (₹600)", time: "2 mins ago", type: "insta" },
-      { name: "Vikram K. from Bangalore", action: "purchased 100k Indian Views (₹50)", time: "3 mins ago", type: "insta" },
+      { name: "Vikas M. from Lucknow", action: "bought YouTube 1k Subs Pack (₹200)", time: "2 mins ago", type: "yt" },
+      { name: "Priya M. from Mumbai", action: "bought 1M Followers + Blue Tick (₹600)", time: "3 mins ago", type: "insta" },
       { name: "Amit V. from Bangalore", action: "bought 20k Telegram Members (₹299)", time: "4 mins ago", type: "tg" },
-      { name: "Pooja P. from Ahmedabad", action: "bought 15k Facebook Likes (₹350)", time: "5 mins ago", type: "fb" }
+      { name: "Suresh P. from Punjab", action: "bought 4000 Watch Hours (₹650)", time: "5 mins ago", type: "yt" }
     ];
 
     let index = 0;
@@ -86,7 +88,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     return () => clearInterval(toastInterval);
   }, []);
 
-  // 1. Instagram Followers Packages (Exact)
+  // 1. Instagram Followers Packages
   const followerPackages = [
     {
       id: "prod-insta-100",
@@ -178,7 +180,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
   ];
 
-  // 2. Likes Packages (Exact)
+  // 2. Instagram Likes Packages
   const likesPackages = [
     {
       id: "prod-likes-100",
@@ -239,7 +241,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
   ];
 
-  // 3. Views Packages (Exact)
+  // 3. Instagram Views Packages
   const viewsPackages = [
     {
       id: "prod-views-1k",
@@ -350,7 +352,205 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
   ];
 
-  // 5. Facebook Packages (Exact Matching Screenshot 4)
+  // 5. YouTube Subscribers Packages (Screenshot 1 Exact)
+  const ytSubscribersPackages = [
+    {
+      id: "prod-yt-sub-1k",
+      slug: "1k-youtube-subscribers",
+      title: "1k Subscribers 🇮🇳",
+      price: 200,
+      originalPrice: 999,
+      tag: "Starter",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-amber-400",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "1k real Indian subscribers. Safe growth for channel & monetization support.",
+      features: ["Safe Delivery", "Real Users", "Trusted"]
+    },
+    {
+      id: "prod-yt-sub-5k",
+      slug: "5k-youtube-subscribers",
+      title: "5k Subscribers 🚀",
+      price: 450,
+      originalPrice: 1999,
+      tag: "Popular",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-emerald-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "Fast delivery with premium Indian audience boost.",
+      features: ["Real Growth", "Secure", "Lifetime Refill"]
+    },
+    {
+      id: "prod-yt-sub-10k",
+      slug: "10k-youtube-subscribers",
+      title: "10k Subscribers 🔥",
+      price: 800,
+      originalPrice: 3999,
+      tag: "Best Deal",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-rose-600",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "Best package for serious creators to grow quickly.",
+      features: ["Safe", "Monetization Friendly", "High Authority"]
+    }
+  ];
+
+  // 6. YouTube Watch Time Packages (Screenshot 3 Exact)
+  const ytWatchTimePackages = [
+    {
+      id: "prod-yt-wt-1k",
+      slug: "1000-watch-hours",
+      title: "1000 Watch Hours ⏰",
+      price: 200,
+      originalPrice: 999,
+      tag: "Starter",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-amber-400",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "Real watch time. Complete in 2 days. Monetization support.",
+      features: ["Real Watch Time", "Complete in 2 Days", "Monetization Support"]
+    },
+    {
+      id: "prod-yt-wt-2k",
+      slug: "2000-watch-hours",
+      title: "2000 Watch Hours 🚀",
+      price: 350,
+      originalPrice: 1499,
+      tag: "Popular",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-emerald-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "Fast safe watch hours delivery.",
+      features: ["Fast Safe Delivery", "High Retention Playback", "Safe for Channel"]
+    },
+    {
+      id: "prod-yt-wt-3k",
+      slug: "3000-watch-hours",
+      title: "3000 Watch Hours 💎",
+      price: 450,
+      originalPrice: 1999,
+      tag: "Hot",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-sky-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "Real watch time. Safe for monetization.",
+      features: ["Safe for Monetization", "Real Watch Time", "Rapid Turnaround"]
+    },
+    {
+      id: "prod-yt-wt-4k",
+      slug: "4000-watch-hours",
+      title: "4000 Watch Hours 👑",
+      price: 650,
+      originalPrice: 2999,
+      tag: "Best Deal",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-rose-600",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "Complete monetization package. Fast completion in 2 days.",
+      features: ["Complete 4000 Hrs Goal", "100% Monetization Audit Safe", "Fast 2-Day Completion"]
+    }
+  ];
+
+  // 7. YouTube Views Packages (Screenshot 4 Exact)
+  const ytViewsPackages = [
+    {
+      id: "prod-yt-views-1k",
+      slug: "1k-youtube-views",
+      title: "1k YouTube Views 🇮🇳",
+      price: 100,
+      originalPrice: 499,
+      tag: "Starter",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-amber-400",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "1k Indian YouTube views with safe delivery. Suitable for creators looking to increase video reach.",
+      features: ["🇮🇳 Indian Views", "Safe Delivery", "Trusted Service"]
+    },
+    {
+      id: "prod-yt-views-10k",
+      slug: "10k-youtube-views",
+      title: "10k YouTube Views 🇮🇳",
+      price: 300,
+      originalPrice: 1299,
+      tag: "Popular",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-emerald-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "10k Indian YouTube views with fast delivery and creator-friendly service.",
+      features: ["🇮🇳 Indian Views", "Fast Delivery", "Secure"]
+    },
+    {
+      id: "prod-yt-views-100k",
+      slug: "100k-youtube-views",
+      title: "100k YouTube Views 🇮🇳",
+      price: 699,
+      originalPrice: 2999,
+      tag: "Best Deal",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-rose-600",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "100k Indian YouTube views with high-volume delivery for your videos.",
+      features: ["🇮🇳 Indian Views", "Safe Delivery", "Trusted"]
+    }
+  ];
+
+  // 8. YouTube Likes Packages (Screenshot 2 Exact)
+  const ytLikesPackages = [
+    {
+      id: "prod-yt-likes-1k",
+      slug: "1k-youtube-likes",
+      title: "1k YouTube Likes 🇮🇳",
+      price: 109,
+      originalPrice: 499,
+      tag: "Starter",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-amber-400",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "1k Indian YouTube likes with organic-style engagement and safe delivery.",
+      features: ["🇮🇳 Indian Likes", "Real Engagement", "Trusted"]
+    },
+    {
+      id: "prod-yt-likes-5k",
+      slug: "5k-youtube-likes",
+      title: "5k YouTube Likes 🇮🇳",
+      price: 200,
+      originalPrice: 899,
+      tag: "Popular",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-emerald-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "5k Indian YouTube likes for stronger video engagement and social proof.",
+      features: ["🇮🇳 Indian Likes", "Safe Delivery", "Secure"]
+    },
+    {
+      id: "prod-yt-likes-10k",
+      slug: "10k-youtube-likes",
+      title: "10k YouTube Likes 🇮🇳",
+      price: 400,
+      originalPrice: 1499,
+      tag: "Hot",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-sky-500",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "10k Indian YouTube likes with fast delivery and creator-friendly service.",
+      features: ["🇮🇳 Indian Likes", "Fast Delivery", "Trusted"]
+    },
+    {
+      id: "prod-yt-likes-50k",
+      slug: "50k-youtube-likes",
+      title: "50k YouTube Likes 🇮🇳",
+      price: 800,
+      originalPrice: 2999,
+      tag: "Best Deal",
+      badgeColor: "bg-amber-400 text-black font-extrabold",
+      cardBorder: "border-rose-600",
+      btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
+      desc: "50k Indian YouTube likes for high-volume engagement on your videos.",
+      features: ["🇮🇳 Indian Likes", "Safe Delivery", "Trusted"]
+    }
+  ];
+
+  // 9. Facebook Packages
   const facebookPackages = [
     {
       id: "prod-fb-5k",
@@ -419,7 +619,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
   ];
 
-  // 6. Telegram Packages (Exact Matching Screenshot 3)
+  // 10. Telegram Packages
   const telegramPackages = [
     {
       id: "prod-tg-10k",
@@ -472,23 +672,6 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       btnColor: "bg-[#ff2b7d] hover:bg-rose-600",
       desc: "100k Indian Telegram members for large-scale channel or group growth.",
       features: ["🇮🇳 Indian Members", "Fast Delivery", "Trusted"]
-    }
-  ];
-
-  // 7. YouTube Packages
-  const youtubePackages = [
-    {
-      id: "prod-yt-monetization",
-      slug: "youtube-monetization-pack",
-      title: "YouTube Channel Monetization Pack",
-      price: 399,
-      originalPrice: 3999,
-      tag: "🔴 MONETIZATION PACK",
-      badgeColor: "bg-red-600 text-white font-extrabold",
-      cardBorder: "border-red-500",
-      btnColor: "bg-red-600 hover:bg-red-700",
-      desc: "1,000 Real Subscribers + 4,000 Watch Hours to unlock YouTube Partner Program and start earning revenue.",
-      features: ["1,000 Genuine Subscribers", "4,000 Real Watch Hours", "Safe for Monetization Audit", "Lifetime Guarantee"]
     }
   ];
 
@@ -552,7 +735,12 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
 
   const getDisplayedPackages = () => {
     if (activePlatform === 'unban') return unbanPackages;
-    if (activePlatform === 'youtube') return youtubePackages;
+    if (activePlatform === 'youtube') {
+      if (selectedYtCategory === 'watchtime') return ytWatchTimePackages;
+      if (selectedYtCategory === 'views') return ytViewsPackages;
+      if (selectedYtCategory === 'likes') return ytLikesPackages;
+      return ytSubscribersPackages;
+    }
     if (activePlatform === 'facebook') return facebookPackages;
     if (activePlatform === 'telegram') return telegramPackages;
     
@@ -584,7 +772,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
           : activePlatform === 'facebook'
           ? 'Please enter your Facebook Page Link!'
           : activePlatform === 'youtube'
-          ? 'Please enter your YouTube Channel Link!'
+          ? 'Please enter your YouTube Channel URL or Video Link!'
           : 'Please enter your Instagram Username or Profile Link!'
       );
       return;
@@ -638,8 +826,8 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
 
   const faqs = [
     {
-      q: "Kya followers real hote hain aur drop honge?",
-      a: "Haan, hum 100% Real Indian Non-Drop Followers deliver karte hain. 30-Day se lekar lifetime auto-refill guarantee included hoti hai."
+      q: "Kya YouTube views, watch time aur subscribers safe hain?",
+      a: "Haan, 100% Real High Retention views & watch time deliver kiye jaate hain jo YouTube Partner Program (Monetization) audit ke liye 100% safe hain."
     },
     {
       q: "Kya Instagram ID Unban service 100% guaranteed hai?",
@@ -753,7 +941,10 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
           </button>
 
           <button
-            onClick={() => setActivePlatform('youtube')}
+            onClick={() => {
+              setActivePlatform('youtube');
+              setSelectedYtCategory('subscribers');
+            }}
             className={`py-3 px-3 rounded-2xl text-xs font-black flex items-center justify-center space-x-1.5 transition-all cursor-pointer ${
               activePlatform === 'youtube' 
                 ? 'bg-red-600 text-white shadow-md shadow-red-600/20 ring-2 ring-red-500/30' 
@@ -820,6 +1011,61 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
               }`}
             >
               <span>🎬 Views</span>
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* 4.5 YOUTUBE SUB-CATEGORY TABS (Subscribers / Watch Time / Views / Likes) */}
+      {activePlatform === 'youtube' && (
+        <section className="pt-4 pb-2 px-4 max-w-xl mx-auto space-y-3">
+          <div className="bg-white p-5 rounded-3xl border border-red-200 shadow-sm text-center space-y-2">
+            <h2 className="text-xl font-black text-slate-900">Welcome to YouTube Growth 🚀</h2>
+            <p className="text-xs text-slate-600 font-medium">
+              Buy YouTube services instantly. Indian subscribers, watch time, views & likes with safe delivery. Creator-friendly services for channel growth.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-xs">
+            <button
+              onClick={() => setSelectedYtCategory('subscribers')}
+              className={`py-2.5 px-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center space-x-1 ${
+                selectedYtCategory === 'subscribers'
+                  ? 'bg-[#ff2b7d] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 bg-slate-50'
+              }`}
+            >
+              <span>👥 Subscribers</span>
+            </button>
+            <button
+              onClick={() => setSelectedYtCategory('watchtime')}
+              className={`py-2.5 px-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center space-x-1 ${
+                selectedYtCategory === 'watchtime'
+                  ? 'bg-[#ff2b7d] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 bg-slate-50'
+              }`}
+            >
+              <span>⏰ Watch Time</span>
+            </button>
+            <button
+              onClick={() => setSelectedYtCategory('views')}
+              className={`py-2.5 px-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center space-x-1 ${
+                selectedYtCategory === 'views'
+                  ? 'bg-[#ff2b7d] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 bg-slate-50'
+              }`}
+            >
+              <span>👁️ Views</span>
+            </button>
+            <button
+              onClick={() => setSelectedYtCategory('likes')}
+              className={`py-2.5 px-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center space-x-1 ${
+                selectedYtCategory === 'likes'
+                  ? 'bg-[#ff2b7d] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 bg-slate-50'
+              }`}
+            >
+              <span>👍 Likes</span>
             </button>
           </div>
         </section>
@@ -932,7 +1178,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
             );
           }
 
-          // Standard Package Cards (Followers, Likes, Views, FB, TG)
+          // Standard Package Cards (Followers, Likes, Views, YouTube, FB, TG)
           const customCardBorder = pkg.cardBorder || (pkg.isUnban ? 'border-purple-500' : pkg.popular ? 'border-amber-400' : 'border-slate-200/90');
           const customBtnColor = pkg.btnColor || (pkg.isUnban ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110' : 'bg-[#ff2b7d] hover:bg-rose-600');
 
@@ -1001,7 +1247,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         })}
       </section>
 
-      {/* 7. HORIZONTAL AUTO-SCROLLING MARQUEE TESTIMONIALS CAROUSEL (6 Verified Reviews) */}
+      {/* 7. HORIZONTAL AUTO-SCROLLING MARQUEE TESTIMONIALS CAROUSEL */}
       <section className="py-12 border-t border-slate-200/60 mt-12 overflow-hidden bg-slate-50/50">
         <div className="text-center mb-6 px-4">
           <span className="text-[11px] font-black uppercase tracking-widest text-[#ff2b7d]">⭐ Customer Proof & Live Ratings</span>
@@ -1012,7 +1258,6 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         {/* Smooth Infinite Marquee Carousel Container */}
         <div className="relative w-full overflow-hidden py-3">
           <div className="flex space-x-4 animate-marquee hover:[animation-play-state:paused] w-max cursor-grab">
-            {/* Duplicated list for seamless infinite loop */}
             {[...testimonials, ...testimonials].map((t, index) => (
               <div
                 key={`${t.id}-${index}`}
@@ -1130,7 +1375,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                     : activePlatform === 'facebook'
                     ? 'Facebook Page URL'
                     : activePlatform === 'youtube'
-                    ? 'YouTube Channel URL'
+                    ? 'YouTube Channel URL or Video Link'
                     : 'Instagram Profile Username or Reel Link'} <span className="text-rose-600">*</span>
                 </label>
                 <div className="relative">
@@ -1152,6 +1397,8 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                         ? "e.g. t.me/yourchannel or username"
                         : activePlatform === 'facebook'
                         ? "e.g. facebook.com/yourpage"
+                        : activePlatform === 'youtube'
+                        ? "e.g. youtube.com/@channel or video URL"
                         : "e.g. virat.kohli or profile link"
                     }
                     className="w-full pl-9 pr-4 py-3.5 bg-slate-50 text-slate-900 placeholder-slate-400 font-semibold text-sm rounded-2xl border border-slate-200 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
