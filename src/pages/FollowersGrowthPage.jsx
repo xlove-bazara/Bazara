@@ -658,19 +658,27 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
   return (
     <div className="min-h-screen bg-[#fcfdfd] text-slate-900 font-sans selection:bg-rose-500 selection:text-white pb-24">
       
-      {/* 1. SINGLE ELEGANT TOP ANNOUNCEMENT BANNER */}
-      <div className="bg-gradient-to-r from-rose-600 via-pink-600 to-rose-700 text-white text-xs font-bold py-2.5 px-4 shadow-sm">
-        <div className="max-w-5xl mx-auto flex items-center justify-between text-center sm:text-left">
-          <div className="flex items-center space-x-2">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-            </span>
-            <span className="truncate">⚡ SPECIAL FLASH SALE: 100% Real & Active Indian Profiles • Instant Delivery</span>
+      {/* 1. TOP DYNAMIC LIVE URGENCY & MARQUEE ANNOUNCEMENT BANNER */}
+      <div className="bg-gradient-to-r from-rose-600 via-pink-600 to-rose-700 text-white py-2 px-3 shadow-sm border-b border-rose-800/20">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-2.5">
+          {/* Live Marquee Scrolling Text */}
+          <div className="flex-1 overflow-hidden relative">
+            <div className="flex items-center space-x-6 whitespace-nowrap animate-marquee">
+              <div className="flex items-center space-x-1.5 text-xs font-black tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-white animate-ping shrink-0" />
+                <span>⚡ SPECIAL FLASH SALE: 90% OFF ALL PACKAGES • 100% NON-DROP & 30-DAY AUTO REFILL • INSTANT 60S DELIVERY • 24/7 LIVE SUPPORT ⚡</span>
+              </div>
+              <div className="flex items-center space-x-1.5 text-xs font-black tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-white animate-ping shrink-0" />
+                <span>⚡ SPECIAL FLASH SALE: 90% OFF ALL PACKAGES • 100% NON-DROP & 30-DAY AUTO REFILL • INSTANT 60S DELIVERY • 24/7 LIVE SUPPORT ⚡</span>
+              </div>
+            </div>
           </div>
-          <div className="hidden sm:flex items-center space-x-1.5 font-mono text-amber-300 bg-black/25 px-2.5 py-0.5 rounded-full text-[11px]">
-            <Clock className="w-3.5 h-3.5" />
-            <span>EXPIRES IN: {String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}</span>
+
+          {/* Prominent Urgency Countdown Timer (Visible on all devices including Mobile!) */}
+          <div className="shrink-0 flex items-center space-x-1.5 bg-black/40 border border-white/20 px-2.5 py-1 rounded-full text-[11px] font-mono font-black text-amber-300 shadow-inner">
+            <Clock className="w-3.5 h-3.5 text-amber-300 animate-spin" />
+            <span className="tracking-wider">{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}</span>
           </div>
         </div>
       </div>
@@ -703,10 +711,14 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
             href={`https://wa.me/${(settings?.support_whatsapp || '919837371137').replace(/[^0-9]/g, '')}?text=Hi%20Bazara%20SMM%20Support`}
             target="_blank" 
             rel="noreferrer"
-            className="px-4 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold flex items-center space-x-1.5 transition-all shadow-md shadow-slate-900/10"
+            className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-xs font-black flex items-center space-x-1.5 transition-all shadow-md shadow-emerald-500/25 border border-emerald-400/30 hover:scale-105 active:scale-95 cursor-pointer"
           >
-            <MessageCircle className="w-4 h-4 text-emerald-400" />
-            <span>WhatsApp Support</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+            </span>
+            <MessageCircle className="w-4 h-4 text-white" />
+            <span className="font-extrabold tracking-wide">WhatsApp Support</span>
           </a>
         </div>
       </header>
