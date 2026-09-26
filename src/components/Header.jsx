@@ -13,6 +13,7 @@ export default function Header({ onSearch, onNavigate, onOpenLogin, user, active
 
   const navLinks = [
     { id: 'home', label: 'Store', icon: Home },
+    { id: 'followers', label: 'Insta Growth', icon: Sparkles },
     { id: 'deals', label: 'Deals', icon: Flame },
     { id: 'library', label: 'Downloads', icon: FolderDown },
     { id: 'profile', label: 'Profile', icon: User }

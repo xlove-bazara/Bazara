@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage';
 import CourseLandingPage from './pages/CourseLandingPage';
 import AiMasteryLandingPage from './pages/AiMasteryLandingPage';
 import VideoEditingLandingPage from './pages/VideoEditingLandingPage';
+import FollowersGrowthPage from './pages/FollowersGrowthPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
@@ -45,6 +46,7 @@ export default function App() {
     if (path === '/product') return 'product';
     if (path === '/ai-mastery-hindi' || path === '/ai-mastery' || path === '/bundle' || path === '/ebooks') return 'ai-mastery';
     if (path === '/video-editing' || path === '/editpro' || path === '/editing' || path === '/assets' || path === '/combo') return 'video-editing';
+    if (path === '/followers' || path === '/smm' || path === '/growth' || path === '/boost' || path === '/followersfuel') return 'followers';
     return 'landing'; // Default root '/'
   };
 
@@ -294,6 +296,8 @@ export default function App() {
       navigateTo('video-editing', '/video-editing');
     } else if (tab === 'ai-mastery' || tab === 'ebook') {
       navigateTo('ai-mastery', '/ai-mastery-hindi');
+    } else if (tab === 'followers' || tab === 'smm' || tab === 'growth') {
+      navigateTo('followers', '/followers');
     } else if (tab === 'library') {
       if (completedOrder) {
         navigateTo('access', '/access');
@@ -436,6 +440,17 @@ export default function App() {
             <AiMasteryLandingPage
               product={aiMasteryProduct}
               onEnroll={(bundleToBuy) => handleInstantBuy(bundleToBuy || aiMasteryProduct)}
+              onNavigateToStore={() => navigateTo('home', '/home')}
+              settings={settings}
+            />
+          </div>
+        )}
+
+        {/* 2.5 DEDICATED INSTAGRAM FOLLOWERS & SMM GROWTH PAGE */}
+        {currentPage === 'followers' && (
+          <div key="followers" className="animate-page-enter">
+            <FollowersGrowthPage
+              onBuyProduct={(prod) => handleInstantBuy(prod)}
               onNavigateToStore={() => navigateTo('home', '/home')}
               settings={settings}
             />
