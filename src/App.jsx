@@ -491,7 +491,31 @@ export default function App() {
         {currentPage === 'followers' && (
           <div key="followers" className="animate-page-enter">
             <FollowersGrowthPage
-              onBuyProduct={(prod) => handleInstantBuy(prod)}
+              onBuyProduct={(prod) => {
+                if (prod.paymentId) {
+                  // Direct paid order from SMM modal: save order in Supabase
+                  createOrder({
+                    productId: prod.id,
+                    productTitle: prod.title,
+                    amount: prod.price,
+                    customerName: 'Instagram Creator',
+                    customerPhone: prod.customerPhone || '9837371137',
+                    customerEmail: `creator_${Date.now()}@bazara.in`,
+                    customNote: prod.customNote,
+                    paymentId: prod.paymentId,
+                    cashfreeOrderId: prod.cashfreeOrderId,
+                    driveUrl: 'https://bazara.in/followers',
+                    userId: user?.id || null
+                  }).then(order => {
+                    if (order) {
+                      setCompletedOrder(order);
+                      trackPurchase(order);
+                    }
+                  }).catch(e => console.warn('Error recording SMM order:', e));
+                } else {
+                  handleInstantBuy(prod);
+                }
+              }}
               onNavigateToStore={() => navigateTo('home', '/home')}
               settings={settings}
             />

@@ -40,6 +40,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
   const [modalPhone, setModalPhone] = useState('');
   const [modalError, setModalError] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentSuccessData, setPaymentSuccessData] = useState(null);
 
   // Live timer countdown
   const [timeLeft, setTimeLeft] = useState({ minutes: 14, seconds: 59 });
@@ -761,6 +762,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     setModalInstaHandle('');
     setModalPhone('');
     setModalError('');
+    setPaymentSuccessData(null);
     setIsModalOpen(true);
   };
 
@@ -803,7 +805,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
           productTitle: 'Digital Creator Pro Media Bundle',
           productId: activePack.id || 'prod_creator_pack',
           isSmm: true,
-          returnUrl: `${window.location.origin}/access`
+          returnUrl: `${window.location.origin}/followers`
         })
       });
 
@@ -850,15 +852,26 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
           await new Promise((r) => setTimeout(r, 1200));
         }
 
+        // Show instant success confirmation right inside the modal
+        const successInfo = {
+          orderId: orderData.orderId,
+          paymentId: confirmedPaymentId,
+          title: activePack.title,
+          price: activePack.price,
+          target: modalInstaHandle.trim(),
+          phone: finalPhone
+        };
+
+        setPaymentSuccessData(successInfo);
         setIsProcessingPayment(false);
-        setIsModalOpen(false);
 
         // Save real details to Supabase & Admin
         onBuyProduct({
           ...activePack,
           customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}${cleanPhone.length === 10 ? ' | WhatsApp: ' + cleanPhone : ''}`,
           paymentId: confirmedPaymentId,
-          cashfreeOrderId: orderData.orderId
+          cashfreeOrderId: orderData.orderId,
+          customerPhone: finalPhone
         });
       });
 
@@ -1390,132 +1403,203 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
             
             {/* Close Button */}
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => {
+                setIsModalOpen(false);
+                setPaymentSuccessData(null);
+              }}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
 
-            {/* Modal Header */}
-            <div>
-              <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-                activePack.isUnban ? 'text-purple-700 bg-purple-50 border-purple-200' : 'text-rose-700 bg-rose-50 border-rose-200'
-              }`}>
-                {activePack.isUnban ? '1-Step Account Recovery' : '1-Step Instant Checkout'}
-              </span>
-              <h2 className="text-xl font-black text-slate-900 mt-2">
-                {activePack.title}
-              </h2>
-              <div className="flex items-baseline space-x-2 mt-1">
-                <span className={`text-3xl font-black ${activePack.isUnban ? 'text-purple-600' : 'text-[#ff2b7d]'}`}>
-                  ₹{activePack.price}
-                </span>
-                <span className="text-xs text-slate-400 line-through">₹{activePack.originalPrice}</span>
-              </div>
-            </div>
-
-            {/* Single Input Field */}
-            <form onSubmit={handleExecutePayment} className="space-y-4 pt-2">
-              <div>
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                  {activePack.isUnban 
-                    ? 'Banned Instagram Handle or Email' 
-                    : activePlatform === 'telegram'
-                    ? 'Telegram Channel / Group Link'
-                    : activePlatform === 'facebook'
-                    ? 'Facebook Page URL'
-                    : activePlatform === 'youtube'
-                    ? 'YouTube Channel URL or Video Link'
-                    : 'Instagram Profile Username or Reel Link'} <span className="text-rose-600">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-black">
-                    @
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    value={modalInstaHandle}
-                    onChange={(e) => {
-                      setModalInstaHandle(e.target.value);
-                      if (modalError) setModalError('');
-                    }}
-                    placeholder={
-                      activePack.isUnban 
-                        ? "e.g. banned_username or registered email" 
-                        : activePlatform === 'telegram'
-                        ? "e.g. t.me/yourchannel or username"
-                        : activePlatform === 'facebook'
-                        ? "e.g. facebook.com/yourpage"
-                        : activePlatform === 'youtube'
-                        ? "e.g. youtube.com/@channel or video URL"
-                        : "e.g. virat.kohli or profile link"
-                    }
-                    className="w-full pl-9 pr-4 py-3.5 bg-slate-50 text-slate-900 placeholder-slate-400 font-semibold text-sm rounded-2xl border border-slate-200 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
-                  />
+            {paymentSuccessData ? (
+              <div className="py-2 text-center space-y-4 animate-scale-up">
+                <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 border-2 border-emerald-500/30 flex items-center justify-center text-emerald-600 shadow-xl shadow-emerald-500/20">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-600 animate-bounce" />
                 </div>
-                {modalError && (
-                  <p className="text-xs font-bold text-rose-600 mt-1 flex items-center space-x-1">
-                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                    <span>{modalError}</span>
+
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Payment Verified • ₹{paymentSuccessData.price} Received
+                  </span>
+                  <h2 className="text-2xl font-black text-slate-900 mt-2">
+                    Order Confirmed! 🚀
+                  </h2>
+                  <p className="text-xs font-semibold text-slate-500 mt-1">
+                    Order Ref: <span className="font-mono text-slate-700 font-bold">{paymentSuccessData.paymentId}</span>
                   </p>
-                )}
-              </div>
+                </div>
 
-              {/* Optional WhatsApp Number for Instant Delivery Updates */}
-              <div>
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-                  <span>WhatsApp Number (Optional)</span>
-                  <span className="text-[10px] text-emerald-600 font-extrabold">Instant Receipt & Updates</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-xs">
-                    +91
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-left space-y-2 text-xs">
+                  <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+                    <span className="text-slate-500 font-semibold">Package:</span>
+                    <span className="font-black text-slate-900">{paymentSuccessData.title}</span>
                   </div>
-                  <input
-                    type="tel"
-                    maxLength={10}
-                    value={modalPhone}
-                    onChange={(e) => setModalPhone(e.target.value.replace(/\D/g, ''))}
-                    placeholder="e.g. 9837371137"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 text-slate-900 placeholder-slate-400 font-semibold text-sm rounded-2xl border border-slate-200 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
-                  />
+                  <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+                    <span className="text-slate-500 font-semibold">Target Account:</span>
+                    <span className="font-mono font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
+                      @{paymentSuccessData.target.replace('@', '')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+                    <span className="text-slate-500 font-semibold">Delivery Status:</span>
+                    <span className="font-black text-emerald-600 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      Auto-Started (Within 60s)
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500 font-semibold">WhatsApp Updates:</span>
+                    <span className="font-bold text-slate-800">+91 {paymentSuccessData.phone}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 space-y-2">
+                  <a
+                    href={`https://wa.me/${(settings?.support_whatsapp || '919837371137').replace(/[^0-9]/g, '')}?text=Hi%20Bazara%2C%20I%20placed%20order%20${paymentSuccessData.paymentId}%20for%20@${paymentSuccessData.target.replace('@', '')}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-extrabold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/25 transition-all cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Track Order on WhatsApp</span>
+                  </a>
+
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setPaymentSuccessData(null);
+                    }}
+                    className="w-full py-3 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    Done / Close
+                  </button>
                 </div>
               </div>
-
-              {/* Guarantees Badges */}
-              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 text-[11px] font-bold text-slate-600 space-y-1">
-                <div className="flex items-center space-x-1.5 text-emerald-600">
-                  <ShieldCheck className="w-4 h-4 shrink-0" />
-                  <span>100% Safe • Password ki koi zarurat nahi hai</span>
+            ) : (
+              <>
+                {/* Modal Header */}
+                <div>
+                  <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+                    activePack.isUnban ? 'text-purple-700 bg-purple-50 border-purple-200' : 'text-rose-700 bg-rose-50 border-rose-200'
+                  }`}>
+                    {activePack.isUnban ? '1-Step Account Recovery' : '1-Step Instant Checkout'}
+                  </span>
+                  <h2 className="text-xl font-black text-slate-900 mt-2">
+                    {activePack.title}
+                  </h2>
+                  <div className="flex items-baseline space-x-2 mt-1">
+                    <span className={`text-3xl font-black ${activePack.isUnban ? 'text-purple-600' : 'text-[#ff2b7d]'}`}>
+                      ₹{activePack.price}
+                    </span>
+                    <span className="text-xs text-slate-400 line-through">₹{activePack.originalPrice}</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-1.5 text-slate-700">
-                  <Zap className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>{activePack.isUnban ? 'Fast priority appeal submission within 24 hours' : 'Payment ke baad instant 60 seconds me auto-start'}</span>
-                </div>
-              </div>
 
-              {/* Instant Pay Button */}
-              <button
-                type="submit"
-                disabled={isProcessingPayment}
-                className={`w-full py-4 px-6 rounded-2xl text-white font-black text-base uppercase tracking-wider shadow-lg transition-all transform active:scale-95 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 btn-shine-effect ${
-                  activePack.isUnban
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-purple-600/30 hover:brightness-110'
-                    : 'bg-[#ff2b7d] hover:bg-rose-600 shadow-rose-500/30'
-                }`}
-              >
-                {isProcessingPayment ? (
-                  <span>Opening Payment Gateway...</span>
-                ) : (
-                  <>
-                    <CreditCard className="w-5 h-5" />
-                    <span>PAY ₹{activePack.price} NOW</span>
-                  </>
-                )}
-              </button>
+                {/* Single Input Field */}
+                <form onSubmit={handleExecutePayment} className="space-y-4 pt-2">
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                      {activePack.isUnban 
+                        ? 'Banned Instagram Handle or Email' 
+                        : activePlatform === 'telegram'
+                        ? 'Telegram Channel / Group Link'
+                        : activePlatform === 'facebook'
+                        ? 'Facebook Page URL'
+                        : activePlatform === 'youtube'
+                        ? 'YouTube Channel URL or Video Link'
+                        : 'Instagram Profile Username or Reel Link'} <span className="text-rose-600">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-black">
+                        @
+                      </div>
+                      <input
+                        type="text"
+                        required
+                        value={modalInstaHandle}
+                        onChange={(e) => {
+                          setModalInstaHandle(e.target.value);
+                          if (modalError) setModalError('');
+                        }}
+                        placeholder={
+                          activePack.isUnban 
+                            ? "e.g. banned_username or registered email" 
+                            : activePlatform === 'telegram'
+                            ? "e.g. t.me/yourchannel or username"
+                            : activePlatform === 'facebook'
+                            ? "e.g. facebook.com/yourpage"
+                            : activePlatform === 'youtube'
+                            ? "e.g. youtube.com/@channel or video URL"
+                            : "e.g. virat.kohli or profile link"
+                        }
+                        className="w-full pl-9 pr-4 py-3.5 bg-slate-50 text-slate-900 placeholder-slate-400 font-semibold text-sm rounded-2xl border border-slate-200 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
+                      />
+                    </div>
+                    {modalError && (
+                      <p className="text-xs font-bold text-rose-600 mt-1 flex items-center space-x-1">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>{modalError}</span>
+                      </p>
+                    )}
+                  </div>
 
-            </form>
+                  {/* Optional WhatsApp Number for Instant Delivery Updates */}
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                      <span>WhatsApp Number (Optional)</span>
+                      <span className="text-[10px] text-emerald-600 font-extrabold">Instant Receipt & Updates</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-xs">
+                        +91
+                      </div>
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        value={modalPhone}
+                        onChange={(e) => setModalPhone(e.target.value.replace(/\D/g, ''))}
+                        placeholder="e.g. 9837371137"
+                        className="w-full pl-12 pr-4 py-3 bg-slate-50 text-slate-900 placeholder-slate-400 font-semibold text-sm rounded-2xl border border-slate-200 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Guarantees Badges */}
+                  <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 text-[11px] font-bold text-slate-600 space-y-1">
+                    <div className="flex items-center space-x-1.5 text-emerald-600">
+                      <ShieldCheck className="w-4 h-4 shrink-0" />
+                      <span>100% Safe • Password ki koi zarurat nahi hai</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5 text-slate-700">
+                      <Zap className="w-4 h-4 text-amber-500 shrink-0" />
+                      <span>{activePack.isUnban ? 'Fast priority appeal submission within 24 hours' : 'Payment ke baad instant 60 seconds me auto-start'}</span>
+                    </div>
+                  </div>
+
+                  {/* Instant Pay Button */}
+                  <button
+                    type="submit"
+                    disabled={isProcessingPayment}
+                    className={`w-full py-4 px-6 rounded-2xl text-white font-black text-base uppercase tracking-wider shadow-lg transition-all transform active:scale-95 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 btn-shine-effect ${
+                      activePack.isUnban
+                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-purple-600/30 hover:brightness-110'
+                        : 'bg-[#ff2b7d] hover:bg-rose-600 shadow-rose-500/30'
+                    }`}
+                  >
+                    {isProcessingPayment ? (
+                      <span>Opening Payment Gateway...</span>
+                    ) : (
+                      <>
+                        <CreditCard className="w-5 h-5" />
+                        <span>PAY ₹{activePack.price} NOW</span>
+                      </>
+                    )}
+                  </button>
+
+                </form>
+              </>
+            )}
 
           </div>
         </div>
