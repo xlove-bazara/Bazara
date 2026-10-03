@@ -98,7 +98,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       id: "prod-insta-100",
       slug: "100-indian-followers",
       title: "100 Indian Followers",
-      price: 1,
+      price: 16,
       originalPrice: 160,
       tag: "⚡ STARTER PACK",
       badgeColor: "bg-rose-100 text-rose-700 border border-rose-200",
