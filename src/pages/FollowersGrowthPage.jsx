@@ -1419,18 +1419,29 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    Payment Verified • ₹{paymentSuccessData.price} Received
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                    Order Received & In Queue
                   </span>
                   <h2 className="text-2xl font-black text-slate-900 mt-2">
-                    Order Confirmed! 🚀
+                    Thanks for your order! 🎉
                   </h2>
-                  <p className="text-xs font-semibold text-slate-500 mt-1">
-                    Order Ref: <span className="font-mono text-slate-700 font-bold">{paymentSuccessData.paymentId}</span>
+                  <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                    Order ID: <span className="font-mono text-slate-700 font-bold">{paymentSuccessData.paymentId}</span>
                   </p>
                 </div>
 
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-left space-y-2 text-xs">
+                {/* High Traffic Notice Box */}
+                <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-left space-y-1.5">
+                  <div className="flex items-center space-x-1.5 text-amber-900 font-black text-xs">
+                    <Zap className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>Server Traffic Update</span>
+                  </div>
+                  <p className="text-xs font-semibold text-amber-950 leading-relaxed">
+                    High order traffic ki wajah se please wait kijiye, <strong>2 se 7 days</strong> ke andar aapka order deliver ho jayega.
+                  </p>
+                </div>
+
+                <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 text-left space-y-2 text-xs">
                   <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
                     <span className="text-slate-500 font-semibold">Package:</span>
                     <span className="font-black text-slate-900">{paymentSuccessData.title}</span>
@@ -1439,13 +1450,6 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                     <span className="text-slate-500 font-semibold">Target Account:</span>
                     <span className="font-mono font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
                       @{paymentSuccessData.target.replace('@', '')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
-                    <span className="text-slate-500 font-semibold">Delivery Status:</span>
-                    <span className="font-black text-emerald-600 flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                      Auto-Started (Within 60s)
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
@@ -1462,7 +1466,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                     className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-extrabold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/25 transition-all cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4" />
-                    <span>Track Order on WhatsApp</span>
+                    <span>WhatsApp Support (+91 9837371137)</span>
                   </a>
 
                   <button
@@ -1472,7 +1476,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                     }}
                     className="w-full py-3 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
                   >
-                    Done / Close
+                    Close
                   </button>
                 </div>
               </div>
