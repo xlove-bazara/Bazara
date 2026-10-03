@@ -311,6 +311,47 @@ export default function App() {
   };
 
   if (loading) {
+    const isFollowersPath = 
+      currentPage === 'followers' || 
+      window.location.pathname.toLowerCase().includes('follow') || 
+      window.location.pathname.toLowerCase().includes('smm') ||
+      window.location.pathname.toLowerCase().includes('growth') ||
+      window.location.pathname.toLowerCase().includes('boost');
+
+    if (isFollowersPath) {
+      return (
+        <div className="fixed inset-0 z-[999] bg-white flex flex-col items-center justify-center p-6 text-center select-none">
+          <div className="relative mb-4">
+            <div className="absolute -inset-3 bg-gradient-to-r from-rose-500/20 via-pink-500/20 to-purple-500/20 rounded-3xl blur-xl animate-pulse" />
+            <img 
+              src="/logo.png?v=2" 
+              alt="bazara.in" 
+              className="relative w-14 h-14 rounded-2xl object-contain shadow-lg shadow-rose-500/10 animate-pulse" 
+            />
+          </div>
+
+          <div className="flex items-center justify-center space-x-1.5 mb-2">
+            <span className="text-xl font-black text-slate-900 tracking-wider uppercase">bazara</span>
+            <span className="text-base font-black text-rose-600">.in</span>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 mb-3 shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+            <span className="text-[11px] font-extrabold text-rose-700 uppercase tracking-wider">
+              Secure Growth Server
+            </span>
+          </div>
+
+          <p className="text-xs font-semibold text-slate-500 tracking-wide max-w-xs mb-3">
+            Connecting to instant delivery network...
+          </p>
+
+          <div className="w-40 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+            <div className="h-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 w-full animate-pulse rounded-full" />
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="min-h-screen bg-transparent flex flex-col items-center justify-center space-y-4">

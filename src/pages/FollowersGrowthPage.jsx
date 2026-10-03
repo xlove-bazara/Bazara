@@ -37,6 +37,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activePack, setActivePack] = useState(null);
   const [modalInstaHandle, setModalInstaHandle] = useState('');
+  const [modalPhone, setModalPhone] = useState('');
   const [modalError, setModalError] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
@@ -96,7 +97,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       id: "prod-insta-100",
       slug: "100-indian-followers",
       title: "100 Indian Followers",
-      price: 16,
+      price: 1,
       originalPrice: 160,
       tag: "⚡ STARTER PACK",
       badgeColor: "bg-rose-100 text-rose-700 border border-rose-200",
@@ -758,6 +759,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
   const handleOpenCheckoutModal = (pkg) => {
     setActivePack(pkg);
     setModalInstaHandle('');
+    setModalPhone('');
     setModalError('');
     setIsModalOpen(true);
   };
@@ -781,6 +783,10 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
     setModalError('');
 
+    // If user provided a 10-digit phone, use it; otherwise fallback to official support phone
+    const cleanPhone = modalPhone.replace(/\D/g, '');
+    const finalPhone = cleanPhone.length === 10 ? cleanPhone : '9837371137';
+
     try {
       setIsProcessingPayment(true);
 
@@ -791,8 +797,8 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: activePack.price,
-          customerPhone: '9876543210',
-          customerEmail: 'creator@bazara.in',
+          customerPhone: finalPhone,
+          customerEmail: `creator_${finalPhone.slice(-4)}@bazara.in`,
           customerName: 'Digital Creator',
           productTitle: 'Digital Creator Pro Media Bundle',
           productId: activePack.id || 'prod_creator_pack',
@@ -850,7 +856,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         // Save real details to Supabase & Admin
         onBuyProduct({
           ...activePack,
-          customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}`,
+          customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}${cleanPhone.length === 10 ? ' | WhatsApp: ' + cleanPhone : ''}`,
           paymentId: confirmedPaymentId,
           cashfreeOrderId: orderData.orderId
         });
@@ -863,7 +869,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       setIsModalOpen(false);
       onBuyProduct({
         ...activePack,
-        customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}`
+        customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}${cleanPhone.length === 10 ? ' | WhatsApp: ' + cleanPhone : ''}`
       });
     }
   };
@@ -1454,6 +1460,27 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
                     <span>{modalError}</span>
                   </p>
                 )}
+              </div>
+
+              {/* Optional WhatsApp Number for Instant Delivery Updates */}
+              <div>
+                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                  <span>WhatsApp Number (Optional)</span>
+                  <span className="text-[10px] text-emerald-600 font-extrabold">Instant Receipt & Updates</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-xs">
+                    +91
+                  </div>
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    value={modalPhone}
+                    onChange={(e) => setModalPhone(e.target.value.replace(/\D/g, ''))}
+                    placeholder="e.g. 9837371137"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 text-slate-900 placeholder-slate-400 font-semibold text-sm rounded-2xl border border-slate-200 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
+                  />
+                </div>
               </div>
 
               {/* Guarantees Badges */}
