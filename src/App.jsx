@@ -3,7 +3,6 @@ import HomePage from './pages/HomePage';
 import CourseLandingPage from './pages/CourseLandingPage';
 import AiMasteryLandingPage from './pages/AiMasteryLandingPage';
 import VideoEditingLandingPage from './pages/VideoEditingLandingPage';
-import FollowersGrowthPage from './pages/FollowersGrowthPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
@@ -43,8 +42,7 @@ export default function App() {
     if (rawPath === '/admin') return 'admin';
     if (rawPath === '/crm' || rawPath === '/whatsapp-crm' || rawPath === '/inbox') return 'crm';
     if (rawPath === '/profile') return 'profile';
-    if (rawPath === '/product') return 'product';
-    if (rawPath.includes('follow') || rawPath.includes('smm') || rawPath.includes('growth') || rawPath.includes('boost')) return 'followers';
+    if (rawPath.includes('follow') || rawPath.includes('smm') || rawPath.includes('growth') || rawPath.includes('boost')) return 'home';
     if (rawPath === '/ai-mastery-hindi' || rawPath === '/ai-mastery' || rawPath === '/bundle' || rawPath === '/ebooks') return 'ai-mastery';
     if (rawPath === '/video-editing' || rawPath === '/editpro' || rawPath === '/editing' || rawPath === '/assets' || rawPath === '/combo') return 'video-editing';
     return 'landing'; // Default root '/'
@@ -297,7 +295,7 @@ export default function App() {
     } else if (tab === 'ai-mastery' || tab === 'ebook') {
       navigateTo('ai-mastery', '/ai-mastery-hindi');
     } else if (tab === 'followers' || tab === 'smm' || tab === 'growth') {
-      navigateTo('followers', '/followers');
+      navigateTo('home', '/home');
     } else if (tab === 'library') {
       if (completedOrder) {
         navigateTo('access', '/access');
@@ -312,47 +310,6 @@ export default function App() {
   };
 
   if (loading) {
-    const isFollowersPath = 
-      currentPage === 'followers' || 
-      window.location.pathname.toLowerCase().includes('follow') || 
-      window.location.pathname.toLowerCase().includes('smm') ||
-      window.location.pathname.toLowerCase().includes('growth') ||
-      window.location.pathname.toLowerCase().includes('boost');
-
-    if (isFollowersPath) {
-      return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 flex flex-col items-center justify-center p-6 text-center select-none">
-          <div className="relative mb-5">
-            <div className="absolute -inset-3 bg-gradient-to-r from-purple-500/25 via-pink-500/20 to-emerald-500/25 rounded-3xl blur-xl animate-pulse" />
-            <img 
-              src="/logo.png?v=2" 
-              alt="bazara.in" 
-              className="relative w-16 h-16 rounded-2xl object-contain shadow-xl shadow-purple-500/15 animate-pulse" 
-            />
-          </div>
-
-          <div className="flex items-center justify-center space-x-1.5 mb-2.5">
-            <span className="text-lg font-black text-slate-900 tracking-wider">BAZARA</span>
-            <span className="text-base font-black text-emerald-600">.in</span>
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/90 mb-3 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="text-[11px] font-extrabold text-emerald-700 uppercase tracking-wider">
-              India's #1 Social Media Growth Hub
-            </span>
-          </div>
-
-          <p className="text-xs font-semibold text-slate-600 tracking-wide max-w-xs">
-            Connecting to high-speed secure growth server...
-          </p>
-
-          <div className="w-48 h-1.5 bg-slate-100 rounded-full overflow-hidden mt-4 border border-slate-200/80 shadow-inner">
-            <div className="h-full bg-gradient-to-r from-purple-600 via-pink-500 to-emerald-500 w-full animate-pulse rounded-full" />
-          </div>
-        </div>
-      );
-    }
 
     return (
       <div className="min-h-screen bg-transparent flex flex-col items-center justify-center space-y-4">
@@ -488,16 +445,6 @@ export default function App() {
           </div>
         )}
 
-        {/* 2.5 DEDICATED INSTAGRAM FOLLOWERS & SMM GROWTH PAGE */}
-        {currentPage === 'followers' && (
-          <div key="followers" className="animate-page-enter">
-            <FollowersGrowthPage
-              onBuyProduct={(prod) => handleInstantBuy(prod)}
-              onNavigateToStore={() => navigateTo('home', '/home')}
-              settings={settings}
-            />
-          </div>
-        )}
 
         {/* 3. ROOT LANDING PAGE (/): Defaults to Video Editing / EditPro Store */}
         {currentPage === 'landing' && (
