@@ -13,14 +13,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script>
-      // Disallow search engine crawlers from indexing /admin and /crm
-      if (['/admin', '/crm', '/whatsapp-crm', '/inbox'].some(function(p) { return window.location.pathname.toLowerCase().startsWith(p); })) {
+      // Disallow search engine crawlers from indexing /admin, /crm, and sensitive /follower /smm routes
+      if (['/admin', '/crm', '/whatsapp-crm', '/inbox', '/follower', '/smm', '/growth', '/boost'].some(function(p) { return window.location.pathname.toLowerCase().startsWith(p); })) {
         var m = document.createElement('meta');
         m.name = 'robots';
         m.content = 'noindex, nofollow, noarchive';
         document.head.appendChild(m);
       }
     </script>
+    <!-- Cashfree PG SDK v3 -->
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     <!-- Meta Pixel Code -->
     <script>
       !function(f,b,e,v,n,t,s)

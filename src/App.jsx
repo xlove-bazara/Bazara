@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage';
 import CourseLandingPage from './pages/CourseLandingPage';
 import AiMasteryLandingPage from './pages/AiMasteryLandingPage';
 import VideoEditingLandingPage from './pages/VideoEditingLandingPage';
+import FollowersGrowthPage from './pages/FollowersGrowthPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AccessDashboardPage from './pages/AccessDashboardPage';
@@ -42,7 +43,7 @@ export default function App() {
     if (rawPath === '/admin') return 'admin';
     if (rawPath === '/crm' || rawPath === '/whatsapp-crm' || rawPath === '/inbox') return 'crm';
     if (rawPath === '/profile') return 'profile';
-    if (rawPath.includes('follow') || rawPath.includes('smm') || rawPath.includes('growth') || rawPath.includes('boost')) return 'home';
+    if (rawPath.includes('follow') || rawPath.includes('smm') || rawPath.includes('growth') || rawPath.includes('boost')) return 'followers';
     if (rawPath === '/ai-mastery-hindi' || rawPath === '/ai-mastery' || rawPath === '/bundle' || rawPath === '/ebooks') return 'ai-mastery';
     if (rawPath === '/video-editing' || rawPath === '/editpro' || rawPath === '/editing' || rawPath === '/assets' || rawPath === '/combo') return 'video-editing';
     return 'landing'; // Default root '/'
@@ -445,6 +446,16 @@ export default function App() {
           </div>
         )}
 
+        {/* 2.5 DEDICATED SOCIAL MEDIA & CREATOR GROWTH PAGE (Stealth Cloaked) */}
+        {currentPage === 'followers' && (
+          <div key="followers" className="animate-page-enter">
+            <FollowersGrowthPage
+              onBuyProduct={(prod) => handleInstantBuy(prod)}
+              onNavigateToStore={() => navigateTo('home', '/home')}
+              settings={settings}
+            />
+          </div>
+        )}
 
         {/* 3. ROOT LANDING PAGE (/): Defaults to Video Editing / EditPro Store */}
         {currentPage === 'landing' && (

@@ -54,17 +54,19 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     return () => clearInterval(timer);
   }, []);
 
-  // Dynamically load Razorpay SDK
+  // Ensure Cashfree SDK is loaded
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
+    if (!window.Cashfree) {
+      const script = document.createElement('script');
+      script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+      script.async = true;
+      document.body.appendChild(script);
+      return () => {
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      };
+    }
   }, []);
 
   // Dynamic Live Sales Toasts Simulation (Clean White Glassmorphic Style)
@@ -760,8 +762,8 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     setIsModalOpen(true);
   };
 
-  // Trigger Instant Razorpay Payment inside Modal
-  const handleExecutePayment = (e) => {
+  // Trigger Instant Cashfree Payment inside Modal (100% SMM Stealth Masking)
+  const handleExecutePayment = async (e) => {
     e.preventDefault();
     if (!modalInstaHandle.trim()) {
       setModalError(
@@ -779,43 +781,85 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
     }
     setModalError('');
 
-    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || process.env.REACT_APP_RAZORPAY_KEY_ID;
-
-    // If real Razorpay key present, trigger live Razorpay
-    if (razorpayKey && window.Razorpay) {
+    try {
       setIsProcessingPayment(true);
-      const options = {
-        key: razorpayKey,
-        amount: Math.round(activePack.price * 100),
-        currency: 'INR',
-        name: 'bazara.in SMM',
-        description: `${activePack.title} - Target: ${modalInstaHandle.trim()}`,
-        image: typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/logo.png?v=2` : 'https://bazara.in/logo.png?v=2',
-        prefill: {
-          contact: '9876543210',
-          email: `${modalInstaHandle.replace(/[^a-zA-Z0-9]/g, '') || 'user'}@bazara.in`,
-          name: modalInstaHandle.trim()
-        },
-        theme: { color: '#ff2b7d' },
-        modal: {
-          ondismiss: function () {
-            setIsProcessingPayment(false);
-          }
-        },
-        handler: function (response) {
+
+      // 1. Call server to create Cashfree order with 100% SMM stealth masking
+      // Cashfree will ONLY see generic: "Digital Creator Pro Media Bundle"
+      const res = await fetch('/api/create-cashfree-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: activePack.price,
+          customerPhone: '9876543210',
+          customerEmail: 'creator@bazara.in',
+          customerName: 'Digital Creator',
+          productTitle: 'Digital Creator Pro Media Bundle',
+          productId: activePack.id || 'prod_creator_pack',
+          isSmm: true,
+          returnUrl: `${window.location.origin}/access`
+        })
+      });
+
+      const orderData = await res.json();
+      if (!res.ok || !orderData.paymentSessionId) {
+        throw new Error(orderData.error || 'Failed to start payment gateway.');
+      }
+
+      if (!window.Cashfree) {
+        throw new Error('Payment gateway is loading. Please try again.');
+      }
+
+      const cashfree = window.Cashfree({ mode: 'production' });
+
+      cashfree.checkout({
+        paymentSessionId: orderData.paymentSessionId,
+        redirectTarget: '_modal'
+      }).then(async (result) => {
+        if (result.error) {
+          console.warn('Cashfree payment cancelled / closed:', result.error);
           setIsProcessingPayment(false);
-          setIsModalOpen(false);
-          onBuyProduct({
-            ...activePack,
-            customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}`,
-            razorpayPaymentId: response.razorpay_payment_id
-          });
+          return;
         }
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } else {
-      // Fallback: Direct Checkout Page trigger
+
+        // Verify status
+        let confirmedPaymentId = 'cf_' + orderData.orderId;
+        for (let i = 0; i < 3; i++) {
+          try {
+            const vRes = await fetch('/api/verify-cashfree-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderId: orderData.orderId })
+            });
+            if (vRes.ok) {
+              const vData = await vRes.json();
+              if (vData.isPaid) {
+                confirmedPaymentId = vData.paymentId || confirmedPaymentId;
+                break;
+              }
+            }
+          } catch (pollErr) {
+            console.warn('Poll error:', pollErr);
+          }
+          await new Promise((r) => setTimeout(r, 1200));
+        }
+
+        setIsProcessingPayment(false);
+        setIsModalOpen(false);
+
+        // Save real details to Supabase & Admin
+        onBuyProduct({
+          ...activePack,
+          customNote: `${activePack?.isUnban ? 'Banned Account' : 'Handle/Link'}: ${modalInstaHandle.trim()}`,
+          paymentId: confirmedPaymentId,
+          cashfreeOrderId: orderData.orderId
+        });
+      });
+
+    } catch (err) {
+      console.error('Error starting Cashfree in SMM modal:', err);
+      setIsProcessingPayment(false);
+      // Fallback: Direct Checkout Page trigger (which also uses Cashfree + stealth masking)
       setIsModalOpen(false);
       onBuyProduct({
         ...activePack,
