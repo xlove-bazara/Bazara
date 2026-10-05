@@ -179,7 +179,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
         "1,000,000 (10 Lakh) Real Active Followers",
         "Official Meta Blue Tick Badge Request Support",
         "100k Bonus Likes + 500k Reel Views Included",
-        "VIP Dedicated WhatsApp Manager (24/7 Priority)"
+        "VIP Dedicated Telegram Manager (24/7 Priority)"
       ]
     }
   ];
@@ -733,7 +733,7 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
       badge: "Verified VVIP",
       service: "1M Followers + Blue Tick",
       rating: 5,
-      review: "1 Million VVIP pack best investment tha! WhatsApp dedicated manager ne Blue Tick request submit karne me poora guide kiya."
+      review: "1 Million VVIP pack best investment tha! Telegram dedicated manager ne Blue Tick request submit karne me poora guide kiya."
     }
   ];
 
@@ -959,17 +959,19 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
           </div>
 
           <a 
-            href={`https://wa.me/${(settings?.support_whatsapp || '919837371137').replace(/[^0-9]/g, '')}?text=Hi%20Bazara%20SMM%20Support`}
+            href="https://t.me/Bazarahelp"
             target="_blank" 
             rel="noreferrer"
-            className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-xs font-black flex items-center space-x-1.5 transition-all shadow-md shadow-emerald-500/25 border border-emerald-400/30 hover:scale-105 active:scale-95 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#2AABEE] to-[#229ED9] hover:from-[#229ED9] hover:to-[#1d88bc] text-white text-xs font-black flex items-center space-x-1.5 transition-all shadow-md shadow-sky-500/25 border border-sky-400/30 hover:scale-105 active:scale-95 cursor-pointer"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
             </span>
-            <MessageCircle className="w-4 h-4 text-white" />
-            <span className="font-extrabold tracking-wide">WhatsApp Support</span>
+            <svg className="w-3.5 h-3.5 fill-white shrink-0" viewBox="0 0 24 24">
+              <path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l-.313 4.674c.459 0 .661-.21.916-.46l2.199-2.138 4.573 3.377c.843.465 1.45.225 1.66-.782l3-14.137c.308-1.233-.473-1.794-1.281-1.429z"/>
+            </svg>
+            <span className="font-extrabold tracking-wide">Telegram Support</span>
           </a>
         </div>
       </header>
