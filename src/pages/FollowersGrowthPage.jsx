@@ -95,15 +95,15 @@ export default function FollowersGrowthPage({ onBuyProduct, onNavigateToStore, s
   // 1. Instagram Followers Packages
   const followerPackages = [
     {
-      id: "prod-insta-100",
-      slug: "100-indian-followers",
-      title: "100 Indian Followers",
-      price: 16,
-      originalPrice: 160,
+      id: "prod-insta-250",
+      slug: "250-indian-followers",
+      title: "250 Indian Followers",
+      price: 49,
+      originalPrice: 490,
       tag: "⚡ STARTER PACK",
       badgeColor: "bg-rose-100 text-rose-700 border border-rose-200",
-      desc: "Premium Quality: Hum 100 Indian Followers aapko dete hain. Instant delivery fast speed.",
-      features: ["100 Real Indian Followers", "Instant Fast Delivery", "30-Day Auto Refill Guarantee"]
+      desc: "Premium Quality: Hum 250 Indian Followers aapko dete hain. Instant delivery fast speed.",
+      features: ["250 Real Indian Followers", "Instant Fast Delivery", "30-Day Auto Refill Guarantee"]
     },
     {
       id: "prod-insta-1k",

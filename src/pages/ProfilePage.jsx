@@ -369,20 +369,20 @@ export default function ProfilePage({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <a
-                  href="https://wa.me/919837371137"
+                  href="mailto:supporthubindia@gmail.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-4 rounded-2xl bg-[#090c15] border border-white/10 hover:border-emerald-500/40 flex items-center justify-between group transition-all"
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
-                      <MessageCircle className="w-5 h-5" />
+                      <Mail className="w-5 h-5" />
                     </div>
                     <div>
                       <span className="text-xs font-bold text-white block group-hover:text-emerald-400 transition-colors">
-                        WhatsApp Support
+                        Email Support
                       </span>
-                      <span className="text-[10px] text-slate-400 font-medium">Instant 24/7 Response</span>
+                      <span className="text-[10px] text-slate-400 font-medium">supporthubindia@gmail.com</span>
                     </div>
                   </div>
                   <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 transition-colors" />

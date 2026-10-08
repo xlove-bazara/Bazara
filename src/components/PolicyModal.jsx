@@ -218,7 +218,7 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
               <div className="space-y-1">
                 <strong className="text-white block">4. Non-Receipt of Digital Access</strong>
                 <p>
-                  In rare cases of email spam filters or incorrect phone numbers, if you do not receive access within 10 minutes, please contact our helpline via WhatsApp (+91 98373 71137) or email supporthubindia@gmail.com with your payment ID for immediate manual resolution.
+                  In rare cases of email spam filters or incorrect phone numbers, if you do not receive access within 10 minutes, please contact our support team at supporthubindia@gmail.com with your payment ID for immediate manual resolution.
                 </p>
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
               <p className="text-[11px] text-slate-400">For student inquiries, technical support & grievances</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1">
+                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1 sm:col-span-2">
                   <div className="flex items-center space-x-2 text-emerald-400">
                     <Mail className="w-4 h-4" />
                     <span className="font-bold text-white">Official Support Email</span>
@@ -240,17 +240,6 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'terms' }) {
                     supporthubindia@gmail.com
                   </a>
                   <p className="text-[10px] text-slate-500">Response time: Within 24 hours</p>
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1">
-                  <div className="flex items-center space-x-2 text-emerald-400">
-                    <Phone className="w-4 h-4" />
-                    <span className="font-bold text-white">Student Helpline & WhatsApp</span>
-                  </div>
-                  <a href="https://wa.me/919837371137" target="_blank" rel="noreferrer" className="text-xs text-slate-300 hover:text-emerald-400 font-mono block">
-                    +91 98373 71137
-                  </a>
-                  <p className="text-[10px] text-slate-500">Available: Mon–Sat, 10 AM – 7 PM IST</p>
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-1 sm:col-span-2">
