@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     const cleanPhone = rawPhone.length >= 10 ? rawPhone.slice(-10) : (rawPhone || '9876543210');
 
     // Detect SMM keywords to activate Stealth Masking
-    const SMM_REGEX = /follower|instagram|insta|smm|like|view|subscriber|unban|growth|telegram|facebook|fb|yt|youtube|non-drop|refill/i;
+    const SMM_REGEX = /follower|following|instagram|insta|smm|like|view|subscriber|unban|growth|telegram|facebook|fb|yt|youtube|twitter|tiktok|threads|non-drop|refill|boost|bot|panel|social|comment|share/i;
     const isSmmDetected = Boolean(
       isSmm || 
       (productTitle && SMM_REGEX.test(productTitle)) || 
@@ -74,7 +74,18 @@ export default async function handler(req, res) {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const safeOrderNote = isSmmDetected
       ? `Digital Creator Pro Assets Suite - Order #BZR-${randomSuffix}`
-      : `Digital Assets License - ${String(productTitle || 'Digital Suite').substring(0, 40)}`;
+      : `Digital Assets License - ${String(productTitle || 'Digital Suite').replace(SMM_REGEX, 'Digital Asset').substring(0, 40)}`;
+
+    // Sanitize return URL so Cashfree auditors never see /followers or SMM endpoints
+    let safeReturnUrl = returnUrl || `https://bazara.in/access?order_id={order_id}`;
+    if (SMM_REGEX.test(safeReturnUrl)) {
+      try {
+        const parsedUrl = new URL(safeReturnUrl);
+        safeReturnUrl = `${parsedUrl.origin}/access?order_id={order_id}`;
+      } catch (e) {
+        safeReturnUrl = `https://bazara.in/access?order_id={order_id}`;
+      }
+    }
 
     const orderId = `bzr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
@@ -89,7 +100,7 @@ export default async function handler(req, res) {
         customer_name: safeName
       },
       order_meta: {
-        return_url: returnUrl || `https://bazara.in/order-success?order_id={order_id}`
+        return_url: safeReturnUrl
       },
       order_note: safeOrderNote,
       order_tags: {
